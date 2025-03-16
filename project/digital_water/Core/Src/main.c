@@ -40,8 +40,8 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-SPI_HandleTypeDef hspi1;
-SPI_HandleTypeDef hspi2;
+SPI_HandleTypeDef hspi1; // SPI1 --> Accelerometer
+SPI_HandleTypeDef hspi2; // SPI2 --> OLED
 
 TIM_HandleTypeDef htim6;
 
@@ -105,6 +105,11 @@ int main(void)
   MX_USART3_UART_Init();
   MX_USB_OTG_FS_PCD_Init();
   /* USER CODE BEGIN 2 */
+	
+	// Write CS pins high by default
+	// These pins are configured as pullup, but doing this just in case
+	HAL_GPIO_WritePin(GPIOC, SPI1_CS_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOC, SPI2_CS_Pin, GPIO_PIN_SET);
 
   /* USER CODE END 2 */
 
@@ -368,6 +373,9 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOG_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOC, SPI2_CS_Pin|SPI1_CS_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, LD1_Pin|LD3_Pin|LD2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
@@ -378,6 +386,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(USER_Btn_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : SPI2_CS_Pin SPI1_CS_Pin */
+  GPIO_InitStruct.Pin = SPI2_CS_Pin|SPI1_CS_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LD1_Pin LD3_Pin LD2_Pin */
   GPIO_InitStruct.Pin = LD1_Pin|LD3_Pin|LD2_Pin;
