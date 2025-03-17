@@ -23,6 +23,7 @@
 #define SIM_PHYSICS_FPS 30
 #define SIM_RENDER_FPS 30
 #define SIM_DELAY_MS (uint32_t) 1000/SIM_PHYSICS_FPS
+
 typedef struct {
   int state;
   int x;
@@ -55,6 +56,7 @@ void Sim_Grid_Update();
 #define PREAMBLE "\r\n!START!\r\n"
 #define DELTA_PREAMBLE "\r\n!DELTA!\r\n"
 #define SUFFIX "!END!\r\n"
+
 void testPrint(void);
 
 void print_msg(char * msg);

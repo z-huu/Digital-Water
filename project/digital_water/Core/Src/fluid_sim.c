@@ -6,6 +6,7 @@
 
 // FLUID SIM Initializations
 Sim_Cell_t grid_array[SIM_PHYS_X_SIZE][SIM_PHYS_Y_SIZE];
+extern int sim_time;
 
 void Sim_Grid_Init() {
   // set bounding box to be a water
@@ -31,7 +32,7 @@ void Sim_Grid_Update() {
 
 // FOR SERIAL MONITOR USE:
 extern uint8_t tx_buff[sizeof(PREAMBLE) +
-                       SIM_RENDER_X_SIZE * SIM_RENDER_Y_SIZE + sizeof(SUFFIX)];
+                       SIM_RENDER_X_SIZE * SIM_RENDER_Y_SIZE + sizeof(SUFFIX) + 2];
 extern size_t tx_buff_len;
 extern UART_HandleTypeDef huart3;
 
@@ -53,7 +54,8 @@ void testPrint(void) {
 
   for (int i = 0; i < SIM_X_SIZE * SIM_Y_SIZE; i++) {
     // if (i % 2 == 0) continue;
-    char pixel = i / 4;
+    //char pixel = i / 4;
+    char pixel = sim_time * 32;
     tx_buff[tx_buff_len++] = pixel;
     // print_msg(&pixel);
   }
@@ -65,8 +67,7 @@ void testPrint(void) {
 
   // print_msg((char*) tx_buff);
 
-  while (HAL_UART_GetState(&huart3) != HAL_UART_STATE_READY) {
-  }
+  while (HAL_UART_GetState(&huart3) != HAL_UART_STATE_READY);
   HAL_UART_Transmit_DMA(&huart3, (uint8_t *)tx_buff,
                         sizeof(PREAMBLE) + SIM_X_SIZE * SIM_Y_SIZE);
 }
