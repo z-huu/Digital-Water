@@ -22,7 +22,7 @@
 
 #define SIM_PHYSICS_FPS 30
 #define SIM_RENDER_FPS 30
-
+#define SIM_DELAY_MS (uint32_t) 1000/SIM_PHYSICS_FPS
 typedef struct {
   int state;
   int x;
@@ -38,10 +38,24 @@ typedef struct {
 
 void Sim_Grid_Update();
 
+// Stuff related to Rendering (with SPI)
+#define SOLID_COLOR_R 0x50
+#define SOLID_COLOR_G 0x50
+#define SOLID_COLOR_B 0x50
+
+#define WATER_COLOR_R 0x90
+#define WATER_COLOR_G 0x90
+#define WATER_COLOR_B 0x90
+
+#define AIR_COLOR_R 0xF0
+#define AIR_COLOR_G 0xF0
+#define AIR_COLOR_B 0xF0
+
 // Stuff related to Serial Monitor
 #define PREAMBLE "\r\n!START!\r\n"
 #define DELTA_PREAMBLE "\r\n!DELTA!\r\n"
 #define SUFFIX "!END!\r\n"
 void testPrint(void);
 
+void print_msg(char * msg);
 #endif
