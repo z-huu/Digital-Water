@@ -7,6 +7,7 @@ extern SPI_HandleTypeDef hspi1;
 // Everything you need to write this library is in these documents
 // https://www.analog.com/media/en/technical-documentation/data-sheets/adxl362.pdf
 // https://digilent.com/reference/pmod/pmodacl2/reference-manual
+// https://stackoverflow.com/questions/67922914/stm32-spi-communication-with-hal
 
 /* Accelerometer Instructions
 
