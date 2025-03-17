@@ -1,8 +1,9 @@
 #include "physics.h"
 #include <math.h>
 
+// Vec2_t Functions
 float Magnitude_V2(Vec2_t vector) {
-  return sqrt(vector.x * vector.x + vector.y * vector.y);
+  return (float) sqrt(vector.x * vector.x + vector.y * vector.y);
 }
 
 Vec2_t Normalize_V2(Vec2_t vector) {
@@ -18,7 +19,13 @@ Vec2_t Normalize_V2(Vec2_t vector) {
   return newVector;
 }
 
+
+// Vec3_t Functions
 float Magnitude_V3(Vec3_t vector) {
+  return (float) sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
+}
+
+Vec3_t Normalize_V3(Vec3_t vector) {
   Vec3_t newVector;
   float magnitude = Magnitude_V3(vector);
   if (magnitude != 0) {
@@ -33,6 +40,4 @@ float Magnitude_V3(Vec3_t vector) {
   return newVector;
 }
 
-Vec3_t Normalize_V3(Vec3_t vector) {
-  return sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
-}
+

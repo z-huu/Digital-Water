@@ -23,7 +23,7 @@ void Sim_Grid_Update() {
 
     for(int i = 0; i < SIM_PHYS_X_SIZE; i++){
         for(int k = 0; k < SIM_PHYS_Y_SIZE; k++){
-            grid_array[i][k].velocity.y += deltaTime * SIM_GRAV
+            grid_array[i][k].velocity.y += deltaTime * SIM_GRAV;
         }
     }
 }
@@ -62,8 +62,7 @@ void testPrint(void) {
     tx_buff[tx_buff_len++] = SUFFIX[i];
   }
 
-  while (HAL_UART_GetState(&huart3) != HAL_UART_STATE_READY) {
-  }
+  while (HAL_UART_GetState(&huart3) != HAL_UART_STATE_READY) {}
   HAL_UART_Transmit_DMA(&huart3, (uint8_t *)tx_buff,
                         sizeof(PREAMBLE) + SIM_X_SIZE * SIM_Y_SIZE);
 }

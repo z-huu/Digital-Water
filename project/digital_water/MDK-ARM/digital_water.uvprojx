@@ -425,6 +425,26 @@
               <FileType>5</FileType>
               <FilePath>..\Core\Inc\main.h</FilePath>
             </File>
+            <File>
+              <FileName>physics.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Core\Inc\physics.h</FilePath>
+            </File>
+            <File>
+              <FileName>fluid_sim.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Core\Inc\fluid_sim.h</FilePath>
+            </File>
+            <File>
+              <FileName>fluid_sim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\fluid_sim.c</FilePath>
+            </File>
+            <File>
+              <FileName>physics.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\physics.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -561,5 +581,14 @@
     </components>
     <files/>
   </RTE>
+
+  <LayerInfo>
+    <Layers>
+      <Layer>
+        <LayName>digital_water</LayName>
+        <LayPrjMark>1</LayPrjMark>
+      </Layer>
+    </Layers>
+  </LayerInfo>
 
 </Project>

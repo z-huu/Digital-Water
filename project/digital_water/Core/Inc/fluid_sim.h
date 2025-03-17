@@ -2,6 +2,7 @@
 #define __FLUID_SIM_H
 
 #include "main.h"
+#include "physics.h"
 
 // Fluid Sim Dimensions (PMOD OLEDrgb screen is 96x64 pixels)
 #define SIM_RENDER_X_SIZE 96
@@ -9,6 +10,9 @@
 
 #define SIM_PHYS_X_SIZE 96
 #define SIM_PHYS_Y_SIZE 64
+
+#define SIM_X_SIZE SIM_RENDER_X_SIZE
+#define SIM_Y_SIZE SIM_RENDER_Y_SIZE
 
 #define SIM_GRAV -1
 
