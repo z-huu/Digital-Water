@@ -9,8 +9,11 @@ typedef struct {
 } Vec2_t;
 
 #define ZERO_VEC2 (Vec2_t )
+
 float Magnitude_V2(Vec2_t vector);
 Vec2_t Normalize_V2(Vec2_t vector);
+Vec2_t AddVectors_V2(Vec2_t A, Vec2_t B);
+Vec2_t ScalarMult_V2(Vec2_t vector, float scalar);
 
 typedef struct {
   float x;
