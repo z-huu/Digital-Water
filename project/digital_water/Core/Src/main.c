@@ -69,7 +69,8 @@ static void MX_SPI3_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+uint8_t accel_data[3];
+char msg[100];
 /* USER CODE END 0 */
 
 /**
@@ -121,9 +122,17 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+	my_print_msg("Entering while\n");
   while (1) {
     /* USER CODE END WHILE */
-
+		HAL_StatusTypeDef poll_status = accel_poll(accel_data);
+		if (poll_status != HAL_OK) {
+			my_print_msg("Bad poll\n");
+			while (1);
+		}
+		sprintf(msg, "accX: %d\naccY: %d\naccZ: %d\n", accel_data[0], accel_data[1], accel_data[2]);
+		my_print_msg(msg);
+		HAL_Delay(1000);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

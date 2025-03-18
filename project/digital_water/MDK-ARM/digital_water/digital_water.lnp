@@ -1,7 +1,6 @@
 --cpu=Cortex-M4.fp.sp
 "digital_water\startup_stm32f446xx.o"
 "digital_water\accelerometer.o"
-"digital_water\fluid_sim.o"
 "digital_water\physics.o"
 "digital_water\main.o"
 "digital_water\stm32f4xx_it.o"
