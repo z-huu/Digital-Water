@@ -21,7 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "accelerometer.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -113,6 +113,9 @@ int main(void)
   // These pins are configured as pullup, but doing this just in case
   HAL_GPIO_WritePin(GPIOC, SPI1_CS_Pin, GPIO_PIN_SET);
   HAL_GPIO_WritePin(GPIOC, SPI3_CS_Pin, GPIO_PIN_SET);
+	
+	// Initialize accelerometer
+	HAL_StatusTypeDef status = accel_init();
 
   /* USER CODE END 2 */
 

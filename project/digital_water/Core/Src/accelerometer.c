@@ -3,7 +3,11 @@
 #include <string.h>
 
 extern SPI_HandleTypeDef hspi1;
+extern UART_HandleTypeDef huart3;
 
+void my_print_msg(char *msg) {
+  HAL_UART_Transmit(&huart3, (uint8_t *)msg, strlen(msg), 100);
+}
 // Everything you need to write this library is in these documents
 // https://www.analog.com/media/en/technical-documentation/data-sheets/adxl362.pdf
 // https://digilent.com/reference/pmod/pmodacl2/reference-manual
@@ -33,12 +37,21 @@ extern SPI_HandleTypeDef hspi1;
 
 HAL_StatusTypeDef accel_init(void)
 {
+	
+	
+	char msg[100];
+	my_print_msg("Accelerometer initializing\n");
+	
+	HAL_GPIO_WritePin(GPIOC, SPI1_CS_Pin, GPIO_PIN_RESET); // Set accelerometer CS low
+	
 
 	int8_t device_id = accel_read(0x01);
 	if (device_id != 0x1D)
 	{
 
 		// Read failed
+		my_print_msg("Accelerometer initial read fail\n");
+		sprintf(msg, "Read a value of: 0x%x\n", device_id);
 		while (1)
 			;
 	}
@@ -64,7 +77,7 @@ HAL_StatusTypeDef accel_init(void)
 
 	Activity/Inactivity Control : Configure Activity and Inactivity events. Upper 2 bits are unused
 		0x27 - write 0b00[11]1011 --> 0x3B
-		Enables Activity events in "referenced" mode. 
+		Enables Activity events in "referenced" mode.
 		Activity interrupts do not need to be acknowledged by the STM32.
 
 	FIFO Control : Configure FIFO sample ranges and operating mode. Upper 4 bits unused
@@ -93,6 +106,37 @@ HAL_StatusTypeDef accel_init(void)
 		Configures low noise mode, turns off autosleep, and begins measurements
 
 	*/
+
+	my_print_msg("Initializing accelerometer registers\n");
+	
+	uint8_t tx_buff[16];
+
+	tx_buff[0] = 0x0A; // Write instruction
+	tx_buff[1] = 0x20; // Address of first register
+	tx_buff[2] = 0x64; // Lower 8'b of Activity Threshold (100 mg threshold)
+	tx_buff[3] = 0;	   // Upper 3'b of Activity Threshold
+	tx_buff[4] = 0;	   // Activity time (8'b)
+	tx_buff[5] = 0;    // Lower 8'b of Inactivity Threshold
+	tx_buff[6] = 0;		 // Upper 3'b of Inactivity Threshold
+	tx_buff[7] = 0;		 // Lower 8'b of Inactivity Time
+	tx_buff[8] = 0;		 // Upper 8'b of Inactivity Time
+	tx_buff[9] = 0x3B; // Activity/Inactivity Control Register
+	tx_buff[10] = 0;	 // FIFO control
+	tx_buff[11] = 0;	 // FIFO samples
+	tx_buff[12] = 0x10;// INT1 configuration
+	tx_buff[13] = 0;	 // INT2 configuration
+	tx_buff[14] = 0x13;	 // Filter control
+	tx_buff[15] = 0x12;	 // Power control
+	
+	HAL_StatusTypeDef write_status = HAL_SPI_Transmit(&hspi1, tx_buff, 16, 1000);
+	
+	if (write_status != HAL_OK) {
+		// Initialization writes failed
+		my_print_msg("Accelerometer register initializations fail\n");
+		while(1);
+	}
+	
+	HAL_GPIO_WritePin(GPIOC, SPI1_CS_Pin, GPIO_PIN_SET); // Set accelerometer CS high
 
 	return HAL_OK;
 }
