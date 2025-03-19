@@ -123,6 +123,8 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	my_print_msg("Entering while\n");
+	while(1)
+		;
   while (1) {
     /* USER CODE END WHILE */
 		HAL_StatusTypeDef poll_status = accel_poll(accel_data);

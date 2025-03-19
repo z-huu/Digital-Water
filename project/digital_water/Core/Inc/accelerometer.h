@@ -15,7 +15,7 @@ void my_print_msg(char *msg);
 // VDD pins on STM32F446 are 3.3V, so should be compatible with accelerometer.
 HAL_StatusTypeDef accel_init(void);
 int8_t accel_read (int8_t reg);
-HAL_StatusTypeDef accel_write(int8_t reg, int8_t val);
+HAL_StatusTypeDef accel_write(uint8_t reg, uint8_t val);
 HAL_StatusTypeDef accel_poll(uint8_t *read_buff);
 
 #endif
