@@ -183,9 +183,18 @@ HAL_StatusTypeDef oled_off(void) {
 	
 }
 
-HAL_StatusTypeDef oled_write(uint8_t reg, uint8_t val) {
+HAL_StatusTypeDef oled_drawpixel(uint8_t col, uint8_t row, uint16_t color){
 	
-	uint8_t tx_buff[3];
-	uint8_t rx_buff[3];
+	// Should DC be high or low for this transmission?
+	// Command to draw rectangle : 0x22
+	/*
+	uint8_t ExtractRFromRGB(uint16_t wRGB){return (uint8_t)((wRGB>>11)&0x1F);};
+	uint8_t ExtractGFromRGB(uint16_t wRGB){return (uint8_t)((wRGB>>5)&0x3F);};	
+	uint8_t ExtractBFromRGB(uint16_t wRGB){return (uint8_t)(wRGB&0x1F);};
+	
+	*/
+	
+	uint8_t tx_buff[8];
+	tx_buff[0] = 0x22; // Command to draw rectangle.
 	
 }
