@@ -164,6 +164,8 @@ HAL_StatusTypeDef oled_init(void) {
 
 	my_print_msg("\n* OLED initialization complete *\n\n");
 	
+	HAL_GPIO_WritePin(GPIOD, OLED_CS_Pin, GPIO_PIN_SET); // Set OLED cs high again to disable
+
 	return write_status; // probably add some better logic for this; write_status |= each write
 }
 
@@ -194,7 +196,27 @@ HAL_StatusTypeDef oled_drawpixel(uint8_t col, uint8_t row, uint16_t color){
 	
 	*/
 	
-	uint8_t tx_buff[8];
+	uint8_t tx_buff[11];
 	tx_buff[0] = 0x22; // Command to draw rectangle.
+	tx_buff[1] = col; // Start col
+	tx_buff[2] = row; // Start row
+	tx_buff[3] = col; // End col
+	tx_buff[4] = row; // End row
+	// Outline colors
+	tx_buff[5] = (uint8_t)((color >> 11)&0x1F); // Extracting R bits from RGB
+	tx_buff[6] = (uint8_t)((color >> 5)&0x3F);
+	tx_buff[7] = (uint8_t)(color&0x1F);
+	// Fill colors
+	tx_buff[8] = (uint8_t)((color >> 11)&0x1F); // Extracting R bits from RGB
+	tx_buff[9] = (uint8_t)((color >> 5)&0x3F);
+	tx_buff[10] =(uint8_t)(color&0x1F);
 	
+	HAL_GPIO_WritePin(OLED_DCL_GPIO_Port, OLED_DCL_Pin, GPIO_PIN_RESET); // Bring DC low because we're writing commands
+	HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_RESET); // Bring OLED CS low
+	HAL_StatusTypeDef write_status = HAL_SPI_Transmit(&hspi1, tx_buff, 11, 1000);
+	HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_SET); // Bring OLED CS back high
+
+	if (write_status != HAL_OK) my_print_msg("draw_pixel write bad\n");
+	
+	return write_status;
 }

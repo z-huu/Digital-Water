@@ -21,7 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "oled.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -105,7 +105,7 @@ int main(void)
   MX_USART3_UART_Init();
   MX_USB_OTG_FS_PCD_Init();
   /* USER CODE BEGIN 2 */
-
+	oled_init();
   // Write CS pins high by default
   // These pins are configured as pullup, but doing this just in case
   HAL_GPIO_WritePin(GPIOD, ACCEL_CS_Pin, GPIO_PIN_SET);
@@ -117,7 +117,10 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1) {
     /* USER CODE END WHILE */
-
+		oled_drawpixel(0x10, 0x10, 0xFF00);
+		HAL_Delay(5000);
+		oled_off();
+		while (1);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
