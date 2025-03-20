@@ -22,43 +22,15 @@ Dialog DLL:      TCM.DLL V1.56.4.0
  
 <h2>Project:</h2>
 C:\Users\zach_\Not_OneDrive\ECE 342 - Final Project\project\digital_water\MDK-ARM\digital_water.uvprojx
-Project File Date:  03/19/2025
+Project File Date:  03/20/2025
 
 <h2>Output:</h2>
 *** Using Compiler 'V6.22', folder: 'C:\Users\zach_\AppData\Local\Keil_v5\ARM\ARMCLANG\Bin'
 Build target 'digital_water'
-../Core/Src/oled.c(23): error: use of undeclared identifier 'OLED_CS'
-   23 |         HAL_GPIO_WritePin(GPIOD, OLED_CS, GPIO_PIN_RESET); // Set accelerometer CS low
-      |                                  ^
-1 error generated.
-compiling oled.c...
-../Core/Src/main.c(111): error: use of undeclared identifier 'ACCEL_CS'
-  111 |   HAL_GPIO_WritePin(GPIOD, ACCEL_CS, GPIO_PIN_SET);
-      |                            ^
-../Core/Src/main.c(112): error: use of undeclared identifier 'OLED_CS'
-  112 |   HAL_GPIO_WritePin(GPIOB, OLED_CS, GPIO_PIN_SET);
-      |                            ^
-2 errors generated.
-compiling main.c...
-assembling startup_stm32f446xx.s...
-../Core/Src/accelerometer.c(59): error: use of undeclared identifier 'SPI1_CS_Pin'
-   59 |         HAL_GPIO_WritePin(GPIOC, SPI1_CS_Pin, GPIO_PIN_RESET);
-      |                                  ^
-../Core/Src/accelerometer.c(67): error: use of undeclared identifier 'SPI1_CS_Pin'
-   67 |         HAL_GPIO_WritePin(GPIOC, SPI1_CS_Pin, GPIO_PIN_SET);
-      |                                  ^
-../Core/Src/accelerometer.c(75): error: use of undeclared identifier 'SPI1_CS_Pin'
-   75 |         HAL_GPIO_WritePin(GPIOC, SPI1_CS_Pin, GPIO_PIN_RESET);
-      |                                  ^
-../Core/Src/accelerometer.c(95): error: use of undeclared identifier 'SPI1_CS_Pin'
-   95 |         HAL_GPIO_WritePin(GPIOC, SPI1_CS_Pin, GPIO_PIN_SET);
-      |                                  ^
-4 errors generated.
-compiling accelerometer.c...
-compiling stm32f4xx_it.c...
-compiling physics.c...
-compiling stm32f4xx_hal_msp.c...
-"digital_water\digital_water.axf" - 7 Error(s), 0 Warning(s).
+linking...
+Program Size: Code=13024 RO-data=516 RW-data=12 ZI-data=3220  
+FromELF: creating hex file...
+"digital_water\digital_water.axf" - 0 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -81,8 +53,7 @@ Package Vendor: Keil
 
    * Component: ARM::CMSIS:CORE@6.1.0
       Include file:  CMSIS/Core/Include/tz_context.h
-Target not created.
-Build Time Elapsed:  00:00:01
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>

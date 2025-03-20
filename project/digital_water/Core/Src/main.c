@@ -108,8 +108,8 @@ int main(void)
 
   // Write CS pins high by default
   // These pins are configured as pullup, but doing this just in case
-  HAL_GPIO_WritePin(GPIOD, ACCEL_CS, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(GPIOB, OLED_CS, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOD, ACCEL_CS_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOB, OLED_CS_Pin, GPIO_PIN_SET);
 
   /* USER CODE END 2 */
 
