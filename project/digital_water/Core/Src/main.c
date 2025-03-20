@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "oled.h"
+#include "accelerometer.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -67,7 +68,8 @@ static void MX_USB_OTG_FS_PCD_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+uint8_t accel_data[3];
+char msg[100];
 /* USER CODE END 0 */
 
 /**
@@ -115,12 +117,23 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+	my_print_msg("Entering while\n");
+	while(1)
+		;
   while (1) {
     /* USER CODE END WHILE */
 		oled_drawpixel(0x10, 0x10, 0xFF00);
 		HAL_Delay(5000);
 		oled_off();
 		while (1);
+		HAL_StatusTypeDef poll_status = accel_poll(accel_data);
+		if (poll_status != HAL_OK) {
+			my_print_msg("Bad poll\n");
+			while (1);
+		}
+		sprintf(msg, "accX: %d\naccY: %d\naccZ: %d\n", accel_data[0], accel_data[1], accel_data[2]);
+		my_print_msg(msg);
+		HAL_Delay(1000);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
