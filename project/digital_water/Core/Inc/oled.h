@@ -8,6 +8,7 @@
 void my_print_msg(char *msg);
 
 HAL_StatusTypeDef oled_init(void);
+HAL_StatusTypeDef oled_off(void);
 HAL_StatusTypeDef oled_write(uint8_t reg, uint8_t val);
 
 #endif

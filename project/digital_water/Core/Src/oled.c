@@ -163,6 +163,24 @@ HAL_StatusTypeDef oled_init(void) {
 	HAL_Delay(100);
 
 	my_print_msg("\n* OLED initialization complete *\n\n");
+	
+	return write_status; // probably add some better logic for this; write_status |= each write
+}
+
+HAL_StatusTypeDef oled_off(void) {
+	
+	uint8_t tx_buff[1] = {0xAE};
+	HAL_StatusTypeDef write_status = HAL_SPI_Transmit(&hspi1, tx_buff, 1, 1000);
+	if (write_status != HAL_OK) my_print_msg("Bad write in OLED off.\n");
+	
+  // Bring VCCEN pin low
+	HAL_GPIO_WritePin(OLED_VCCEN_GPIO_Port, OLED_VCCEN_Pin, GPIO_PIN_RESET);
+	HAL_Delay(400); // Delay for 400 ms
+	
+	// From this point on, safe to remove power to OLED.
+	
+	return write_status;
+	
 }
 
 HAL_StatusTypeDef oled_write(uint8_t reg, uint8_t val) {
