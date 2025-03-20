@@ -5,7 +5,12 @@
 
 // TODO: need to configure three more GPIO outputs for DC, VCCEN, PMODEN
 
-extern SPI_HandleTypeDef hspi3;
+// DC:  High for Data, Low for Command -- PA4
+// VCCEN: Pulldown PB3
+// PMODEN: Pulldown PB5
+// RST: Pulldown, PC7
+
+extern SPI_HandleTypeDef hspi1;
 extern UART_HandleTypeDef huart3;
 
 void my_print_msg(char *msg) {
@@ -15,7 +20,7 @@ void my_print_msg(char *msg) {
 HAL_StatusTypeDef oled_init(void) {
 	
 	// Set SPI3 CS low
-	HAL_GPIO_WritePin(GPIOD, SPI3_CS_Pin, GPIO_PIN_RESET); // Set accelerometer CS low
+	HAL_GPIO_WritePin(GPIOD, OLED_CS, GPIO_PIN_RESET); // Set accelerometer CS low
 	
 }
 
