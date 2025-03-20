@@ -74,9 +74,9 @@ void Error_Handler(void);
 #define STLK_TX_GPIO_Port GPIOD
 #define ACCEL_CS_Pin GPIO_PIN_14
 #define ACCEL_CS_GPIO_Port GPIOD
-#define SPI1_INT1_Pin GPIO_PIN_15
-#define SPI1_INT1_GPIO_Port GPIOD
-#define SPI1_INT1_EXTI_IRQn EXTI15_10_IRQn
+#define ACCEL_INT1_Pin GPIO_PIN_15
+#define ACCEL_INT1_GPIO_Port GPIOD
+#define ACCEL_INT1_EXTI_IRQn EXTI15_10_IRQn
 #define USB_PowerSwitchOn_Pin GPIO_PIN_6
 #define USB_PowerSwitchOn_GPIO_Port GPIOG
 #define USB_OverCurrent_Pin GPIO_PIN_7

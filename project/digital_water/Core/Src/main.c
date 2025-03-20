@@ -122,18 +122,7 @@ int main(void)
 		;
   while (1) {
     /* USER CODE END WHILE */
-		oled_drawpixel(0x10, 0x10, 0xFF00);
-		HAL_Delay(5000);
-		oled_off();
-		while (1);
-		HAL_StatusTypeDef poll_status = accel_poll(accel_data);
-		if (poll_status != HAL_OK) {
-			my_print_msg("Bad poll\n");
-			while (1);
-		}
-		sprintf(msg, "accX: %d\naccY: %d\naccZ: %d\n", accel_data[0], accel_data[1], accel_data[2]);
-		my_print_msg(msg);
-		HAL_Delay(1000);
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -408,11 +397,11 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(ACCEL_CS_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : SPI1_INT1_Pin */
-  GPIO_InitStruct.Pin = SPI1_INT1_Pin;
+  /*Configure GPIO pin : ACCEL_INT1_Pin */
+  GPIO_InitStruct.Pin = ACCEL_INT1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-  HAL_GPIO_Init(SPI1_INT1_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(ACCEL_INT1_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PG2 USB_PowerSwitchOn_Pin */
   GPIO_InitStruct.Pin = GPIO_PIN_2|USB_PowerSwitchOn_Pin;
