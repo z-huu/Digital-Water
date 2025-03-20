@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "fluid_sim.h"
+#include <stdint.h>
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -77,13 +78,16 @@ static void MX_USB_OTG_FS_PCD_Init(void);
  * @retval int
  */
 
+uint8_t image_buff[SIM_RENDER_X_SIZE][SIM_RENDER_Y_SIZE];
 uint8_t tx_buff[sizeof(PREAMBLE) + SIM_RENDER_X_SIZE * SIM_RENDER_Y_SIZE +
                 sizeof(SUFFIX)];
 size_t tx_buff_len;
+
 int sim_time = 0;
 Sim_Cell_t grid_array[SIM_PHYS_X_SIZE][SIM_PHYS_Y_SIZE];
 Sim_Particle_t particle_array[SIM_PARTICLES_PER_CELL];
 Sim_Particle_t obstacle_array[SIM_OBSTACLE_COUNT];
+Vec2_t GravityVector;
 
 int main(void) {
 
@@ -111,30 +115,32 @@ int main(void) {
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_DMA_Init();
-  MX_SPI1_Init();
-  MX_SPI2_Init();
+  //MX_SPI1_Init();
+  //MX_SPI2_Init();
   MX_TIM6_Init();
   MX_USART3_UART_Init();
   MX_USB_OTG_FS_PCD_Init();
   /* USER CODE BEGIN 2 */
-	  print_msg("finished MX Inits\n");
+  print_msg("finished MX Inits\n");
 
   // Write CS pins high by default
   // These pins are configured as pullup, but doing this just in case
-  HAL_GPIO_WritePin(GPIOC, SPI1_CS_Pin, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(GPIOC, SPI2_CS_Pin, GPIO_PIN_SET);
+  //HAL_GPIO_WritePin(GPIOC, SPI1_CS_Pin, GPIO_PIN_SET);
+  //HAL_GPIO_WritePin(GPIOC, SPI2_CS_Pin, GPIO_PIN_SET);
 
-  Sim_Particle_Init();
-  //Sim_Grid_Init();
+  // Sim_Grid_Init();
   /* USER CODE END 2 */
   print_msg("starting while loop\n");
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1) {
     /* USER CODE END WHILE */
-    HAL_Delay(30);
+    // HAL_Delay(30);
+    print_msg("physics step\n");
     Sim_Physics_Step();
     sim_time++;
+    print_msg("render step\n");
+    renderImage();
     testPrint();
 
     /* USER CODE BEGIN 3 */

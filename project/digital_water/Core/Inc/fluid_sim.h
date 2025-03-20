@@ -16,7 +16,7 @@
 #define SIM_X_SIZE SIM_RENDER_X_SIZE
 #define SIM_Y_SIZE SIM_RENDER_Y_SIZE
 
-#define SIM_GRAV -4.5
+#define SIM_GRAV 4.5
 
 #define SIM_WATER 0
 #define SIM_SOLID 1
@@ -37,23 +37,35 @@
 #define SIM_DELTATIME (1 / (SIM_PHYSICS_FPS * SIM_ITERATIONS))
 #define SIM_PARTICLE_SEPARATE_ITERATIONS 3
 
-typedef struct {
-  int state;
-  int x;
-  int y;
-  float density;
-  Vec2_t velocity;
-} Sim_Cell_t;
+// found from StackOverflow:
+// https://stackoverflow.com/questions/24723180/c-convert-floating-point-to-int
+#define FLOAT_TO_INT(x) ((x) >= 0 ? (int)((x) + 0.5) : (int)((x) - 0.5))
 
-typedef struct {
+typedef struct particle {
   Vec2_t position;
   Vec2_t velocity;
   int state;
   float radius;
+  struct particle *next;
 } Sim_Particle_t;
+
+typedef struct cell{
+  int state;
+  int x;
+  int y;
+  float density;
+  int particle_count;
+  Vec2_t velocity;
+  Sim_Particle_t *head;
+  Sim_Particle_t *tail;
+} Sim_Cell_t;
+
+
 
 // utility functions
 Sim_Cell_t *GetCellFromPosition(Vec2_t position);
+
+void AddParticleToCellList(Sim_Cell_t *cell, Sim_Particle_t *particle);
 
 // main simulation functions
 
@@ -92,6 +104,8 @@ void Sim_Physics_Step();
 #define PREAMBLE "\r\n!START!\r\n"
 #define DELTA_PREAMBLE "\r\n!DELTA!\r\n"
 #define SUFFIX "!END!\r\n"
+
+void renderImage();
 
 void testPrint(void);
 
