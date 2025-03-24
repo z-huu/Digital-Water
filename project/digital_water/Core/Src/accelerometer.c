@@ -54,9 +54,6 @@
 extern SPI_HandleTypeDef hspi1;
 extern UART_HandleTypeDef huart3;
 
-void my_print_msg(char *msg) {
-  HAL_UART_Transmit(&huart3, (uint8_t *)msg, strlen(msg), 100);
-}
 // Everything you need to write this library is in these documents
 // https://www.analog.com/media/en/technical-documentation/data-sheets/adxl362.pdf
 // https://digilent.com/reference/pmod/pmodacl2/reference-manual
@@ -89,7 +86,6 @@ HAL_StatusTypeDef accel_init(void)
 	
 	char msg[100];
 	my_print_msg("\n* Accelerometer initializing *\n\n");
-	HAL_GPIO_WritePin(GPIOC, SPI1_CS_Pin, GPIO_PIN_RESET); // Set accelerometer CS low
 
 	uint8_t device_id = accel_read(0x01);
 	accel_read(0);
@@ -111,24 +107,24 @@ HAL_StatusTypeDef accel_init(void)
 	
 	my_print_msg("Initializing accelerometer registers\n");
 	
-	/* Datasheet example initialization.
+	// Datasheet example initialization.
 	accel_write(0x20, 0x00);
+		accel_read(0x20);
 	accel_write(0x21, 0);
 	accel_write(0x23, 0x96);
+		accel_read(0x23);
 	accel_write(0x24, 0);
 	accel_write(0x25, 0x1E);
 	accel_write(0x27, 0x3F);
 	accel_write(0x2B, 0x40);
 	accel_write(0x2C, 0b10010100);
 	accel_write(0x2D, 0x0A);
-	*/
+		accel_read(0x2D);
 	// Register initialization sanity check
 	
 	uint8_t read_val = accel_read(0x01);
 	sprintf(msg, "Contents of register 0x01 is 0x%x\n", read_val);
 	my_print_msg(msg);
-	
-	accel_write(0x2D, 0x12);
 	
 	return HAL_OK;
 }
@@ -138,33 +134,35 @@ HAL_StatusTypeDef accel_write(uint8_t reg, uint8_t val){
 	char msg[100];
 	sprintf(msg, "Writing 0x%x into register 0x%x\n", val, reg);
 	my_print_msg(msg);
+	HAL_GPIO_WritePin(ACCEL_CS_GPIO_Port, ACCEL_CS_Pin, GPIO_PIN_RESET); // Set accelerometer CS low
+	HAL_Delay(10);
 
-	uint8_t tx_buff[4];
-	uint8_t rx_buff[4];
+	uint8_t tx_buff[3];
+	uint8_t rx_buff[3];
 	
 	tx_buff[0] = 0x0A;
 	tx_buff[1] = reg;
 	tx_buff[2] = val;
-	tx_buff[3] = 0;
 
 	rx_buff[0] = 0x0A;
 	rx_buff[1] = reg;
 	rx_buff[2] = val;
 	
 	HAL_StatusTypeDef write_status;
-	write_status = HAL_SPI_TransmitReceive(&hspi1, tx_buff, rx_buff, 4, 1000);
+	write_status = HAL_SPI_TransmitReceive(&hspi1, tx_buff, rx_buff, 3, 1000);
 	
 	if (write_status != HAL_OK) my_print_msg("Write no good\n");
 	
 	my_print_msg("tx_buff       rx_buff\n");
-	for (int8_t i = 0; i < 4; i++) {
+	for (int8_t i = 0; i < 3; i++) {
 		sprintf(msg, "0x%x       0x%x\n", tx_buff[i], rx_buff[i]);
 		my_print_msg(msg);
 	}
 
-	HAL_Delay(10);
-	accel_read(reg);
 	
+	HAL_GPIO_WritePin(GPIOD, ACCEL_CS_Pin, GPIO_PIN_SET);
+	HAL_Delay(10);
+
 	return write_status;
 	
 }
@@ -172,9 +170,12 @@ HAL_StatusTypeDef accel_write(uint8_t reg, uint8_t val){
 
 int8_t accel_read(int8_t reg)
 {
-	
-	char msg[100];
+	my_print_msg("Reading\n");
+	HAL_GPIO_WritePin(ACCEL_CS_GPIO_Port, ACCEL_CS_Pin, GPIO_PIN_RESET); // Set accelerometer CS low
 
+
+	char msg[100];
+	
 	uint8_t tx_buff[3];
 	uint8_t rx_buff[3];
 	uint8_t ret_val;
@@ -189,9 +190,17 @@ int8_t accel_read(int8_t reg)
 		ret_val = rx_buff[2];
 	else
 		ret_val = -1;
+	
+	my_print_msg("tx_buff       rx_buff\n");
+	for (int8_t i = 0; i < 3; i++) {
+		sprintf(msg, "0x%x       0x%x\n", tx_buff[i], rx_buff[i]);
+		my_print_msg(msg);
+	}
 
 	sprintf(msg, "Read on reg 0x%x returns value 0x%x\n", reg, ret_val);
 	my_print_msg(msg);
+	HAL_GPIO_WritePin(GPIOD, ACCEL_CS_Pin, GPIO_PIN_SET);
+
 	HAL_Delay(10);
 	return ret_val;
 }

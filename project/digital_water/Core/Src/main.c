@@ -107,7 +107,8 @@ int main(void)
   MX_USART3_UART_Init();
   MX_USB_OTG_FS_PCD_Init();
   /* USER CODE BEGIN 2 */
-	oled_init();
+	//oled_init();
+	accel_init();
   // Write CS pins high by default
   // These pins are configured as pullup, but doing this just in case
   HAL_GPIO_WritePin(GPIOD, ACCEL_CS_Pin, GPIO_PIN_SET);
@@ -118,11 +119,12 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	my_print_msg("Entering while\n");
-	while(1)
-		;
+	//while(1)
+		//;
   while (1) {
     /* USER CODE END WHILE */
-
+		accel_read(0x08);
+		HAL_Delay(1000);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -447,6 +449,10 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+void my_print_msg(char *msg) {
+  HAL_UART_Transmit(&huart3, (uint8_t *)msg, strlen(msg), 100);
+}
 
 /* USER CODE END 4 */
 

@@ -10,8 +10,6 @@
 #define ACCEL_CS_GPIO_PORT SPI1_CS_GPIO_PORT
 //SPI1_CS_GPIO_PORT from main.h
 
-void my_print_msg(char *msg);
-
 // VDD pins on STM32F446 are 3.3V, so should be compatible with accelerometer.
 HAL_StatusTypeDef accel_init(void);
 int8_t accel_read (int8_t reg);
