@@ -172,7 +172,7 @@ int8_t accel_read(int8_t reg)
 {
 	my_print_msg("Reading\n");
 	HAL_GPIO_WritePin(ACCEL_CS_GPIO_Port, ACCEL_CS_Pin, GPIO_PIN_RESET); // Set accelerometer CS low
-
+	HAL_Delay(10);
 
 	char msg[100];
 	
@@ -199,9 +199,10 @@ int8_t accel_read(int8_t reg)
 
 	sprintf(msg, "Read on reg 0x%x returns value 0x%x\n", reg, ret_val);
 	my_print_msg(msg);
+	
 	HAL_GPIO_WritePin(GPIOD, ACCEL_CS_Pin, GPIO_PIN_SET);
-
 	HAL_Delay(10);
+	
 	return ret_val;
 }
 
@@ -217,7 +218,10 @@ HAL_StatusTypeDef accel_poll(uint8_t *read_buff)
 	tx_buff[1] = 0x08; // Corresponds to XDATA register
 	for (int8_t i = 2; i < 5; i++)
 		tx_buff[i] = 0; // indices 2, 3, 4 are dummy bytes
-
+	
+	HAL_GPIO_WritePin(ACCEL_CS_GPIO_Port, ACCEL_CS_Pin, GPIO_PIN_RESET); // Set accelerometer CS low
+	HAL_Delay(10);
+	
 	HAL_StatusTypeDef status = HAL_SPI_TransmitReceive(&hspi1, tx_buff, rx_buff, 5, 1000);
 
 	if (status == HAL_OK)
@@ -228,8 +232,11 @@ HAL_StatusTypeDef accel_poll(uint8_t *read_buff)
 		read_buff[2] = rx_buff[4];
 	}
 	
-	sprintf(msg, "index 2: %d\nindex 3: %d\nindex 4: %d\n", rx_buff[2], rx_buff[3], rx_buff[4]);
+	sprintf(msg, "\nX: %d\nY: %d\nZ: %d\n\n", rx_buff[2], rx_buff[3], rx_buff[4]);
 	my_print_msg(msg);
+	
+	HAL_GPIO_WritePin(GPIOD, ACCEL_CS_Pin, GPIO_PIN_SET);
+	HAL_Delay(10);
 
 	return status;
 }

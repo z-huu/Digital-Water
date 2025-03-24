@@ -123,7 +123,8 @@ int main(void)
 		//;
   while (1) {
     /* USER CODE END WHILE */
-		accel_read(0x08);
+		//accel_read(0x08);
+		accel_poll(accel_data);
 		HAL_Delay(1000);
     /* USER CODE BEGIN 3 */
   }
