@@ -1,16 +1,15 @@
 #include "fluid_sim.h"
 #include "physics.h"
 
-
 // FLUID SIM Initializations
 /*
 Notes:
 Heavily Based on the work done by Matthias Müller and his YouTube channel "Ten
 Minute Physics"
 */
-extern Sim_Cell_t grid_array[SIM_PHYS_X_SIZE][SIM_PHYS_Y_SIZE];
+Sim_Cell_t grid_array[SIM_PHYS_X_SIZE][SIM_PHYS_Y_SIZE];
 extern Sim_Particle_t particle_array[SIM_PARTICLE_COUNT];
-extern Sim_Particle_t obstacle_array[SIM_OBSTACLE_COUNT];
+Sim_Particle_t obstacle_array[SIM_OBSTACLE_COUNT];
 extern Vec2_t GravityVector;
 
 extern int sim_time;
@@ -42,12 +41,12 @@ void AddParticleToCellList(Sim_Cell_t *cell, Sim_Particle_t *particle) {
     cell->tail = particle;
   } else {
     // append to tail
-    Sim_Particle_t *currentParticle = cell->head;
-    while (currentParticle->next != NULL) {
-      currentParticle = currentParticle->next;
+    Sim_Particle_t *particle_array[k] = cell->head;
+    while (particle_array[k]->next != NULL) {
+      particle_array[k] = particle_array[k]->next;
     }
 
-    currentParticle->next = particle;
+    particle_array[k]->next = particle;
     cell->tail = particle;
   }
 }
@@ -69,22 +68,21 @@ void Sim_Particle_Init() {
   Vec2_t initial_pos;
   for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
     particle_array[k] = BlankParticle();
-    Sim_Particle_t currentParticle = particle_array[k];
-    currentParticle.state = SIM_WATER;
-    currentParticle.radius = SIM_PARTICLE_RADIUS;
-    currentParticle.position = BlankVector_V2();
-    currentParticle.velocity = BlankVector_V2();
+    particle_array[k].state = SIM_WATER;
+    particle_array[k].radius = SIM_PARTICLE_RADIUS;
+    particle_array[k].position = BlankVector_V2();
+    particle_array[k].velocity = BlankVector_V2();
 
     initial_pos = (Vec2_t){.x = ((float)(SIM_PHYS_X_SIZE) / (float)2),
                            .y = (float)(SIM_PHYS_Y_SIZE / 2)};
 
-    // currentParticle.position = initial_pos;
-    // currentParticle.position.x = initial_pos.x;
-    // currentParticle.position.y = initial_pos.y;
-    currentParticle.position =
-        AddVectors_V2(currentParticle.position, initial_pos);
-    sprintf(msg, "Init %d: (%f, %f)\n", k, currentParticle.position.x,
-            currentParticle.position.y);
+    // particle_array[k].position = initial_pos;
+    // particle_array[k].position.x = initial_pos.x;
+    // particle_array[k].position.y = initial_pos.y;
+    particle_array[k].position =
+        AddVectors_V2(particle_array[k].position, initial_pos);
+    sprintf(msg, "Init %d: (%f, %f)\n", k, particle_array[k].position.x,
+            particle_array[k].position.y);
     print_msg(msg);
   }
   for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
@@ -105,52 +103,49 @@ void Sim_Particle_Step() {
   // for each particle, just move particle based on its velocity
   for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
     // change velocity by adding gravity
-    Sim_Particle_t currentParticle = particle_array[k];
-
-    currentParticle.velocity =
-        AddVectors_V2(currentParticle.velocity, GravImpact);
-    Vec2_t adjustedVelo = {.x = SIM_DELTATIME * currentParticle.velocity.x,
-                           .y = SIM_DELTATIME * currentParticle.velocity.y};
+    particle_array[k].velocity =
+        AddVectors_V2(particle_array[k].velocity, GravImpact);
+    Vec2_t adjustedVelo = {.x = SIM_DELTATIME * particle_array[k].velocity.x,
+                           .y = SIM_DELTATIME * particle_array[k].velocity.y};
     sprintf(msg, "%d: adjustedVelo: (%f, %f)\n", k, adjustedVelo.x,
             adjustedVelo.y);
     print_msg(msg);
     // update position by adding velocity to it
-    sprintf(msg, "PreMove %d: (%f, %f)\n", k, currentParticle.position.x,
-            currentParticle.position.y);
+    sprintf(msg, "PreMove %d: (%f, %f)\n", k, particle_array[k].position.x,
+            particle_array[k].position.y);
     print_msg(msg);
-    currentParticle.position =
-        AddVectors_V2(currentParticle.position, adjustedVelo);
-    // currentParticle.position.x += adjustedVelo.x;
-    // currentParticle.position.y += adjustedVelo.y;
+    particle_array[k].position =
+        AddVectors_V2(particle_array[k].position, adjustedVelo);
+    // particle_array[k].position.x += adjustedVelo.x;
+    // particle_array[k].position.y += adjustedVelo.y;
     sprintf(msg, "Update %d: (%f, %f), Velocity = (%f, %f)\n", k,
-            currentParticle.position.x, currentParticle.position.y,
-            currentParticle.velocity.x, currentParticle.velocity.y);
+            particle_array[k].position.x, particle_array[k].position.y,
+            particle_array[k].velocity.x, particle_array[k].velocity.y);
     print_msg(msg);
   }
 
   // handle collisions
-  // Sim_Particle_HandleCellCollisions();
+  Sim_Particle_HandleCellCollisions();
   for (int k = 0; k < SIM_OBSTACLE_COUNT; k++) {
     Sim_Particle_t currentObstacle = obstacle_array[k];
-    // Sim_Particle_HandleObstacleCollisions(currentObstacle);
+    Sim_Particle_HandleObstacleCollisions(currentObstacle);
   }
 }
 
 void Sim_Particle_HandleObstacleCollisions(Sim_Particle_t obstacle) {
   // simply check if in radius
   for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
-    Sim_Particle_t currentParticle = particle_array[k];
 
-    float dx = currentParticle.position.x - obstacle.position.x;
-    float dy = currentParticle.position.y - obstacle.position.y;
+    float dx = particle_array[k].position.x - obstacle.position.x;
+    float dy = particle_array[k].position.y - obstacle.position.y;
     float dxy_squared = dx * dx + dy * dy;
 
-    float min_distance = obstacle.radius + currentParticle.radius;
+    float min_distance = obstacle.radius + particle_array[k].radius;
     float min_dist_squared = min_distance * min_distance;
     if (dxy_squared < min_dist_squared) {
       // collision, simply inherit velocity
-      currentParticle.velocity.x = obstacle.velocity.x;
-      currentParticle.velocity.y = obstacle.velocity.y;
+      particle_array[k].velocity.x = obstacle.velocity.x;
+      particle_array[k].velocity.y = obstacle.velocity.y;
     }
   }
 }
@@ -159,33 +154,32 @@ void Sim_Particle_HandleCellCollisions() {
   // for each particle...
   for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
     // check boundary conditions
-    Sim_Particle_t currentParticle = particle_array[k];
-    Sim_Cell_t *currentCell = GetCellFromPosition(currentParticle.position);
+    Sim_Cell_t *currentCell = GetCellFromPosition(particle_array[k].position);
 
-    if (currentParticle.position.x < 0) {
-      currentParticle.position.x = 0;
-      currentParticle.velocity.x = 0;
+    if (particle_array[k].position.x < 0) {
+      particle_array[k].position.x = 0;
+      particle_array[k].velocity.x = 0;
     }
-    if (currentParticle.position.x > SIM_PHYS_X_SIZE) {
-      currentParticle.position.x = SIM_PHYS_X_SIZE;
-      currentParticle.velocity.x = 0;
+    if (particle_array[k].position.x > SIM_PHYS_X_SIZE) {
+      particle_array[k].position.x = SIM_PHYS_X_SIZE;
+      particle_array[k].velocity.x = 0;
     }
-    if (currentParticle.position.y < 0) {
-      currentParticle.position.y = 0;
-      currentParticle.velocity.y = 0;
+    if (particle_array[k].position.y < 0) {
+      particle_array[k].position.y = 0;
+      particle_array[k].velocity.y = 0;
     }
-    if (currentParticle.position.y > SIM_PHYS_Y_SIZE) {
-      currentParticle.position.y = SIM_PHYS_Y_SIZE;
-      currentParticle.velocity.y = 0;
+    if (particle_array[k].position.y > SIM_PHYS_Y_SIZE) {
+      particle_array[k].position.y = SIM_PHYS_Y_SIZE;
+      particle_array[k].velocity.y = 0;
     }
 
     // check current cell it resides in, if its solid, push it out backwards
     // simply just undo the velocity movement done
     if (currentCell->state == SIM_SOLID) {
       Vec2_t reversedVelocity =
-          ScalarMult_V2(currentParticle.velocity, (float)-0.75);
-      currentParticle.position =
-          AddVectors_V2(currentParticle.position, reversedVelocity);
+          ScalarMult_V2(particle_array[k].velocity, (float)-0.75);
+      particle_array[k].position =
+          AddVectors_V2(particle_array[k].position, reversedVelocity);
     }
   }
 }
@@ -206,13 +200,13 @@ void Sim_Particle_PushParticlesApart() {
   // count particles in cells
   print_msg("counting particles in cell\n");
   for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
-    Sim_Particle_t currentParticle = particle_array[k];
-    currentParticle.next = NULL;
+    Sim_Particle_t particle_array[k] = particle_array[k];
+    particle_array[k].next = NULL;
 
-    Sim_Cell_t *locatedCell = GetCellFromPosition(currentParticle.position);
+    Sim_Cell_t *locatedCell = GetCellFromPosition(particle_array[k].position);
     if (locatedCell) {
       locatedCell->particle_count++;
-      AddParticleToCellList(locatedCell, &currentParticle);
+      AddParticleToCellList(locatedCell, &particle_array[k]);
     }
   }
 
@@ -224,9 +218,10 @@ void Sim_Particle_PushParticlesApart() {
 
   for (int iter = 0; iter < SIM_PARTICLE_SEPARATE_ITERATIONS; iter++) {
     for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
-      Sim_Particle_t currentParticle = particle_array[k];
+      Sim_Particle_t particle_array[k] = particle_array[k];
 
-      Sim_Cell_t *initial_cell = GetCellFromPosition(currentParticle.position);
+      Sim_Cell_t *initial_cell =
+GetCellFromPosition(particle_array[k].position);
 
       int left_end = 0;
       int right_end = SIM_PHYS_X_SIZE - 1;
@@ -254,13 +249,13 @@ void Sim_Particle_PushParticlesApart() {
           Sim_Particle_t *focusParticle = currentCell->head;
           // iterate through all particles within this cell
           while (focusParticle->next != NULL) {
-            if (focusParticle == &currentParticle) {
+            if (focusParticle == &particle_array[k]) {
               // ignore self
               focusParticle = focusParticle->next;
             } else {
               Vec2_t negativePos = ScalarMult_V2(focusParticle->position, -1);
               Vec2_t deltaPos =
-                  AddVectors_V2(currentParticle.position, negativePos);
+                  AddVectors_V2(particle_array[k].position, negativePos);
               float dist_between = Magnitude_V2(deltaPos);
               float dist_between_squared = dist_between * dist_between;
 
@@ -274,8 +269,8 @@ void Sim_Particle_PushParticlesApart() {
                     0.5 * (min_dist - dist_between) / dist_between;
                 deltaPos = ScalarMult_V2(deltaPos, separateFactor);
                 Vec2_t negative_deltaPos = ScalarMult_V2(deltaPos, -1);
-                currentParticle.position =
-                    AddVectors_V2(currentParticle.position, deltaPos);
+                particle_array[k].position =
+                    AddVectors_V2(particle_array[k].position, deltaPos);
                 focusParticle->position =
                     AddVectors_V2(focusParticle->position, negative_deltaPos);
               }
@@ -371,8 +366,7 @@ void Sim_TransferVelocities(int toGrid) {
   if (toGrid) {
     // transferring from particles to grid
     for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
-      Sim_Particle_t currentParticle = particle_array[k];
-      Sim_Cell_t *currentCell = GetCellFromPosition(currentParticle.position);
+      Sim_Cell_t *currentCell = GetCellFromPosition(particle_array[k].position);
       if (currentCell->state == SIM_AIR) {
         currentCell->state = SIM_WATER;
       }
@@ -437,8 +431,7 @@ for (int k = 0; k < SIM_PHYS_X_SIZE; k++) {
 }
   */
   for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
-    Sim_Particle_t currentParticle = particle_array[k];
-    Sim_Cell_t *locatedCell = GetCellFromPosition(currentParticle.position);
+    Sim_Cell_t *locatedCell = GetCellFromPosition(particle_array[k].position);
     int x = locatedCell->x;
     int y = locatedCell->y;
     uint8_t pixel = WATER_COLOR_R;
@@ -448,7 +441,7 @@ for (int k = 0; k < SIM_PHYS_X_SIZE; k++) {
     image_buff[((2 * x + 1) * SIM_RENDER_X_SIZE) + (2 * y)] = pixel;
     image_buff[((2 * x + 1) * SIM_RENDER_X_SIZE) + (2 * y + 1)] = pixel;
     sprintf(msg, "%d: (%d, %d) vs (%f, %f)\n", k, x, y,
-            currentParticle.position.x, currentParticle.position.y);
+            particle_array[k].position.x, particle_array[k].position.y);
     print_msg(msg);
   }
   print_msg("finished renderImage() call\n");

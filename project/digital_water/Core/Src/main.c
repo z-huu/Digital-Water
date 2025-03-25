@@ -85,14 +85,12 @@ size_t tx_buff_len;
 
 int sim_time = 0;
 Vec2_t GravityVector;
-Sim_Cell_t grid_array[SIM_PHYS_X_SIZE][SIM_PHYS_Y_SIZE];
+// Sim_Cell_t grid_array[SIM_PHYS_X_SIZE][SIM_PHYS_Y_SIZE];
 Sim_Particle_t particle_array[SIM_PARTICLE_COUNT];
-Sim_Particle_t obstacle_array[SIM_OBSTACLE_COUNT];
+// Sim_Particle_t obstacle_array[SIM_OBSTACLE_COUNT];
 char main_msg[100];
-extern
 
-    int
-    main(void) {
+int main(void) {
 
   /* USER CODE BEGIN 1 */
 
@@ -132,52 +130,23 @@ extern
   // HAL_GPIO_WritePin(GPIOC, SPI2_CS_Pin, GPIO_PIN_SET);
 
   // Sim_Grid_Init();
-  Vec2_t initial_pos;
+  Sim_Physics_Init();
+
+  /*
   for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
-    particle_array[k] = BlankParticle();
-    Sim_Particle_t currentParticle = particle_array[k];
-    currentParticle.state = SIM_WATER;
-    currentParticle.radius = SIM_PARTICLE_RADIUS;
-    currentParticle.position = BlankVector_V2();
-    currentParticle.velocity = BlankVector_V2();
-
-    initial_pos = (Vec2_t){.x = ((float)(SIM_PHYS_X_SIZE) / (float)2),
-                           .y = (float)(SIM_PHYS_Y_SIZE / 2)};
-
-    // currentParticle.position = initial_pos;
-    // currentParticle.position.x = initial_pos.x;
-    // currentParticle.position.y = initial_pos.y;
-    currentParticle.position =
-        AddVectors_V2(currentParticle.position, initial_pos);
-    sprintf(main_msg, "Init %d: (%f, %f)\n", k, currentParticle.position.x,
-            currentParticle.position.y);
+    particle_array[k].position = (Vec2_t){.x = k, .y = 2 * k};
+    sprintf(main_msg, "test pos %d, (%f, %f)\n", k,
+            particle_array[k].position.x, particle_array[k].position.y);
     print_msg(main_msg);
   }
-  for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
-    sprintf(main_msg, "Re Init %d: (%f, %f)\n", k, particle_array[k].position.x,
-            particle_array[k].position.y);
-    print_msg(main_msg);
-  }
+    */
 
-  Vec2_t initial_gravity = {.x = 0, .y = -SIM_GRAV};
-  GravityVector = initial_gravity;
-  sprintf(main_msg, "Gravity: (%f, %f)\n", GravityVector.x, GravityVector.y);
-  print_msg(main_msg);
-  // Sim_Physics_Init();
-  Sim_Particle_t testPart;
-  testPart.position = (Vec2_t){.x = 5, .y = 9};
-  sprintf(main_msg, "test pos, (%f, %f)\n", testPart.position.x,
-          testPart.position.y);
-  print_msg(main_msg);
   /* USER CODE END 2 */
   print_msg("starting while loop\n");
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1) {
     /* USER CODE END WHILE */
-    sprintf(main_msg, "test pos, (%f, %f)\n", testPart.position.x,
-            testPart.position.y);
-    print_msg(main_msg);
     HAL_Delay(500);
     print_msg("physics step\n");
     Sim_Physics_Step();

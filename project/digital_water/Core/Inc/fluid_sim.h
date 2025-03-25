@@ -49,7 +49,7 @@ typedef struct {
   Vec2_t velocity;
   int state;
   float radius;
-  //struct particle *next;
+  // struct particle *next;
 } Sim_Particle_t;
 
 typedef struct {
@@ -59,8 +59,8 @@ typedef struct {
   float density;
   int particle_count;
   Vec2_t velocity;
-  //Sim_Particle_t *head;
-  //Sim_Particle_t *tail;
+  // Sim_Particle_t *head;
+  // Sim_Particle_t *tail;
 } Sim_Cell_t;
 
 // utility functions
