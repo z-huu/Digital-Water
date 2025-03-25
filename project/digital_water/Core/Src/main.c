@@ -78,18 +78,21 @@ static void MX_USB_OTG_FS_PCD_Init(void);
  * @retval int
  */
 
-uint8_t image_buff[SIM_RENDER_X_SIZE][SIM_RENDER_Y_SIZE];
+uint8_t image_buff[SIM_RENDER_X_SIZE * SIM_RENDER_Y_SIZE];
 uint8_t tx_buff[sizeof(PREAMBLE) + SIM_RENDER_X_SIZE * SIM_RENDER_Y_SIZE +
                 sizeof(SUFFIX)];
 size_t tx_buff_len;
 
 int sim_time = 0;
-Sim_Cell_t grid_array[SIM_PHYS_X_SIZE][SIM_PHYS_Y_SIZE];
-Sim_Particle_t particle_array[SIM_PARTICLES_PER_CELL];
-Sim_Particle_t obstacle_array[SIM_OBSTACLE_COUNT];
 Vec2_t GravityVector;
+Sim_Cell_t grid_array[SIM_PHYS_X_SIZE][SIM_PHYS_Y_SIZE];
+Sim_Particle_t particle_array[SIM_PARTICLE_COUNT];
+Sim_Particle_t obstacle_array[SIM_OBSTACLE_COUNT];
+char main_msg[100];
+extern
 
-int main(void) {
+    int
+    main(void) {
 
   /* USER CODE BEGIN 1 */
 
@@ -115,8 +118,8 @@ int main(void) {
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_DMA_Init();
-  //MX_SPI1_Init();
-  //MX_SPI2_Init();
+  MX_SPI1_Init();
+  MX_SPI2_Init();
   MX_TIM6_Init();
   MX_USART3_UART_Init();
   MX_USB_OTG_FS_PCD_Init();
@@ -125,23 +128,64 @@ int main(void) {
 
   // Write CS pins high by default
   // These pins are configured as pullup, but doing this just in case
-  //HAL_GPIO_WritePin(GPIOC, SPI1_CS_Pin, GPIO_PIN_SET);
-  //HAL_GPIO_WritePin(GPIOC, SPI2_CS_Pin, GPIO_PIN_SET);
+  // HAL_GPIO_WritePin(GPIOC, SPI1_CS_Pin, GPIO_PIN_SET);
+  // HAL_GPIO_WritePin(GPIOC, SPI2_CS_Pin, GPIO_PIN_SET);
 
   // Sim_Grid_Init();
+  Vec2_t initial_pos;
+  for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
+    particle_array[k] = BlankParticle();
+    Sim_Particle_t currentParticle = particle_array[k];
+    currentParticle.state = SIM_WATER;
+    currentParticle.radius = SIM_PARTICLE_RADIUS;
+    currentParticle.position = BlankVector_V2();
+    currentParticle.velocity = BlankVector_V2();
+
+    initial_pos = (Vec2_t){.x = ((float)(SIM_PHYS_X_SIZE) / (float)2),
+                           .y = (float)(SIM_PHYS_Y_SIZE / 2)};
+
+    // currentParticle.position = initial_pos;
+    // currentParticle.position.x = initial_pos.x;
+    // currentParticle.position.y = initial_pos.y;
+    currentParticle.position =
+        AddVectors_V2(currentParticle.position, initial_pos);
+    sprintf(main_msg, "Init %d: (%f, %f)\n", k, currentParticle.position.x,
+            currentParticle.position.y);
+    print_msg(main_msg);
+  }
+  for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
+    sprintf(main_msg, "Re Init %d: (%f, %f)\n", k, particle_array[k].position.x,
+            particle_array[k].position.y);
+    print_msg(main_msg);
+  }
+
+  Vec2_t initial_gravity = {.x = 0, .y = -SIM_GRAV};
+  GravityVector = initial_gravity;
+  sprintf(main_msg, "Gravity: (%f, %f)\n", GravityVector.x, GravityVector.y);
+  print_msg(main_msg);
+  // Sim_Physics_Init();
+  Sim_Particle_t testPart;
+  testPart.position = (Vec2_t){.x = 5, .y = 9};
+  sprintf(main_msg, "test pos, (%f, %f)\n", testPart.position.x,
+          testPart.position.y);
+  print_msg(main_msg);
   /* USER CODE END 2 */
   print_msg("starting while loop\n");
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1) {
     /* USER CODE END WHILE */
-    // HAL_Delay(30);
+    sprintf(main_msg, "test pos, (%f, %f)\n", testPart.position.x,
+            testPart.position.y);
+    print_msg(main_msg);
+    HAL_Delay(500);
     print_msg("physics step\n");
     Sim_Physics_Step();
     sim_time++;
     print_msg("render step\n");
-    renderImage();
-    testPrint();
+    // renderImage();
+    // dummyImage();
+    // testPrint();
 
     /* USER CODE BEGIN 3 */
   }

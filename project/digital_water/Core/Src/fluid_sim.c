@@ -1,8 +1,6 @@
 #include "fluid_sim.h"
 #include "physics.h"
-#include <math.h>
-#include <stdio.h>
-#include <string.h>
+
 
 // FLUID SIM Initializations
 /*
@@ -16,7 +14,7 @@ extern Sim_Particle_t obstacle_array[SIM_OBSTACLE_COUNT];
 extern Vec2_t GravityVector;
 
 extern int sim_time;
-
+char msg[100];
 /*
 Much of the simulation ideas are heavily based on the TenMinutePhysics code
 Key difference is this is adapted from JavaScript into C code, with minor
@@ -36,6 +34,7 @@ Sim_Cell_t *GetCellFromPosition(Vec2_t position) {
   return &grid_array[x][y];
 }
 
+/*
 void AddParticleToCellList(Sim_Cell_t *cell, Sim_Particle_t *particle) {
   if (cell->head == NULL) {
     // no nodes, simply add to head!
@@ -52,8 +51,91 @@ void AddParticleToCellList(Sim_Cell_t *cell, Sim_Particle_t *particle) {
     cell->tail = particle;
   }
 }
+*/
+
+Sim_Particle_t BlankParticle() {
+  Sim_Particle_t blank;
+  blank.state = SIM_AIR;
+  blank.radius = SIM_PARTICLE_RADIUS;
+  blank.position = BlankVector_V2();
+  blank.velocity = BlankVector_V2();
+  return blank;
+}
 
 // particle functions
+void Sim_Particle_Init() {
+  // positions should be between x = 0 to 46 and y = 0 to 32
+  // want left side start with water ->
+  Vec2_t initial_pos;
+  for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
+    particle_array[k] = BlankParticle();
+    Sim_Particle_t currentParticle = particle_array[k];
+    currentParticle.state = SIM_WATER;
+    currentParticle.radius = SIM_PARTICLE_RADIUS;
+    currentParticle.position = BlankVector_V2();
+    currentParticle.velocity = BlankVector_V2();
+
+    initial_pos = (Vec2_t){.x = ((float)(SIM_PHYS_X_SIZE) / (float)2),
+                           .y = (float)(SIM_PHYS_Y_SIZE / 2)};
+
+    // currentParticle.position = initial_pos;
+    // currentParticle.position.x = initial_pos.x;
+    // currentParticle.position.y = initial_pos.y;
+    currentParticle.position =
+        AddVectors_V2(currentParticle.position, initial_pos);
+    sprintf(msg, "Init %d: (%f, %f)\n", k, currentParticle.position.x,
+            currentParticle.position.y);
+    print_msg(msg);
+  }
+  for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
+    sprintf(msg, "Re Init %d: (%f, %f)\n", k, particle_array[k].position.x,
+            particle_array[k].position.y);
+    print_msg(msg);
+  }
+
+  Vec2_t initial_gravity = {.x = 0, .y = -SIM_GRAV};
+  GravityVector = initial_gravity;
+  sprintf(msg, "Gravity: (%f, %f)\n", GravityVector.x, GravityVector.y);
+  print_msg(msg);
+}
+
+void Sim_Particle_Step() {
+  Vec2_t GravImpact = ScalarMult_V2(GravityVector, SIM_DELTATIME);
+
+  // for each particle, just move particle based on its velocity
+  for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
+    // change velocity by adding gravity
+    Sim_Particle_t currentParticle = particle_array[k];
+
+    currentParticle.velocity =
+        AddVectors_V2(currentParticle.velocity, GravImpact);
+    Vec2_t adjustedVelo = {.x = SIM_DELTATIME * currentParticle.velocity.x,
+                           .y = SIM_DELTATIME * currentParticle.velocity.y};
+    sprintf(msg, "%d: adjustedVelo: (%f, %f)\n", k, adjustedVelo.x,
+            adjustedVelo.y);
+    print_msg(msg);
+    // update position by adding velocity to it
+    sprintf(msg, "PreMove %d: (%f, %f)\n", k, currentParticle.position.x,
+            currentParticle.position.y);
+    print_msg(msg);
+    currentParticle.position =
+        AddVectors_V2(currentParticle.position, adjustedVelo);
+    // currentParticle.position.x += adjustedVelo.x;
+    // currentParticle.position.y += adjustedVelo.y;
+    sprintf(msg, "Update %d: (%f, %f), Velocity = (%f, %f)\n", k,
+            currentParticle.position.x, currentParticle.position.y,
+            currentParticle.velocity.x, currentParticle.velocity.y);
+    print_msg(msg);
+  }
+
+  // handle collisions
+  // Sim_Particle_HandleCellCollisions();
+  for (int k = 0; k < SIM_OBSTACLE_COUNT; k++) {
+    Sim_Particle_t currentObstacle = obstacle_array[k];
+    // Sim_Particle_HandleObstacleCollisions(currentObstacle);
+  }
+}
+
 void Sim_Particle_HandleObstacleCollisions(Sim_Particle_t obstacle) {
   // simply check if in radius
   for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
@@ -108,8 +190,11 @@ void Sim_Particle_HandleCellCollisions() {
   }
 }
 
+/*
 void Sim_Particle_PushParticlesApart() {
   // reset particle_count for all cells
+  print_msg("reset particle counts\n");
+
   for (int k = 0; k < SIM_PHYS_X_SIZE; k++) {
     for (int j = 0; j < SIM_PHYS_Y_SIZE; j++) {
       Sim_Cell_t locatedCell = grid_array[k][j];
@@ -119,6 +204,7 @@ void Sim_Particle_PushParticlesApart() {
   }
 
   // count particles in cells
+  print_msg("counting particles in cell\n");
   for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
     Sim_Particle_t currentParticle = particle_array[k];
     currentParticle.next = NULL;
@@ -131,6 +217,8 @@ void Sim_Particle_PushParticlesApart() {
   }
 
   // push particles apart
+  print_msg("actually separate particles\n");
+
   float min_dist = SIM_PARTICLE_RADIUS * 2;
   float min_dist_squared = min_dist * min_dist;
 
@@ -198,44 +286,7 @@ void Sim_Particle_PushParticlesApart() {
     }
   }
 }
-
-void Sim_Particle_Step() {
-  Vec2_t GravImpact = ScalarMult_V2(GravityVector, SIM_DELTATIME);
-
-  // for each particle, just move particle based on its velocity
-  for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
-    // change velocity by adding gravity
-    particle_array[k].velocity =
-        AddVectors_V2(particle_array[k].velocity, GravImpact);
-    Vec2_t adjustedVelo = {.x = SIM_DELTATIME * particle_array[k].velocity.x,
-                           .y = SIM_DELTATIME * particle_array[k].velocity.y};
-
-    // update position by adding velocity to it
-    particle_array[k].position =
-        AddVectors_V2(particle_array[k].position, adjustedVelo);
-  }
-
-  // handle collisions
-  Sim_Particle_HandleCellCollisions();
-  for (int k = 0; k < SIM_OBSTACLE_COUNT; k++) {
-    Sim_Particle_t currentObstacle = obstacle_array[k];
-    Sim_Particle_HandleObstacleCollisions(currentObstacle);
-  }
-}
-
-void Sim_Particle_Init() {
-  // positions should be between x = 0 to 46 and y = 0 to 32
-  // want left side start with water ->
-  for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
-    particle_array[k].state = SIM_WATER;
-    particle_array[k].radius = SIM_PARTICLE_RADIUS;
-    Vec2_t initial_pos = {.x = (float)(k % SIM_PHYS_X_SIZE) / 2,
-                          .y = (float)(k % SIM_PHYS_Y_SIZE)};
-    // particle_array[k].position = initial_pos;
-  }
-  Vec2_t initial_gravity = {.x = 0, .y = -SIM_GRAV};
-  GravityVector = initial_gravity;
-}
+*/
 
 // grid functions
 void Sim_Grid_Init() {
@@ -315,10 +366,7 @@ void Sim_Grid_Step() {
   }
 }
 
-void Sim_PIC_Step() {}
-
-void Sim_FLIP_Step() {}
-
+// *** To be completed!
 void Sim_TransferVelocities(int toGrid) {
   if (toGrid) {
     // transferring from particles to grid
@@ -336,12 +384,21 @@ void Sim_TransferVelocities(int toGrid) {
 
 void Sim_Physics_Step() {
   for (int k = 0; k < SIM_ITERATIONS; k++) {
-    Sim_Particle_Step();       // handle particle movement + gravity
-    Sim_TransferVelocities(1); // transfer particle -> grid velocities
-    // update particle density?
-    Sim_Grid_Step(); // solve incompressibility
+    print_msg("particle step\n");
+    Sim_Particle_Step(); // handle particle movement + gravity
 
-    Sim_TransferVelocities(0); // transfer grid -> particle velocities
+    // print_msg("pushed particles apart\n");
+    // Sim_Particle_PushParticlesApart(); // separate particles from each other
+
+    // print_msg("particle -> grid velocity transfer\n");
+    // Sim_TransferVelocities(1); // transfer particle -> grid velocities
+
+    // update particle density?
+    // print_msg("grid solver\n");
+    // Sim_Grid_Step(); // solve incompressibility
+
+    // print_msg("grid -> particle velocity transfer\n");
+    // Sim_TransferVelocities(0); // transfer grid -> particle velocities
   }
 }
 
@@ -351,7 +408,7 @@ void Sim_Physics_Init() {
 }
 
 // FOR SERIAL MONITOR USE:
-extern uint8_t image_buff[SIM_RENDER_X_SIZE][SIM_RENDER_Y_SIZE];
+extern uint8_t image_buff[SIM_RENDER_X_SIZE * SIM_RENDER_Y_SIZE];
 extern uint8_t tx_buff[sizeof(PREAMBLE) +
                        SIM_RENDER_X_SIZE * SIM_RENDER_Y_SIZE + sizeof(SUFFIX) +
                        2];
@@ -359,22 +416,72 @@ extern size_t tx_buff_len;
 extern UART_HandleTypeDef huart3;
 
 void renderImage() {
+  for (int k = 0; k < SIM_RENDER_X_SIZE * SIM_RENDER_Y_SIZE; k++) {
+    image_buff[k] = AIR_COLOR_B;
+  }
+  /*
+for (int k = 0; k < SIM_PHYS_X_SIZE; k++) {
+  for (int j = 0; j < SIM_PHYS_Y_SIZE; j++) {
+    uint8_t pixel = 0;
+    if (grid_array[j][k].state == SIM_WATER) {
+      pixel = WATER_COLOR_R;
+    } else {
+      pixel = AIR_COLOR_R;
+    }
+
+    image_buff[2 * k][2 * j] = pixel;
+    image_buff[(2 * k) + 1][2 * j] = pixel;
+    image_buff[2 * k][(2 * j) + 1] = pixel;
+    image_buff[(2 * k) + 1][(2 * k) + 1] = pixel;
+  }
+}
+  */
+  for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
+    Sim_Particle_t currentParticle = particle_array[k];
+    Sim_Cell_t *locatedCell = GetCellFromPosition(currentParticle.position);
+    int x = locatedCell->x;
+    int y = locatedCell->y;
+    uint8_t pixel = WATER_COLOR_R;
+
+    image_buff[(2 * x * SIM_RENDER_X_SIZE) + (2 * y)] = pixel;
+    image_buff[(2 * x * SIM_RENDER_X_SIZE) + (2 * y + 1)] = pixel;
+    image_buff[((2 * x + 1) * SIM_RENDER_X_SIZE) + (2 * y)] = pixel;
+    image_buff[((2 * x + 1) * SIM_RENDER_X_SIZE) + (2 * y + 1)] = pixel;
+    sprintf(msg, "%d: (%d, %d) vs (%f, %f)\n", k, x, y,
+            currentParticle.position.x, currentParticle.position.y);
+    print_msg(msg);
+  }
+  print_msg("finished renderImage() call\n");
+}
+
+void dummyImage() {
+
+  for (int k = 0; k < SIM_RENDER_X_SIZE * SIM_RENDER_Y_SIZE; k++) {
+    image_buff[k] = AIR_COLOR_R;
+  }
+
+  uint8_t pixel = WATER_COLOR_R;
+
   for (int k = 0; k < SIM_PHYS_X_SIZE; k++) {
     for (int j = 0; j < SIM_PHYS_Y_SIZE; j++) {
-      uint8_t pixel = 0;
-      if (grid_array[j][k].state == SIM_WATER) {
+      if (k % 2 || j % 2) {
         pixel = WATER_COLOR_R;
       } else {
-        pixel = AIR_COLOR_R;
+        pixel = SOLID_COLOR_R;
       }
-
-      image_buff[2 * k][2 * j] = pixel;
-      image_buff[(2 * k) + 1][2 * j] = pixel;
-      image_buff[2 * k][(2 * j) + 1] = pixel;
-      image_buff[(2 * k) + 1][(2 * k) + 1] = pixel;
+      image_buff[(2 * k * SIM_RENDER_X_SIZE) + (2 * j)] = pixel;
+      image_buff[(2 * k * SIM_RENDER_X_SIZE) + (2 * j + 1)] = pixel;
+      image_buff[((2 * k + 1) * SIM_RENDER_X_SIZE) + (2 * j)] = pixel;
+      image_buff[((2 * k + 1) * SIM_RENDER_X_SIZE) + (2 * j + 1)] = pixel;
     }
   }
-  // print_msg("finished renderImage() call\n");
+
+  /*
+  image_buff[(0 * SIM_RENDER_X_SIZE) + 0] = pixel;
+  image_buff[(0 * SIM_RENDER_X_SIZE) + 1] = pixel;
+  image_buff[(1 * SIM_RENDER_X_SIZE) + 0] = pixel;
+  image_buff[(1 * SIM_RENDER_X_SIZE) + 1] = pixel;
+    */
 }
 
 void testPrint(void) {
@@ -402,30 +509,35 @@ void testPrint(void) {
     // print_msg(&pixel);
   }
     */
-  for (int i = 0; i < SIM_RENDER_X_SIZE; i++) {
-    for (int k = 0; k < SIM_RENDER_Y_SIZE; k++) {
-      /*
-        if (k == SIM_PHYS_Y_SIZE - 1 && i == SIM_PHYS_X_SIZE - 1) {
-        continue;
-        }
 
-      char pixel = 0x00;
-      // pixel = (char) Magnitude_V2(grid_array[i][k].velocity);
-
-      if (grid_array[i][k].state == SIM_WATER) {
-        pixel = WATER_COLOR_R;
-      } else {
-        pixel = AIR_COLOR_R;
-      }
-
-      tx_buff[tx_buff_len++] = pixel;
-      */
-      tx_buff[tx_buff_len++] = image_buff[i][k];
+  for (int k = 0; k < SIM_RENDER_X_SIZE * SIM_RENDER_Y_SIZE; k++) {
+    tx_buff[tx_buff_len++] = image_buff[k];
+  }
+  /*
+for (int i = 0; i < SIM_RENDER_X_SIZE; i++) {
+for (int k = 0; k < SIM_RENDER_Y_SIZE; k++) {
+  /*
+    if (k == SIM_PHYS_Y_SIZE - 1 && i == SIM_PHYS_X_SIZE - 1) {
+    continue;
     }
+
+  char pixel = 0x00;
+  // pixel = (char) Magnitude_V2(grid_array[i][k].velocity);
+
+  if (grid_array[i][k].state == SIM_WATER) {
+    pixel = WATER_COLOR_R;
+  } else {
+    pixel = AIR_COLOR_R;
   }
 
-  print_msg("finished loading image_buff onto tx_buff\n");
-  // Load the END suffix message to the end of the message.
+  tx_buff[tx_buff_len++] = pixel;
+  *
+  tx_buff[tx_buff_len++] = image_buff[i * SIM_RENDER_X_SIZE + k];
+}
+}
+*/
+  // print_msg("finished loading image_buff onto tx_buff\n");
+  //  Load the END suffix message to the end of the message.
   for (int i = 0; i < sizeof(SUFFIX); i++) {
     tx_buff[tx_buff_len++] = SUFFIX[i];
   }
@@ -434,10 +546,13 @@ void testPrint(void) {
 
   while (HAL_UART_GetState(&huart3) != HAL_UART_STATE_READY) {
   }
+
   HAL_UART_Transmit_DMA(&huart3, (uint8_t *)tx_buff,
                         sizeof(PREAMBLE) + SIM_X_SIZE * SIM_Y_SIZE);
 }
 
 void print_msg(char *msg) {
-  HAL_UART_Transmit(&huart3, (uint8_t *)msg, strlen(msg), 100);
+  if (DebugPrints) {
+    HAL_UART_Transmit(&huart3, (uint8_t *)msg, strlen(msg), 100);
+  }
 }

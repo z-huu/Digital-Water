@@ -2,6 +2,13 @@
 #include <math.h>
 
 // Vec2_t Functions
+Vec2_t BlankVector_V2(){
+    Vec2_t newVector;
+    newVector.x = 0.0;
+    newVector.y = 0.0;
+    return newVector;
+}
+
 float Magnitude_V2(Vec2_t vector) {
   return (float) sqrt(vector.x * vector.x + vector.y * vector.y);
 }
