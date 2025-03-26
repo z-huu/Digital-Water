@@ -72,5 +72,8 @@ HAL_StatusTypeDef oled_off(void);
 HAL_StatusTypeDef oled_drawpixel(uint8_t col, uint8_t row, uint16_t color);
 HAL_StatusTypeDef oled_data(uint8_t data);
 HAL_StatusTypeDef oled_cmd(uint8_t cmd);
+void oled_drawline(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
+void oled_eraseRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
+void oled_drawRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t border_col, uint16_t fill_col);
 
 #endif

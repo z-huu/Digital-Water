@@ -111,13 +111,13 @@ HAL_StatusTypeDef oled_data(uint8_t data){
 	
 	HAL_GPIO_WritePin(OLED_DCL_GPIO_Port, OLED_DCL_Pin, GPIO_PIN_SET); // Set OLED DC high, since sending data
 	HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_RESET); // Set OLED cs low
-	HAL_Delay(10);
+	//HAL_Delay(10);
 	
 	HAL_StatusTypeDef stat = oled_write(data);
 	
 	HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_SET); // Set OLED cs high again to disable
 
-	HAL_Delay(10);
+	//HAL_Delay(10);
 	return stat;
 }
 
@@ -125,12 +125,12 @@ HAL_StatusTypeDef oled_cmd(uint8_t cmd) {
 	
 	HAL_GPIO_WritePin(OLED_DCL_GPIO_Port, OLED_DCL_Pin, GPIO_PIN_RESET); // Set OLED DC low, since sending cmd
 	HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_RESET); // Set OLED cs low
-	HAL_Delay(10);
+	//HAL_Delay(1);
 	
 	HAL_StatusTypeDef stat = oled_write(cmd);
 	
 	HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_SET); // Set OLED cs high again to disable
-	HAL_Delay(10);
+	//HAL_Delay(1);
 	return stat;
 }
 
@@ -175,3 +175,56 @@ HAL_StatusTypeDef oled_drawpixel(uint8_t col, uint8_t row, uint16_t color){
 	
 	return stat;
 }
+
+void oled_drawline(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color)
+{
+	
+ if((x0 < 0) || (y0 < 0) || (x1 < 0) || (y1 < 0)) return;
+
+ if (x0 >= RGB_OLED_WIDTH)  x0 = RGB_OLED_WIDTH - 1;
+ if (y0 >= RGB_OLED_HEIGHT) y0 = RGB_OLED_HEIGHT - 1;
+ if (x1 >= RGB_OLED_WIDTH)  x1 = RGB_OLED_WIDTH - 1;
+ if (y1 >= RGB_OLED_HEIGHT) y1 = RGB_OLED_HEIGHT - 1;
+
+ oled_cmd(CMD_DRAW_LINE); 
+ oled_cmd(x0);						//start column
+ oled_cmd(y0);						//start row
+ oled_cmd(x1);						//end column
+ oled_cmd(y1);						//end row
+ oled_cmd((uint8_t)((color>>11)&0x1F));//R
+ oled_cmd((uint8_t)((color>>5)&0x3F));//G
+ oled_cmd((uint8_t)(color&0x1F));//B
+}
+
+void oled_eraseRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1) {
+	
+	oled_cmd(CMD_CLEAR_WINDOW);
+	oled_cmd(x0);
+	oled_cmd(y0);
+	oled_cmd(x1);
+	oled_cmd(y1);
+}
+
+void oled_drawRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t border_col, uint16_t fill_col) {
+	
+	if (x0 >= RGB_OLED_WIDTH)  x0 = RGB_OLED_WIDTH - 1;
+  if (y0 >= RGB_OLED_HEIGHT) y0 = RGB_OLED_HEIGHT - 1;
+  if (x1 >= RGB_OLED_WIDTH)  x1 = RGB_OLED_WIDTH - 1;
+  if (y1 >= RGB_OLED_HEIGHT) y1 = RGB_OLED_HEIGHT - 1;
+	
+	oled_cmd(CMD_FILL_WINDOW);//fill window
+	oled_cmd(ENABLE_FILL);
+	oled_cmd(CMD_DRAW_RECTANGLE);//draw rectangle
+	oled_cmd(x0);//start column
+	oled_cmd(y0);//start row
+	oled_cmd(x1);//end column
+	oled_cmd(y1);//end row
+	oled_cmd((uint8_t)((border_col>>11)&0x1F));//R
+	oled_cmd((uint8_t)((border_col>>5)&0x3F));//G
+	oled_cmd((uint8_t)(border_col&0x1F));//B
+	oled_cmd((uint8_t)((fill_col>>11)&0x1F));//R
+	oled_cmd((uint8_t)((fill_col>>5)&0x3F));//G
+	oled_cmd((uint8_t)(fill_col&0x1F));//B
+	
+}
+

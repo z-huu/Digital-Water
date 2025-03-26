@@ -76,6 +76,7 @@ uint8_t accel_data[3];
 
 char msg[100];
 uint8_t new_accel_data = 0;
+uint16_t colors[12] = {BLACK, GREY, WHITE, RED, PINK, YELLOW, GOLDEN, BROWN, BLUE, CYAN, GREEN, PURPLE};
 /* USER CODE END 0 */
 
 /**
@@ -120,10 +121,11 @@ int main(void)
   HAL_GPIO_WritePin(GPIOD, ACCEL_CS_Pin, GPIO_PIN_SET);
   HAL_GPIO_WritePin(GPIOB, OLED_CS_Pin, GPIO_PIN_SET);
 	
-	HAL_StatusTypeDef draw_stat = oled_drawpixel(10, 10, RED);
-	if (draw_stat != HAL_OK) my_print_msg("Nooo\n");
-	while (1)
-		;
+	oled_drawpixel(10, 10, RED);
+	oled_drawline(0, 0, 50, 50, WHITE);
+	oled_eraseRect(0, 0, RGB_OLED_WIDTH - 1, RGB_OLED_HEIGHT - 1); // Clearing screen
+	
+	uint8_t clr_idx = 1;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -133,6 +135,9 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+		oled_drawRect(50, 50, 56, 56, colors[clr_idx], colors[clr_idx]);
+		clr_idx++;
+		if (clr_idx > 11) clr_idx = 1;
   }
   /* USER CODE END 3 */
 }
