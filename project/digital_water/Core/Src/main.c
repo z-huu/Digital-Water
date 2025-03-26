@@ -85,9 +85,9 @@ size_t tx_buff_len;
 
 int sim_time = 0;
 Vec2_t GravityVector;
-// Sim_Cell_t grid_array[SIM_PHYS_X_SIZE][SIM_PHYS_Y_SIZE];
+Sim_Cell_t grid_array[SIM_PHYS_X_SIZE][SIM_PHYS_Y_SIZE];
 Sim_Particle_t particle_array[SIM_PARTICLE_COUNT];
-// Sim_Particle_t obstacle_array[SIM_OBSTACLE_COUNT];
+Sim_Particle_t obstacle_array[SIM_OBSTACLE_COUNT];
 char main_msg[100];
 
 int main(void) {
@@ -126,20 +126,10 @@ int main(void) {
 
   // Write CS pins high by default
   // These pins are configured as pullup, but doing this just in case
-  // HAL_GPIO_WritePin(GPIOC, SPI1_CS_Pin, GPIO_PIN_SET);
-  // HAL_GPIO_WritePin(GPIOC, SPI2_CS_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOC, SPI1_CS_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOC, SPI2_CS_Pin, GPIO_PIN_SET);
 
-  // Sim_Grid_Init();
   Sim_Physics_Init();
-
-  /*
-  for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
-    particle_array[k].position = (Vec2_t){.x = k, .y = 2 * k};
-    sprintf(main_msg, "test pos %d, (%f, %f)\n", k,
-            particle_array[k].position.x, particle_array[k].position.y);
-    print_msg(main_msg);
-  }
-    */
 
   /* USER CODE END 2 */
   print_msg("starting while loop\n");
@@ -147,14 +137,14 @@ int main(void) {
   /* USER CODE BEGIN WHILE */
   while (1) {
     /* USER CODE END WHILE */
-    HAL_Delay(500);
+    HAL_Delay(30);
     print_msg("physics step\n");
     Sim_Physics_Step();
     sim_time++;
     print_msg("render step\n");
-    // renderImage();
+    renderImage();
     // dummyImage();
-    // testPrint();
+    testPrint();
 
     /* USER CODE BEGIN 3 */
   }

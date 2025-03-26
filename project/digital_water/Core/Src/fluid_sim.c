@@ -1,5 +1,6 @@
 #include "fluid_sim.h"
 #include "physics.h"
+#include <string.h>
 
 // FLUID SIM Initializations
 /*
@@ -7,9 +8,9 @@ Notes:
 Heavily Based on the work done by Matthias Müller and his YouTube channel "Ten
 Minute Physics"
 */
-Sim_Cell_t grid_array[SIM_PHYS_X_SIZE][SIM_PHYS_Y_SIZE];
+extern Sim_Cell_t grid_array[SIM_PHYS_X_SIZE][SIM_PHYS_Y_SIZE];
 extern Sim_Particle_t particle_array[SIM_PARTICLE_COUNT];
-Sim_Particle_t obstacle_array[SIM_OBSTACLE_COUNT];
+extern Sim_Particle_t obstacle_array[SIM_OBSTACLE_COUNT];
 extern Vec2_t GravityVector;
 
 extern int sim_time;
@@ -73,28 +74,18 @@ void Sim_Particle_Init() {
     particle_array[k].position = BlankVector_V2();
     particle_array[k].velocity = BlankVector_V2();
 
-    initial_pos = (Vec2_t){.x = ((float)(SIM_PHYS_X_SIZE) / (float)2),
-                           .y = (float)(SIM_PHYS_Y_SIZE / 2)};
-
-    // particle_array[k].position = initial_pos;
-    // particle_array[k].position.x = initial_pos.x;
-    // particle_array[k].position.y = initial_pos.y;
-    particle_array[k].position =
-        AddVectors_V2(particle_array[k].position, initial_pos);
-    sprintf(msg, "Init %d: (%f, %f)\n", k, particle_array[k].position.x,
-            particle_array[k].position.y);
-    print_msg(msg);
-  }
-  for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
-    sprintf(msg, "Re Init %d: (%f, %f)\n", k, particle_array[k].position.x,
-            particle_array[k].position.y);
-    print_msg(msg);
+    initial_pos =
+        (Vec2_t){.x = (float)(k % (SIM_PHYS_X_SIZE / 2)),
+                 .y = (float)(SIM_PHYS_Y_SIZE - (k / (SIM_PHYS_X_SIZE / 2)))};
+    particle_array[k].position = initial_pos;
   }
 
   Vec2_t initial_gravity = {.x = 0, .y = -SIM_GRAV};
   GravityVector = initial_gravity;
+  /*
   sprintf(msg, "Gravity: (%f, %f)\n", GravityVector.x, GravityVector.y);
   print_msg(msg);
+  */
 }
 
 void Sim_Particle_Step() {
@@ -107,21 +98,26 @@ void Sim_Particle_Step() {
         AddVectors_V2(particle_array[k].velocity, GravImpact);
     Vec2_t adjustedVelo = {.x = SIM_DELTATIME * particle_array[k].velocity.x,
                            .y = SIM_DELTATIME * particle_array[k].velocity.y};
+    /*
     sprintf(msg, "%d: adjustedVelo: (%f, %f)\n", k, adjustedVelo.x,
             adjustedVelo.y);
     print_msg(msg);
+    */
     // update position by adding velocity to it
+    /*
     sprintf(msg, "PreMove %d: (%f, %f)\n", k, particle_array[k].position.x,
             particle_array[k].position.y);
     print_msg(msg);
+    */
     particle_array[k].position =
         AddVectors_V2(particle_array[k].position, adjustedVelo);
-    // particle_array[k].position.x += adjustedVelo.x;
-    // particle_array[k].position.y += adjustedVelo.y;
+
+    /*
     sprintf(msg, "Update %d: (%f, %f), Velocity = (%f, %f)\n", k,
             particle_array[k].position.x, particle_array[k].position.y,
             particle_array[k].velocity.x, particle_array[k].velocity.y);
     print_msg(msg);
+    */
   }
 
   // handle collisions
@@ -159,16 +155,16 @@ void Sim_Particle_HandleCellCollisions() {
     if (particle_array[k].position.x < 0) {
       particle_array[k].position.x = 0;
       particle_array[k].velocity.x = 0;
-    }
-    if (particle_array[k].position.x > SIM_PHYS_X_SIZE) {
+    } else if (particle_array[k].position.x > SIM_PHYS_X_SIZE) {
       particle_array[k].position.x = SIM_PHYS_X_SIZE;
       particle_array[k].velocity.x = 0;
     }
     if (particle_array[k].position.y < 0) {
+      sprintf(msg, "%d: collision at bottom!\n", k);
+      print_msg(msg);
       particle_array[k].position.y = 0;
       particle_array[k].velocity.y = 0;
-    }
-    if (particle_array[k].position.y > SIM_PHYS_Y_SIZE) {
+    } else if (particle_array[k].position.y > SIM_PHYS_Y_SIZE) {
       particle_array[k].position.y = SIM_PHYS_Y_SIZE;
       particle_array[k].velocity.y = 0;
     }
@@ -180,6 +176,7 @@ void Sim_Particle_HandleCellCollisions() {
           ScalarMult_V2(particle_array[k].velocity, (float)-0.75);
       particle_array[k].position =
           AddVectors_V2(particle_array[k].position, reversedVelocity);
+      particle_array[k].velocity = reversedVelocity;
     }
   }
 }
@@ -299,63 +296,68 @@ void Sim_Grid_Step() {
   float leftVelo, rightVelo, upVelo, downVelo;
 
   // essentially ensure the fluid is incompressible
-  for (int i = 0; i < SIM_PHYS_X_SIZE; i++) {
-    for (int k = 0; k < SIM_PHYS_Y_SIZE; k++) {
-      if (grid_array[i][k].state != SIM_WATER)
-        continue;
-      // update velocity of each cell
-      // grid_array[i][k].velocity.y += SIM_DELTATIME * SIM_GRAV;
+  for (int iter = 0; iter < SIM_ITERATIONS; iter++) {
+    for (int i = 0; i < SIM_PHYS_X_SIZE; i++) {
+      for (int k = 0; k < SIM_PHYS_Y_SIZE; k++) {
+        if (grid_array[i][k].state != SIM_WATER)
+          continue;
+        // update velocity of each cell
+        // grid_array[i][k].velocity.y += SIM_DELTATIME * SIM_GRAV;
 
-      // divergence step
-      divergence = 0;
-      netState = 0;
+        // divergence step
+        divergence = 0;
+        netState = 0;
 
-      if (i > 0 && grid_array[i - 1][k].state != SIM_SOLID) {
-        leftVelo = grid_array[i - 1][k].x;
-        netState++;
-      } else {
-        leftVelo = 0;
-      }
+        if (i > 0 && grid_array[i - 1][k].state != SIM_SOLID) {
+          leftVelo = grid_array[i - 1][k].x;
+          netState++;
+        } else {
+          leftVelo = 0;
+        }
 
-      if (i < SIM_PHYS_X_SIZE - 1 && grid_array[i + 1][k].state != SIM_SOLID) {
-        rightVelo = grid_array[i + 1][k].x;
-        netState++;
-      } else {
-        rightVelo = 0;
-      }
+        if (i < SIM_PHYS_X_SIZE - 1 &&
+            grid_array[i + 1][k].state != SIM_SOLID) {
+          rightVelo = grid_array[i + 1][k].x;
+          netState++;
+        } else {
+          rightVelo = 0;
+        }
 
-      if (k > 0 && grid_array[i][k - 1].state != SIM_SOLID) {
-        downVelo = grid_array[i][k - 1].y;
-        netState++;
-      } else {
-        downVelo = 0;
-      }
+        if (k > 0 && grid_array[i][k - 1].state != SIM_SOLID) {
+          downVelo = grid_array[i][k - 1].y;
+          netState++;
+        } else {
+          downVelo = 0;
+        }
 
-      if (k < SIM_PHYS_Y_SIZE - 1 && grid_array[i][k + 1].state != SIM_SOLID) {
-        upVelo = grid_array[i][k + 1].y;
-        netState++;
-      } else {
-        upVelo = 0;
-      }
+        if (k < SIM_PHYS_Y_SIZE - 1 &&
+            grid_array[i][k + 1].state != SIM_SOLID) {
+          upVelo = grid_array[i][k + 1].y;
+          netState++;
+        } else {
+          upVelo = 0;
+        }
 
-      // if we end up with netState == 0, no movement possible!
-      if (netState == 0)
-        continue;
+        // if we end up with netState == 0, no movement possible!
+        if (netState == 0)
+          continue;
 
-      divergence = upVelo - downVelo + rightVelo - leftVelo;
+        divergence =
+            SIM_OVERRELAXATION * (upVelo - downVelo + rightVelo - leftVelo);
 
-      // set values using divergence
-      if (i > 0 && grid_array[i - 1][k].state != SIM_SOLID) {
-        grid_array[i - 1][k].velocity.x -= divergence / netState;
-      }
-      if (i < SIM_PHYS_X_SIZE && grid_array[i + 1][k].state != SIM_SOLID) {
-        grid_array[i + 1][k].velocity.x += divergence / netState;
-      }
-      if (k > 0 && grid_array[i][k - 1].state != SIM_SOLID) {
-        grid_array[i][k - 1].velocity.y -= divergence / netState;
-      }
-      if (k < SIM_PHYS_X_SIZE && grid_array[i][k + 1].state != SIM_SOLID) {
-        grid_array[i][k + 1].velocity.y += divergence / netState;
+        // set values using divergence
+        if (i > 0 && grid_array[i - 1][k].state != SIM_SOLID) {
+          grid_array[i - 1][k].velocity.x -= divergence / netState;
+        }
+        if (i < SIM_PHYS_X_SIZE && grid_array[i + 1][k].state != SIM_SOLID) {
+          grid_array[i + 1][k].velocity.x += divergence / netState;
+        }
+        if (k > 0 && grid_array[i][k - 1].state != SIM_SOLID) {
+          grid_array[i][k - 1].velocity.y -= divergence / netState;
+        }
+        if (k < SIM_PHYS_X_SIZE && grid_array[i][k + 1].state != SIM_SOLID) {
+          grid_array[i][k + 1].velocity.y += divergence / netState;
+        }
       }
     }
   }
@@ -365,14 +367,58 @@ void Sim_Grid_Step() {
 void Sim_TransferVelocities(int toGrid) {
   if (toGrid) {
     // transferring from particles to grid
+    // reset grid states, and recalculate after particle movement
+    for (int k = 0; k < SIM_PHYS_X_SIZE; k++) {
+      for (int j = 0; j < SIM_PHYS_Y_SIZE; j++) {
+        if (grid_array[k][j].state == SIM_WATER) {
+          grid_array[k][j].state = SIM_AIR;
+        }
+        grid_array[k][j].velocity = BlankVector_V2();
+        grid_array[k][j].particle_count = 0;
+      }
+    }
     for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
       Sim_Cell_t *currentCell = GetCellFromPosition(particle_array[k].position);
+      if (currentCell == NULL)
+        continue;
+
+      currentCell->particle_count++;
       if (currentCell->state == SIM_AIR) {
         currentCell->state = SIM_WATER;
       }
+      // distance from left and bottom of current cell
+      float dx = particle_array[k].position.x - currentCell->x;
+      float dy = particle_array[k].position.y - currentCell->y;
+
+      // calculate weights for corners (more transfer to closer corners)
+      // probably shouldnt have undefined corners, not sure when that would come
+      // up, but was mentioned in the video...
+      // not using a staggered grid, so no need to worry about that
+      // transferring velocities into corner
+      float w1 = (1 - dx) * (1 - dy); // bot left corner
+      float w2 = dx * (1 - dy);       // bot right corner
+      float w3 = dx * dy;             // top right corner
+      float w4 = (1 - dx) * dy;       // top left corner
+
+      float transfer_deno = (w1 + w2 + w3 + w4);
+
+      // for now, ignoring weighted transfers, gonna transfer all directly into
+      // current cell cells for us are centered (ie center of cell is source of
+      // velocity, etc)
+      currentCell->velocity =
+          AddVectors_V2(currentCell->velocity, particle_array[k].velocity);
     }
   } else {
-    // transferrning from grid to particles
+    // transfering from grid to particles
+    for (int x = 0; x < SIM_PHYS_X_SIZE; x++) {
+      for (int y = 0; y < SIM_PHYS_Y_SIZE; y++) {
+        for (int k = 0; k < grid_array[x][y].particle_count; k++) {
+          float inverse = ((float)1 / (float)grid_array[x][y].particle_count);
+          particle_array[k].velocity =
+              ScalarMult_V2(grid_array[x][y].velocity, inverse);
+        }
+      }
+    }
   }
 }
 
@@ -385,14 +431,14 @@ void Sim_Physics_Step() {
     // Sim_Particle_PushParticlesApart(); // separate particles from each other
 
     // print_msg("particle -> grid velocity transfer\n");
-    // Sim_TransferVelocities(1); // transfer particle -> grid velocities
+    Sim_TransferVelocities(1); // transfer particle -> grid velocities
 
     // update particle density?
     // print_msg("grid solver\n");
-    // Sim_Grid_Step(); // solve incompressibility
+    Sim_Grid_Step(); // solve incompressibility
 
     // print_msg("grid -> particle velocity transfer\n");
-    // Sim_TransferVelocities(0); // transfer grid -> particle velocities
+    Sim_TransferVelocities(0); // transfer grid -> particle velocities
   }
 }
 
@@ -432,17 +478,37 @@ for (int k = 0; k < SIM_PHYS_X_SIZE; k++) {
   */
   for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
     Sim_Cell_t *locatedCell = GetCellFromPosition(particle_array[k].position);
-    int x = locatedCell->x;
-    int y = locatedCell->y;
-    uint8_t pixel = WATER_COLOR_R;
+    if (locatedCell) {
+      int x = locatedCell->x;
+      int y = locatedCell->y;
+      uint8_t pixel = WATER_COLOR_R;
 
-    image_buff[(2 * x * SIM_RENDER_X_SIZE) + (2 * y)] = pixel;
-    image_buff[(2 * x * SIM_RENDER_X_SIZE) + (2 * y + 1)] = pixel;
-    image_buff[((2 * x + 1) * SIM_RENDER_X_SIZE) + (2 * y)] = pixel;
-    image_buff[((2 * x + 1) * SIM_RENDER_X_SIZE) + (2 * y + 1)] = pixel;
-    sprintf(msg, "%d: (%d, %d) vs (%f, %f)\n", k, x, y,
-            particle_array[k].position.x, particle_array[k].position.y);
-    print_msg(msg);
+      int screen_x = x;
+      int screen_y = y;
+      if (y < 0) {
+        screen_y = 0;
+      } else if (y > SIM_PHYS_Y_SIZE - 1) {
+        screen_y = SIM_RENDER_Y_SIZE - 2;
+      }
+      image_buff[(2 * screen_y * SIM_RENDER_X_SIZE) + (2 * screen_x)] = pixel;
+      image_buff[(2 * screen_y * SIM_RENDER_X_SIZE) + (2 * screen_x + 1)] =
+          pixel;
+      image_buff[((2 * screen_y + 1) * SIM_RENDER_X_SIZE) + (2 * screen_x)] =
+          pixel;
+      image_buff[((2 * screen_y + 1) * SIM_RENDER_X_SIZE) +
+                 (2 * screen_x + 1)] = pixel;
+      /*
+      sprintf(msg, "%d: (%d, %d) vs (%f, %f)\n", k, x, y,
+              particle_array[k].position.x, particle_array[k].position.y);
+      print_msg(msg);
+      */
+    } else {
+      sprintf(msg, "renderImage(), OOB: %d: (%f, %f)\n", k,
+              particle_array[k].position.x, particle_array[k].position.y);
+      print_msg(msg);
+      image_buff[0] = SOLID_COLOR_B;
+      image_buff[1] = SOLID_COLOR_B;
+    }
   }
   print_msg("finished renderImage() call\n");
 }
