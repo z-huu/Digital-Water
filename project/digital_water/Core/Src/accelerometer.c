@@ -88,9 +88,7 @@ HAL_StatusTypeDef accel_init(void)
 	my_print_msg("\n* Accelerometer initializing *\n\n");
 
 	uint8_t device_id = accel_read(0x01);
-	accel_read(0);
-	accel_read(0x02);
-	accel_read(0x0B);
+
 	if (device_id != 0x1D)
 	{
 
@@ -107,20 +105,32 @@ HAL_StatusTypeDef accel_init(void)
 	
 	my_print_msg("Initializing accelerometer registers\n");
 	
-	// Datasheet example initialization.
-	accel_write(0x20, 0x00);
-		accel_read(0x20);
-	accel_write(0x21, 0);
-	accel_write(0x23, 0x96);
-		accel_read(0x23);
-	accel_write(0x24, 0);
-	accel_write(0x25, 0x1E);
-	accel_write(0x27, 0x3F);
-	accel_write(0x2B, 0x40);
-	accel_write(0x2C, 0b10010100);
-	accel_write(0x2D, 0x0A);
-		accel_read(0x2D);
-	// Register initialization sanity check
+	HAL_GPIO_WritePin(ACCEL_CS_GPIO_Port, ACCEL_CS_Pin, GPIO_PIN_RESET); // Set accelerometer CS low
+	HAL_Delay(10);
+	
+	// Accelerometer register initialization via burst write
+	uint8_t tx_buff[16];
+	tx_buff[0] = 0x0A; // Write instruction
+	tx_buff[1] = 0x20; // Address of first register
+	tx_buff[2] = 0x64; // Lower 8'b of Activity Threshold (100 mg threshold)
+	tx_buff[3] = 0;	   // Upper 3'b of Activity Threshold
+	tx_buff[4] = 0;	   // Activity time (8'b)
+	tx_buff[5] = 0;    // Lower 8'b of Inactivity Threshold
+	tx_buff[6] = 0;		 // Upper 3'b of Inactivity Threshold
+	tx_buff[7] = 0;		 // Lower 8'b of Inactivity Time
+	tx_buff[8] = 0;		 // Upper 8'b of Inactivity Time
+	tx_buff[9] = 0x3B; // Activity/Inactivity Control Register
+	tx_buff[10] = 0;	 // FIFO control
+	tx_buff[11] = 0;	 // FIFO samples
+	tx_buff[12] = 0x10;// INT1 configuration
+	tx_buff[13] = 0;	 // INT2 configuration
+	tx_buff[14] = 0x13;	 // Filter control
+	tx_buff[15] = 0x12;	 // Power control
+	
+	HAL_StatusTypeDef write_status = HAL_SPI_Transmit(&hspi1, tx_buff, 16, 1000);
+	
+	HAL_GPIO_WritePin(ACCEL_CS_GPIO_Port, ACCEL_CS_Pin, GPIO_PIN_SET); // Set accelerometer CS high
+	HAL_Delay(10);
 	
 	uint8_t read_val = accel_read(0x01);
 	sprintf(msg, "Contents of register 0x01 is 0x%x\n", read_val);

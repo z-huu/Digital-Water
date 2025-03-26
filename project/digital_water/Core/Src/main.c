@@ -42,6 +42,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 SPI_HandleTypeDef hspi1;
+DMA_HandleTypeDef hdma_spi1_tx;
 
 TIM_HandleTypeDef htim6;
 
@@ -69,7 +70,12 @@ static void MX_USB_OTG_FS_PCD_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 uint8_t accel_data[3];
+// 0 --> XDATA
+// 1 --> YDATA
+// 2 --> ZDATA
+
 char msg[100];
+uint8_t new_accel_data = 0;
 /* USER CODE END 0 */
 
 /**
@@ -107,25 +113,25 @@ int main(void)
   MX_USART3_UART_Init();
   MX_USB_OTG_FS_PCD_Init();
   /* USER CODE BEGIN 2 */
-	//oled_init();
-	accel_init();
+	oled_init();
+	//accel_init();
   // Write CS pins high by default
   // These pins are configured as pullup, but doing this just in case
   HAL_GPIO_WritePin(GPIOD, ACCEL_CS_Pin, GPIO_PIN_SET);
   HAL_GPIO_WritePin(GPIOB, OLED_CS_Pin, GPIO_PIN_SET);
-
+	
+	HAL_StatusTypeDef draw_stat = oled_drawpixel(10, 10, RED);
+	if (draw_stat != HAL_OK) my_print_msg("Nooo\n");
+	while (1)
+		;
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-	my_print_msg("Entering while\n");
-	//while(1)
-		//;
-  while (1) {
+  while (1)
+  {
     /* USER CODE END WHILE */
-		//accel_read(0x08);
-		accel_poll(accel_data);
-		HAL_Delay(1000);
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -329,11 +335,15 @@ static void MX_DMA_Init(void)
 
   /* DMA controller clock enable */
   __HAL_RCC_DMA1_CLK_ENABLE();
+  __HAL_RCC_DMA2_CLK_ENABLE();
 
   /* DMA interrupt init */
   /* DMA1_Stream3_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream3_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream3_IRQn);
+  /* DMA2_Stream3_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA2_Stream3_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA2_Stream3_IRQn);
 
 }
 
@@ -383,7 +393,7 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pin = OLED_DCL_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
   HAL_GPIO_Init(OLED_DCL_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LD1_Pin LD3_Pin LD2_Pin */
@@ -397,7 +407,7 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pin = ACCEL_CS_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
   HAL_GPIO_Init(ACCEL_CS_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : ACCEL_INT1_Pin */
@@ -423,21 +433,21 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pin = OLED_RST_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
   HAL_GPIO_Init(OLED_RST_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : OLED_VCCEN_Pin OLED_PMODEN_Pin */
   GPIO_InitStruct.Pin = OLED_VCCEN_Pin|OLED_PMODEN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pin : OLED_CS_Pin */
   GPIO_InitStruct.Pin = OLED_CS_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
   HAL_GPIO_Init(OLED_CS_GPIO_Port, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/

@@ -421,6 +421,16 @@
               <FilePath>..\Core\Src\oled.c</FilePath>
             </File>
             <File>
+              <FileName>accelerometer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\accelerometer.c</FilePath>
+            </File>
+            <File>
+              <FileName>accelerometer.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Core\Inc\accelerometer.h</FilePath>
+            </File>
+            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Core/Src/main.c</FilePath>
@@ -434,16 +444,6 @@
               <FileName>stm32f4xx_hal_msp.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Core/Src/stm32f4xx_hal_msp.c</FilePath>
-            </File>
-            <File>
-              <FileName>accelerometer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\Src\accelerometer.c</FilePath>
-            </File>
-            <File>
-              <FileName>accelerometer.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Core\Inc\accelerometer.h</FilePath>
             </File>
           </Files>
         </Group>
