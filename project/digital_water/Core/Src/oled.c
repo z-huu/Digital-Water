@@ -103,6 +103,7 @@ HAL_StatusTypeDef oled_write(uint8_t val) {
 	
  	uint8_t tx_buff[1];
 	tx_buff[0] = val;
+	//while (HAL_SPI_GetState(&hspi1) != HAL_SPI_STATE_READY);
 	HAL_StatusTypeDef write_status = HAL_SPI_Transmit(&hspi1, tx_buff, 1, 1000);
 	return write_status;
 }
@@ -125,7 +126,7 @@ HAL_StatusTypeDef oled_cmd(uint8_t cmd) {
 	
 	HAL_GPIO_WritePin(OLED_DCL_GPIO_Port, OLED_DCL_Pin, GPIO_PIN_RESET); // Set OLED DC low, since sending cmd
 	HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_RESET); // Set OLED cs low
-	//HAL_Delay(1);
+	HAL_Delay(1);
 	
 	HAL_StatusTypeDef stat = oled_write(cmd);
 	
@@ -138,12 +139,7 @@ HAL_StatusTypeDef oled_cmd(uint8_t cmd) {
 
 HAL_StatusTypeDef oled_off(void) {
 	
-	uint8_t tx_buff[1] = {0xAE};
-	
-	HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_RESET); // Set OLED cs low
-	HAL_Delay(10);
-	
-	HAL_StatusTypeDef write_status = HAL_SPI_Transmit(&hspi1, tx_buff, 1, 1000);
+	HAL_StatusTypeDef write_status = oled_write(0xAE);
 	if (write_status != HAL_OK) my_print_msg("Bad write in OLED off.\n");
 	
   // Bring VCCEN pin low
@@ -152,8 +148,6 @@ HAL_StatusTypeDef oled_off(void) {
 	
 	// From this point on, safe to remove power to OLED.
 	
-	HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_SET); // Set OLED cs high again to disable
-	HAL_Delay(10);
 	return write_status;
 	
 }

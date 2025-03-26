@@ -75,7 +75,7 @@ uint8_t accel_data[3];
 // 2 --> ZDATA
 
 char msg[100];
-uint8_t new_accel_data = 0;
+uint8_t new_accel_data = 0, btn_press = 0;
 uint16_t colors[12] = {BLACK, GREY, WHITE, RED, PINK, YELLOW, GOLDEN, BROWN, BLUE, CYAN, GREEN, PURPLE};
 /* USER CODE END 0 */
 
@@ -135,9 +135,15 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		oled_drawRect(50, 50, 56, 56, colors[clr_idx], colors[clr_idx]);
+		oled_drawRect(25, 25, RGB_OLED_WIDTH - 25, RGB_OLED_HEIGHT - 25, colors[clr_idx], colors[clr_idx]);
 		clr_idx++;
 		if (clr_idx > 11) clr_idx = 1;
+		if (btn_press) {
+			oled_off();
+			btn_press = 0;
+			while (1)
+				;
+		}
   }
   /* USER CODE END 3 */
 }
