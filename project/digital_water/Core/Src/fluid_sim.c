@@ -1,5 +1,6 @@
 #include "fluid_sim.h"
 #include "physics.h"
+#include <stdint.h>
 #include <string.h>
 
 // FLUID SIM Initializations
@@ -68,15 +69,17 @@ void Sim_Particle_Init() {
   // want left side start with water ->
   Vec2_t initial_pos;
   for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
+
     particle_array[k] = BlankParticle();
     particle_array[k].state = SIM_WATER;
     particle_array[k].radius = SIM_PARTICLE_RADIUS;
     particle_array[k].position = BlankVector_V2();
     particle_array[k].velocity = BlankVector_V2();
 
-    initial_pos =
-        (Vec2_t){.x = (float)(k % (SIM_PHYS_X_SIZE / 2)),
-                 .y = (float)(SIM_PHYS_Y_SIZE - (k / (SIM_PHYS_X_SIZE / 2)))};
+    initial_pos = (Vec2_t){
+        .x = (float)(k % ((SIM_PHYS_X_SIZE - 1) / 4) + SIM_PHYS_X_SIZE / 4),
+        .y = (float)(k % ((SIM_PHYS_Y_SIZE - 1) / 4) +
+                     (2 * SIM_PHYS_Y_SIZE) / 3)};
     particle_array[k].position = initial_pos;
   }
 
@@ -284,6 +287,12 @@ GetCellFromPosition(particle_array[k].position);
 void Sim_Grid_Init() {
   for (int i = 0; i < SIM_PHYS_X_SIZE; i++) {
     for (int k = 0; k < SIM_PHYS_Y_SIZE; k++) {
+      grid_array[i][k].state = SIM_AIR;
+      if (k == 0 || k == SIM_PHYS_Y_SIZE - 1) {
+        // grid_array[i][k].state = SIM_SOLID;
+      } else if (i == 0 || i == SIM_PHYS_X_SIZE - 1) {
+        // grid_array[i][k].state = SIM_SOLID;
+      }
       grid_array[i][k].x = i;
       grid_array[i][k].y = k;
     }
@@ -299,8 +308,9 @@ void Sim_Grid_Step() {
   for (int iter = 0; iter < SIM_ITERATIONS; iter++) {
     for (int i = 0; i < SIM_PHYS_X_SIZE; i++) {
       for (int k = 0; k < SIM_PHYS_Y_SIZE; k++) {
-        if (grid_array[i][k].state != SIM_WATER)
+        if (grid_array[i][k].state != SIM_WATER) {
           continue;
+        }
         // update velocity of each cell
         // grid_array[i][k].velocity.y += SIM_DELTATIME * SIM_GRAV;
 
@@ -309,7 +319,7 @@ void Sim_Grid_Step() {
         netState = 0;
 
         if (i > 0 && grid_array[i - 1][k].state != SIM_SOLID) {
-          leftVelo = grid_array[i - 1][k].x;
+          leftVelo = grid_array[i - 1][k].velocity.x;
           netState++;
         } else {
           leftVelo = 0;
@@ -317,14 +327,14 @@ void Sim_Grid_Step() {
 
         if (i < SIM_PHYS_X_SIZE - 1 &&
             grid_array[i + 1][k].state != SIM_SOLID) {
-          rightVelo = grid_array[i + 1][k].x;
+          rightVelo = grid_array[i + 1][k].velocity.x;
           netState++;
         } else {
           rightVelo = 0;
         }
 
         if (k > 0 && grid_array[i][k - 1].state != SIM_SOLID) {
-          downVelo = grid_array[i][k - 1].y;
+          downVelo = grid_array[i][k - 1].velocity.y;
           netState++;
         } else {
           downVelo = 0;
@@ -332,7 +342,7 @@ void Sim_Grid_Step() {
 
         if (k < SIM_PHYS_Y_SIZE - 1 &&
             grid_array[i][k + 1].state != SIM_SOLID) {
-          upVelo = grid_array[i][k + 1].y;
+          upVelo = grid_array[i][k + 1].velocity.y;
           netState++;
         } else {
           upVelo = 0;
@@ -443,8 +453,8 @@ void Sim_Physics_Step() {
 }
 
 void Sim_Physics_Init() {
-  Sim_Particle_Init();
   Sim_Grid_Init();
+  Sim_Particle_Init();
 }
 
 // FOR SERIAL MONITOR USE:
@@ -476,6 +486,9 @@ for (int k = 0; k < SIM_PHYS_X_SIZE; k++) {
   }
 }
   */
+
+  // iterating by particles
+  //
   for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
     Sim_Cell_t *locatedCell = GetCellFromPosition(particle_array[k].position);
     if (locatedCell) {
@@ -483,25 +496,22 @@ for (int k = 0; k < SIM_PHYS_X_SIZE; k++) {
       int y = locatedCell->y;
       uint8_t pixel = WATER_COLOR_R;
 
-      int screen_x = x;
-      int screen_y = y;
-      if (y < 0) {
+      int screen_x = 2 * x;
+      int screen_y = 2 * (SIM_PHYS_Y_SIZE - y);
+      if (screen_y < 0) {
         screen_y = 0;
-      } else if (y > SIM_PHYS_Y_SIZE - 1) {
+      } else if (screen_y > SIM_RENDER_Y_SIZE - 1) {
         screen_y = SIM_RENDER_Y_SIZE - 2;
       }
-      image_buff[(2 * screen_y * SIM_RENDER_X_SIZE) + (2 * screen_x)] = pixel;
-      image_buff[(2 * screen_y * SIM_RENDER_X_SIZE) + (2 * screen_x + 1)] =
-          pixel;
-      image_buff[((2 * screen_y + 1) * SIM_RENDER_X_SIZE) + (2 * screen_x)] =
-          pixel;
-      image_buff[((2 * screen_y + 1) * SIM_RENDER_X_SIZE) +
-                 (2 * screen_x + 1)] = pixel;
-      /*
-      sprintf(msg, "%d: (%d, %d) vs (%f, %f)\n", k, x, y,
-              particle_array[k].position.x, particle_array[k].position.y);
-      print_msg(msg);
-      */
+      image_buff[(screen_y * SIM_RENDER_X_SIZE) + (screen_x)] = pixel;
+      image_buff[(screen_y * SIM_RENDER_X_SIZE) + (screen_x + 1)] = pixel;
+      image_buff[((screen_y + 1) * SIM_RENDER_X_SIZE) + (screen_x)] = pixel;
+      image_buff[((screen_y + 1) * SIM_RENDER_X_SIZE) + (screen_x + 1)] = pixel;
+
+      // sprintf(msg, "%d: (%d, %d) vs (%f, %f)\n", k, x, y,
+      //         particle_array[k].position.x, particle_array[k].position.y);
+      // print_msg(msg);
+
     } else {
       sprintf(msg, "renderImage(), OOB: %d: (%f, %f)\n", k,
               particle_array[k].position.x, particle_array[k].position.y);
@@ -510,7 +520,34 @@ for (int k = 0; k < SIM_PHYS_X_SIZE; k++) {
       image_buff[1] = SOLID_COLOR_B;
     }
   }
-  print_msg("finished renderImage() call\n");
+  //
+
+  // iterating by cell (not as functional?)
+  /*
+  for (int x = 0; x < SIM_PHYS_X_SIZE; x++) {
+    for (int y = 0; y < SIM_PHYS_Y_SIZE; y++) {
+      uint8_t pixel = AIR_COLOR_B;
+
+      if (grid_array[x][y].state == SIM_SOLID) {
+        pixel = SOLID_COLOR_B;
+      } else if (grid_array[x][y].state == SIM_WATER) {
+        pixel = WATER_COLOR_B;
+      }
+      int screen_x = 2 * x;
+      int screen_y = 2 * (SIM_PHYS_Y_SIZE - y);
+      if (screen_y < 0) {
+        screen_y = 0;
+      } else if (screen_y > SIM_RENDER_Y_SIZE - 1) {
+        screen_y = SIM_RENDER_Y_SIZE - 2;
+      }
+      image_buff[(screen_y)*SIM_RENDER_X_SIZE + (screen_x)] = pixel;
+      image_buff[(screen_y)*SIM_RENDER_X_SIZE + (screen_x + 1)] = pixel;
+      image_buff[((screen_y + 1) * SIM_RENDER_X_SIZE) + (screen_x)] = pixel;
+      image_buff[((screen_y + 1) * SIM_RENDER_X_SIZE) + (screen_x + 1)] = pixel;
+    }
+  }
+  */
+  // print_msg("finished renderImage() call\n");
 }
 
 void dummyImage() {
