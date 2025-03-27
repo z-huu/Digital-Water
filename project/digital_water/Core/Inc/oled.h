@@ -76,4 +76,5 @@ void oled_drawline(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t 
 void oled_eraseRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
 void oled_drawRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t border_col, uint16_t fill_col);
 
+void oled_drawframe(uint16_t* pixel_buff);
 #endif

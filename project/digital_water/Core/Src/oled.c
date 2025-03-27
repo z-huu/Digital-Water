@@ -2,6 +2,7 @@
 // Resources
 // https://digilent.com/reference/pmod/pmodoledrgb/reference-manual?redirect=1 -- Initialization commands
 // https://digilent.com/reference/pmod/pmodoledrgb/start?redirect=1 -- Pinout
+// https://github.com/avislab/STM32F103/blob/master/Example_SSD1331/SSD1331.c
 
 // DC:  High for Data, Low for Command -- PA4
 // VCCEN: Pulldown PB3
@@ -221,4 +222,25 @@ void oled_drawRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t 
 	oled_cmd((uint8_t)(fill_col&0x1F));//B
 	
 }
+
+void oled_drawRectDMA(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t border_col, uint16_t fill_col) {
+	{
+		
+	}
+
+
+void oled_drawframe(uint8_t* pixel_buff){
+	
+	// pixel_buff of OLED size
+	// if 0, air
+	// if 1, water
+	// if 2, obstacle
+	
+	// abhi is giving me the cell array, which is not 1:1 with the OLED pixels. each cell is drawn as four pixels
+	// so for each index of cell array (type determined by value, see above) we color four pixels on OLED
+	// as same color, then move to next cell array index. 
+
+	return;
+}
+
 

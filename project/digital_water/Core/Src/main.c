@@ -114,18 +114,27 @@ int main(void)
   MX_USART3_UART_Init();
   MX_USB_OTG_FS_PCD_Init();
   /* USER CODE BEGIN 2 */
-	oled_init();
-	//accel_init();
+
   // Write CS pins high by default
   // These pins are configured as pullup, but doing this just in case
-  HAL_GPIO_WritePin(GPIOD, ACCEL_CS_Pin, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(GPIOB, OLED_CS_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(ACCEL_CS_GPIO_Port, ACCEL_CS_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_SET);
+	//HAL_GPIO_WritePin(OLED_VCCEN_GPIO_Port, OLED_VCCEN_Pin, GPIO_PIN_RESET);
+	//HAL_GPIO_WritePin(OLED_PMODEN_GPIO_Port, OLED_PMODEN_Pin, GPIO_PIN_RESET);
+
+	HAL_Delay(10);
+	
+	//accel_init();
+	HAL_Delay(10);
+	oled_init();
+	HAL_Delay(10);
 	
 	oled_drawpixel(10, 10, RED);
 	oled_drawline(0, 0, 50, 50, WHITE);
 	oled_eraseRect(0, 0, RGB_OLED_WIDTH - 1, RGB_OLED_HEIGHT - 1); // Clearing screen
 	
 	uint8_t clr_idx = 1;
+	uint8_t ctr = 0;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -139,10 +148,11 @@ int main(void)
 		clr_idx++;
 		if (clr_idx > 11) clr_idx = 1;
 		if (btn_press) {
-			oled_off();
+			//oled_off();
+			//accel_poll(accel_data);
 			btn_press = 0;
-			while (1)
-				;
+			ctr++;
+			//if (ctr == 100) oled_off();
 		}
   }
   /* USER CODE END 3 */

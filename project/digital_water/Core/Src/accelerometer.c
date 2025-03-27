@@ -96,8 +96,7 @@ HAL_StatusTypeDef accel_init(void)
 		my_print_msg("Accelerometer initial read fail\n");
 		sprintf(msg, "Read a value of: 0x%x\n", device_id);
 		my_print_msg(msg);
-		while (1)
-			;
+
 	}
 	
 	// Soft reset
@@ -180,9 +179,8 @@ HAL_StatusTypeDef accel_write(uint8_t reg, uint8_t val){
 
 int8_t accel_read(int8_t reg)
 {
+	HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_SET); // Set OLED CS high
 	my_print_msg("Reading\n");
-	HAL_GPIO_WritePin(ACCEL_CS_GPIO_Port, ACCEL_CS_Pin, GPIO_PIN_RESET); // Set accelerometer CS low
-	HAL_Delay(10);
 
 	char msg[100];
 	
@@ -194,8 +192,14 @@ int8_t accel_read(int8_t reg)
 	tx_buff[1] = reg;  // Register we want to read from
 	tx_buff[2] = 0;	   // Dummy byte
 
+	HAL_GPIO_WritePin(ACCEL_CS_GPIO_Port, ACCEL_CS_Pin, GPIO_PIN_RESET); // Set accelerometer CS low
+	HAL_Delay(10);
+
 	HAL_StatusTypeDef status = HAL_SPI_TransmitReceive(&hspi1, tx_buff, rx_buff, 3, 1000);
 
+	HAL_GPIO_WritePin(ACCEL_CS_GPIO_Port, ACCEL_CS_Pin, GPIO_PIN_SET);
+	HAL_Delay(10);
+	
 	if (status == HAL_OK)
 		ret_val = rx_buff[2];
 	else
@@ -210,8 +214,7 @@ int8_t accel_read(int8_t reg)
 	sprintf(msg, "Read on reg 0x%x returns value 0x%x\n", reg, ret_val);
 	my_print_msg(msg);
 	
-	HAL_GPIO_WritePin(GPIOD, ACCEL_CS_Pin, GPIO_PIN_SET);
-	HAL_Delay(10);
+
 	
 	return ret_val;
 }
