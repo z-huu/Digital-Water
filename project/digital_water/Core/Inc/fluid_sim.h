@@ -4,7 +4,9 @@
 #include "main.h"
 #include "physics.h"
 #include <math.h>
+#include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 // Fluid Sim Dimensions (PMOD OLEDrgb screen is 96x64 pixels)
@@ -32,7 +34,7 @@
 
 #define SIM_ITERATIONS 2
 #define SIM_PARTICLES_PER_CELL 2
-#define SIM_PARTICLE_COUNT 2048
+#define SIM_PARTICLE_COUNT 512
 
 #define SIM_PARTICLE_RADIUS 0.5
 
@@ -45,12 +47,12 @@
 // https://stackoverflow.com/questions/24723180/c-convert-floating-point-to-int
 #define FLOAT_TO_INT(x) ((x) >= 0 ? (int)((x) + 0.5) : (int)((x) - 0.5))
 
-typedef struct {
+typedef struct particle {
   Vec2_t position;
   Vec2_t velocity;
   int state;
   float radius;
-  // struct particle *next;
+  struct particle *next;
 } Sim_Particle_t;
 
 typedef struct {
@@ -60,8 +62,8 @@ typedef struct {
   float density;
   int particle_count;
   Vec2_t velocity;
-  // Sim_Particle_t *head;
-  // Sim_Particle_t *tail;
+  Sim_Particle_t *head;
+  Sim_Particle_t *tail;
 } Sim_Cell_t;
 
 // utility functions

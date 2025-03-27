@@ -137,6 +137,9 @@ int main(void) {
   /* USER CODE BEGIN WHILE */
   while (1) {
     /* USER CODE END WHILE */
+    if ((sim_time % 30) / 29) {
+      //GravityVector = ScalarMult_V2(GravityVector, -1);
+    }
     HAL_Delay(30);
     print_msg("physics step\n");
     Sim_Physics_Step();
