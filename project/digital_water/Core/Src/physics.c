@@ -2,6 +2,13 @@
 #include <math.h>
 
 // Vec2_t Functions
+Vec2_t BlankVector_V2(){
+    Vec2_t newVector;
+    newVector.x = 0.0;
+    newVector.y = 0.0;
+    return newVector;
+}
+
 float Magnitude_V2(Vec2_t vector) {
   return (float) sqrt(vector.x * vector.x + vector.y * vector.y);
 }
@@ -19,6 +26,21 @@ Vec2_t Normalize_V2(Vec2_t vector) {
   return newVector;
 }
 
+Vec2_t AddVectors_V2(Vec2_t A, Vec2_t B){
+    Vec2_t ret = {
+        .x = A.x + B.x,
+        .y = A.y + B.y
+    };
+    return ret;
+}
+
+Vec2_t ScalarMult_V2(Vec2_t vector, float scalar){
+    Vec2_t ret = {
+        .x = vector.x * scalar,
+        .y = vector.y * scalar
+    };
+    return ret;
+}
 
 // Vec3_t Functions
 float Magnitude_V3(Vec3_t vector) {
