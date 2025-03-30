@@ -8,8 +8,8 @@
 #define SIM_RENDER_X_SIZE 96
 #define SIM_RENDER_Y_SIZE 64
 
-#define SIM_PHYS_X_SIZE 96
-#define SIM_PHYS_Y_SIZE 64
+#define SIM_PHYS_X_SIZE (96 / 4)
+#define SIM_PHYS_Y_SIZE (64 / 4)
 
 #define SIM_X_SIZE SIM_RENDER_X_SIZE
 #define SIM_Y_SIZE SIM_RENDER_Y_SIZE
@@ -22,20 +22,30 @@
 
 #define SIM_PHYSICS_FPS 30
 #define SIM_RENDER_FPS 30
-#define SIM_DELAY_MS (uint32_t) 1000/SIM_PHYSICS_FPS
+#define SIM_DELAY_MS (uint32_t)1000 / SIM_PHYSICS_FPS
 
-typedef struct {
-  int state;
-  int x;
-  int y;
-  Vec2_t velocity;
-} Sim_Cell_t;
-
-typedef struct {
+typedef struct particle
+{
   Vec2_t position;
   Vec2_t velocity;
   int state;
+  float radius;
+  struct particle *next;
+
 } Sim_Particle_t;
+
+typedef struct
+{
+  int state;
+  int x;
+  int y;
+  float density;
+  int particle_count;
+  Vec2_t velocity;
+  Sim_Particle_t *head;
+  Sim_Particle_t *tail;
+
+} Sim_Cell_t;
 
 void Sim_Grid_Update();
 
@@ -59,5 +69,5 @@ void Sim_Grid_Update();
 
 void testPrint(void);
 
-void print_msg(char * msg);
+void print_msg(char *msg);
 #endif
