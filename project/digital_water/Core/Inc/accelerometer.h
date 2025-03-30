@@ -4,7 +4,6 @@
 #include "main.h"
 #include <stdio.h>
 #include <string.h>
-#include <math.h>
 
 // Accelerometer will be connected on SPI 1 line: pin PC4
 #define ACCEL_CS_PIN SPI1_CS_PIN

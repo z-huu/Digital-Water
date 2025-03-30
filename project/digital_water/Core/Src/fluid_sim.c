@@ -449,8 +449,8 @@ void Sim_TransferVelocities(int toGrid) {
             Vec2_t originalVelo =
                 ScalarMult_V2(focusParticle->velocity, inverse);
 
-            // focusParticle->velocity = AddVectors_V2(originalVelo,
-            // changeVelo);
+            focusParticle->velocity = AddVectors_V2(originalVelo,
+							changeVelo);
             focusParticle = focusParticle->next;
           }
         }
@@ -503,7 +503,7 @@ extern UART_HandleTypeDef huart3;
 
 void renderImage() {
   for (int k = 0; k < SIM_RENDER_X_SIZE * SIM_RENDER_Y_SIZE; k++) {
-    image_buff[k] = AIR_COLOR_B;
+    image_buff[k] = BLACK; // Background color
   }
   /*
 for (int k = 0; k < SIM_PHYS_X_SIZE; k++) {

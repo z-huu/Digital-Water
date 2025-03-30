@@ -103,6 +103,8 @@ uint8_t accel_data[3];
 // 0 --> XDATA
 // 1 --> YDATA
 // 2 --> ZDATA
+double roll = 0.00, pitch = 0.00;
+uint8_t x = 0, y = 0, z = 0;
 
 char amsg[100];
 uint8_t new_accel_data = 0, btn_press = 0;
@@ -180,19 +182,41 @@ int main(void) {
   /* USER CODE END 2 */
   print_msg("starting while loop\n");
   /* Infinite loop */
-  GravityVector = (Vec2_t){.x = 0, .y = SIM_GRAV};
+  GravityVector = (Vec2_t){.x = 0, .y = -1 * SIM_GRAV};
 
   /* USER CODE BEGIN WHILE */
   const int delayTime = (40 * SIM_PHYSICS_FPS) / 2;
   while (1) {
-    
+		// Alternatively, could return accelerometer data before we activate DMA?
+    // Pause DMA before interacting with accelerometer.
+		
+		HAL_SPI_DMAPause(&hspi1);
+		HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_SET); // Set OLED cs high to disable
+		HAL_GPIO_WritePin(ACCEL_CS_GPIO_Port, ACCEL_CS_Pin, GPIO_PIN_RESET); // Set accelerometer cs low
+
+		// accel_poll(accel_data);
+		HAL_Delay(10);
+		// Set accelerometer cs high (already handled, i think)
+		// Set OLED cs low.
+		
+		HAL_GPIO_WritePin(ACCEL_CS_GPIO_Port, ACCEL_CS_Pin, GPIO_PIN_SET); // Set accelerometer cs high
+		HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_RESET); // Set OLED cs low
+
+		// Resume DMA while we compute next frame.
+		HAL_SPI_DMAResume(&hspi1);
+		//x = accel_data[0], y = accel_data[1], z = accel_data[2];
+		// Compute pitch & roll.
+		//roll = atan2(y, z) * 57.3;
+		//pitch = atan2((-x), sqrt((y*y) + (z*z))) * 57.3;
+		// Compute gravity vector. 
+		
 		Sim_Physics_Step();
 		renderImage();
 		oled_drawframe(image_buff);
 		
     if (btn_press)
     {
-
+			GravityVector = ScalarMult_V2(GravityVector, -1);
       btn_press = 0;
     }
   } // end superloop
