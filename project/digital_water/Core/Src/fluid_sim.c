@@ -685,9 +685,3 @@ for (int k = 0; k < SIM_RENDER_Y_SIZE; k++) {
   HAL_UART_Transmit_DMA(&huart3, (uint8_t *)tx_buff,
                         sizeof(PREAMBLE) + SIM_X_SIZE * SIM_Y_SIZE);
 }
-
-void print_msg(char *msg) {
-  if (DebugPrints) {
-    HAL_UART_Transmit(&huart3, (uint8_t *)msg, strlen(msg), 100);
-  }
-}

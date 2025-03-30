@@ -15,7 +15,7 @@ extern UART_HandleTypeDef huart3;
 HAL_StatusTypeDef oled_init(void) {
 	
 	char msg[100];
-	my_print_msg("\n* Initializing OLED *\n\n");
+	print_msg("\n* Initializing OLED *\n\n");
 	// Power Up Sequence
 	HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_RESET); // Bring CS pin low
 	HAL_GPIO_WritePin(OLED_DCL_GPIO_Port, OLED_DCL_Pin, GPIO_PIN_RESET); // Bring DC pin low
@@ -36,7 +36,7 @@ HAL_StatusTypeDef oled_init(void) {
 	// Enable the driver IC to accept commands by sending 0xFD, 0x12
 	HAL_StatusTypeDef write_status = oled_write(0xFD);
 	write_status |= oled_write(0x12);
-	if (write_status != HAL_OK) my_print_msg("ENABLECMD write bad\n");
+	if (write_status != HAL_OK) print_msg("ENABLECMD write bad\n");
 	
 	HAL_GPIO_WritePin(OLED_DCL_GPIO_Port, OLED_DCL_Pin, GPIO_PIN_SET); // Bring CS pin high
 	HAL_Delay(10);
@@ -86,16 +86,16 @@ HAL_StatusTypeDef oled_init(void) {
 	HAL_GPIO_WritePin(OLED_VCCEN_GPIO_Port, OLED_VCCEN_Pin, GPIO_PIN_SET); // Bring VCCEN pin high
 	HAL_Delay(25); // then wait for at least 25 ms
 
-	if (write_status != HAL_OK) my_print_msg("Bad init\n");
+	if (write_status != HAL_OK) print_msg("Bad init\n");
 
 	// Turn display on
 	write_status = oled_cmd(CMD_NORMAL_BRIGHTNESS_DISPLAY_ON);
-	if (write_status != HAL_OK) my_print_msg("ON write bad\n");
+	if (write_status != HAL_OK) print_msg("ON write bad\n");
 	
 	// Wait 100 ms before using the display
 	HAL_Delay(100);
 
-	my_print_msg("\n* OLED initialization complete *\n\n");
+	print_msg("\n* OLED initialization complete *\n\n");
 	
 	return write_status; 
 }
@@ -141,7 +141,7 @@ HAL_StatusTypeDef oled_cmd(uint8_t cmd) {
 HAL_StatusTypeDef oled_off(void) {
 	
 	HAL_StatusTypeDef write_status = oled_write(0xAE);
-	if (write_status != HAL_OK) my_print_msg("Bad write in OLED off.\n");
+	if (write_status != HAL_OK) print_msg("Bad write in OLED off.\n");
 	
   // Bring VCCEN pin low
 	HAL_GPIO_WritePin(OLED_VCCEN_GPIO_Port, OLED_VCCEN_Pin, GPIO_PIN_RESET);

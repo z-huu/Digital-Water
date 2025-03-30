@@ -85,7 +85,7 @@ HAL_StatusTypeDef accel_init(void)
 {
 	
 	char msg[100];
-	my_print_msg("\n* Accelerometer initializing *\n\n");
+	print_msg("\n* Accelerometer initializing *\n\n");
 
 	uint8_t device_id = accel_read(0x01);
 
@@ -93,16 +93,16 @@ HAL_StatusTypeDef accel_init(void)
 	{
 
 		// Read failed
-		my_print_msg("Accelerometer initial read fail\n");
+		print_msg("Accelerometer initial read fail\n");
 		sprintf(msg, "Read a value of: 0x%x\n", device_id);
-		my_print_msg(msg);
+		print_msg(msg);
 
 	}
 	
 	// Soft reset
 	accel_write(0x1F, 0x52);
 	
-	my_print_msg("Initializing accelerometer registers\n");
+	print_msg("Initializing accelerometer registers\n");
 	
 	HAL_GPIO_WritePin(ACCEL_CS_GPIO_Port, ACCEL_CS_Pin, GPIO_PIN_RESET); // Set accelerometer CS low
 	HAL_Delay(10);
@@ -133,7 +133,7 @@ HAL_StatusTypeDef accel_init(void)
 	
 	uint8_t read_val = accel_read(0x01);
 	sprintf(msg, "Contents of register 0x01 is 0x%x\n", read_val);
-	my_print_msg(msg);
+	print_msg(msg);
 	
 	return HAL_OK;
 }
@@ -142,7 +142,7 @@ HAL_StatusTypeDef accel_write(uint8_t reg, uint8_t val){
 	
 	char msg[100];
 	sprintf(msg, "Writing 0x%x into register 0x%x\n", val, reg);
-	my_print_msg(msg);
+	print_msg(msg);
 	HAL_GPIO_WritePin(ACCEL_CS_GPIO_Port, ACCEL_CS_Pin, GPIO_PIN_RESET); // Set accelerometer CS low
 	HAL_Delay(10);
 
@@ -160,12 +160,12 @@ HAL_StatusTypeDef accel_write(uint8_t reg, uint8_t val){
 	HAL_StatusTypeDef write_status;
 	write_status = HAL_SPI_TransmitReceive(&hspi1, tx_buff, rx_buff, 3, 1000);
 	
-	if (write_status != HAL_OK) my_print_msg("Write no good\n");
+	if (write_status != HAL_OK) print_msg("Write no good\n");
 	
-	my_print_msg("tx_buff       rx_buff\n");
+	print_msg("tx_buff       rx_buff\n");
 	for (int8_t i = 0; i < 3; i++) {
 		sprintf(msg, "0x%x       0x%x\n", tx_buff[i], rx_buff[i]);
-		my_print_msg(msg);
+		print_msg(msg);
 	}
 
 	
@@ -180,7 +180,7 @@ HAL_StatusTypeDef accel_write(uint8_t reg, uint8_t val){
 int8_t accel_read(int8_t reg)
 {
 	HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_SET); // Set OLED CS high
-	my_print_msg("Reading\n");
+	print_msg("Reading\n");
 
 	char msg[100];
 	
@@ -205,14 +205,14 @@ int8_t accel_read(int8_t reg)
 	else
 		ret_val = -1;
 	
-	my_print_msg("tx_buff       rx_buff\n");
+	print_msg("tx_buff       rx_buff\n");
 	for (int8_t i = 0; i < 3; i++) {
 		sprintf(msg, "0x%x       0x%x\n", tx_buff[i], rx_buff[i]);
-		my_print_msg(msg);
+		print_msg(msg);
 	}
 
 	sprintf(msg, "Read on reg 0x%x returns value 0x%x\n", reg, ret_val);
-	my_print_msg(msg);
+	print_msg(msg);
 	
 
 	
@@ -246,7 +246,7 @@ HAL_StatusTypeDef accel_poll(uint8_t *read_buff)
 	}
 	
 	sprintf(msg, "\nX: %d\nY: %d\nZ: %d\n\n", rx_buff[2], rx_buff[3], rx_buff[4]);
-	my_print_msg(msg);
+	print_msg(msg);
 	
 	HAL_GPIO_WritePin(GPIOD, ACCEL_CS_Pin, GPIO_PIN_SET);
 	HAL_Delay(10);

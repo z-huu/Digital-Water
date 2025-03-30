@@ -69,13 +69,13 @@ static void MX_USB_OTG_FS_PCD_Init(void);
 /* USER CODE BEGIN PFP */
 
 void oled_drawframe(uint16_t* pixel_buff){
-	//my_print_msg("Draw frame\n");
+	//my_print_amsg("Draw frame\n");
 	// pixel_buff of OLED size
 	// each element contains the color to ship
 	
 		
 	while (HAL_SPI_GetState(&hspi1) != HAL_SPI_STATE_READY){
-		//my_print_msg("Waiting\n");
+		//my_print_amsg("Waiting\n");
 	}
 
 	oled_cmd(CMD_SET_COLUMN_ADDRESS);
@@ -90,7 +90,7 @@ void oled_drawframe(uint16_t* pixel_buff){
 	HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_RESET); // Set OLED cs low
 	HAL_Delay(1);
 	HAL_SPI_Transmit_DMA(&hspi1, (uint8_t*)pixel_buff, 12288);
-	//my_print_msg("Done draw frame\n");
+	//my_print_amsg("Done draw frame\n");
 	// Accelerometer cannot be interfaced with while DMA is transmitting (because OLED cs must be low)
 	// to work around this, we can pause the DMA and switch the CS values and grab the accelerometer value. 
 	return;
@@ -105,7 +105,7 @@ uint8_t accel_data[3];
 // 1 --> YDATA
 // 2 --> ZDATA
 
-char msg[100];
+char amsg[100];
 uint8_t new_accel_data = 0, btn_press = 0;
 uint16_t colors[3] = {RED, GREEN, BLUE};
 
@@ -129,7 +129,7 @@ Vec2_t GravityVector;
 Sim_Cell_t grid_array[SIM_PHYS_X_SIZE][SIM_PHYS_Y_SIZE];
 Sim_Particle_t particle_array[SIM_PARTICLE_COUNT];
 Sim_Particle_t obstacle_array[SIM_OBSTACLE_COUNT];
-char main_msg[100];
+char main_amsg[100];
 
 int main(void) {
 
@@ -595,9 +595,13 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 
-void my_print_msg(char *msg)
+void my_print_amsg(char *amsg)
 {
-  HAL_UART_Transmit(&huart3, (uint8_t *)msg, strlen(msg), 100);
+  HAL_UART_Transmit(&huart3, (uint8_t *)amsg, strlen(amsg), 100);
+}
+void print_msg(char *msg) {
+   HAL_UART_Transmit(&huart3, (uint8_t *)msg, strlen(msg), 100);
+  
 }
 
 /* USER CODE END 4 */
