@@ -21,28 +21,27 @@
 #define SIM_X_SIZE SIM_RENDER_X_SIZE
 #define SIM_Y_SIZE SIM_RENDER_Y_SIZE
 
-#define SIM_GRAV 0.5
+#define SIM_GRAV ((float)9)
 
 #define SIM_AIR 0
 #define SIM_SOLID 1
 #define SIM_WATER 2
 #define SIM_OBSTACLE 3
 
-#define SIM_PHYSICS_FPS 2
-#define SIM_RENDER_FPS 2
-#define SIM_DELAY_MS (uint32_t)1000 / SIM_PHYSICS_FPS
+#define SIM_PHYSICS_FPS 5
+#define SIM_RENDER_FPS 5
+#define SIM_DELAY_MS ((uint32_t)1000 / SIM_PHYSICS_FPS)
 
 #define SIM_ITERATIONS 2
-#define SIM_PARTICLES_PER_CELL 2
-#define SIM_PARTICLE_COUNT 512
+#define SIM_PARTICLE_COUNT 2048
 
-#define SIM_PARTICLE_RADIUS 0.5
+#define SIM_PARTICLE_RADIUS ((float)1)
 
 #define SIM_OBSTACLE_COUNT 0
-#define SIM_DELTATIME ((float)1 / (float)(SIM_PHYSICS_FPS * SIM_ITERATIONS))
-#define SIM_PARTICLE_SEPARATE_ITERATIONS 3
+#define SIM_DELTATIME ((float)(1) / (float)(SIM_PHYSICS_FPS * SIM_ITERATIONS))
+#define SIM_PARTICLE_SEPARATE_ITERATIONS 1
 
-#define SIM_OVERRELAXATION ((float)1.9) // should be between 1 to 2
+#define SIM_OVERRELAXATION ((float)1.5) // should be between 1 to 2
 // float to int macro found from StackOverflow:
 // https://stackoverflow.com/questions/24723180/c-convert-floating-point-to-int
 #define FLOAT_TO_INT(x) ((x) >= 0 ? (int)((x) + 0.5) : (int)((x) - 0.5))
@@ -66,6 +65,13 @@ typedef struct {
   Sim_Particle_t *tail;
 } Sim_Cell_t;
 
+extern Sim_Cell_t grid_array[SIM_PHYS_X_SIZE][SIM_PHYS_Y_SIZE];
+extern Sim_Particle_t particle_array[SIM_PARTICLE_COUNT];
+extern Sim_Particle_t obstacle_array[SIM_OBSTACLE_COUNT];
+extern Vec2_t GravityVector;
+
+extern int sim_time;
+
 // utility functions
 Sim_Cell_t *GetCellFromPosition(Vec2_t position);
 
@@ -84,11 +90,9 @@ void Sim_Particle_HandleObstacleCollisions(Sim_Particle_t obstacle);
 
 void Sim_Particle_HandleCellCollisions();
 
+void Sim_Particle_PushParticlesApart();
+
 // fluid sim grid functions
-void Sim_PIC_Step();
-
-void Sim_FLIP_Step();
-
 void Sim_Grid_Init();
 
 void Sim_Grid_Step();
