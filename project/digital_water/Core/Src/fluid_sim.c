@@ -1,5 +1,6 @@
 #include "fluid_sim.h"
 #include "physics.h"
+#include "oled.h"
 
 // FLUID SIM Initializations
 /*
@@ -493,7 +494,7 @@ void Sim_Physics_Init() {
 }
 
 // FOR SERIAL MONITOR USE:
-extern uint8_t image_buff[SIM_RENDER_X_SIZE * SIM_RENDER_Y_SIZE];
+extern uint16_t image_buff[SIM_RENDER_X_SIZE * SIM_RENDER_Y_SIZE];
 extern uint8_t tx_buff[sizeof(PREAMBLE) +
                        SIM_RENDER_X_SIZE * SIM_RENDER_Y_SIZE + sizeof(SUFFIX) +
                        2];
@@ -525,9 +526,7 @@ for (int k = 0; k < SIM_PHYS_X_SIZE; k++) {
   // iterating by particles
 
   for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
-    Sim_Cell_t *locatedCell = GetCellFromPosition(particle_array[k].position);
-    if (locatedCell) {
-      uint8_t pixel = WATER_COLOR_R;
+      uint16_t pixel = BLUE;
 
       int screen_x = 2 * particle_array[k].position.x;
       int screen_y = 2 * (SIM_PHYS_Y_SIZE - particle_array[k].position.y);
@@ -551,14 +550,8 @@ for (int k = 0; k < SIM_PHYS_X_SIZE; k++) {
       //         particle_array[k].position.x, particle_array[k].position.y);
       // print_msg(msg);
 
-    } else {
-      sprintf(msg, "renderImage(), OOB: %d: (%f, %f)\n", k,
-              particle_array[k].position.x, particle_array[k].position.y);
-      print_msg(msg);
-      image_buff[0] = SOLID_COLOR_B;
-      image_buff[1] = SOLID_COLOR_B;
     }
-  }
+  
 
   // iterating by cell (not as functional?)
   /*

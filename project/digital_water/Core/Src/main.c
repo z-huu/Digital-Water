@@ -73,7 +73,6 @@ void oled_drawframe(uint16_t* pixel_buff){
 	// pixel_buff of OLED size
 	// each element contains the color to ship
 	
-		
 	while (HAL_SPI_GetState(&hspi1) != HAL_SPI_STATE_READY){
 		//my_print_amsg("Waiting\n");
 	}
@@ -119,7 +118,7 @@ Sim_Particle_t particle_array[2048];
  * @retval int
  */
 
-uint8_t image_buff[SIM_RENDER_X_SIZE * SIM_RENDER_Y_SIZE];
+uint16_t image_buff[SIM_RENDER_X_SIZE * SIM_RENDER_Y_SIZE];
 uint8_t tx_buff[sizeof(PREAMBLE) + SIM_RENDER_X_SIZE * SIM_RENDER_Y_SIZE +
                 sizeof(SUFFIX)];
 size_t tx_buff_len;
@@ -168,9 +167,6 @@ int main(void) {
   // These pins are configured as pullup, but doing this just in case
   HAL_GPIO_WritePin(ACCEL_CS_GPIO_Port, ACCEL_CS_Pin, GPIO_PIN_SET);
   HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_SET);
-  // HAL_GPIO_WritePin(OLED_VCCEN_GPIO_Port, OLED_VCCEN_Pin, GPIO_PIN_RESET);
-  // HAL_GPIO_WritePin(OLED_PMODEN_GPIO_Port, OLED_PMODEN_Pin, GPIO_PIN_RESET);
-
   HAL_Delay(10);
 
   // accel_init();
@@ -178,27 +174,6 @@ int main(void) {
   oled_init();
   HAL_Delay(10);
   oled_eraseRect(0, 0, RGB_OLED_WIDTH - 1, RGB_OLED_HEIGHT - 1); // Clearing screen
-  oled_drawpixel(10, 10, RED);
-  oled_drawline(0, 0, 50, 50, RED);
-	
-	grid_array[0][0].state = 0;
-	particle_array[0].state = 0;
-	
-  uint8_t clr_idx = 1;
-  uint8_t ctr = 1;
-	//uint8_t test_frame[6] = {RED >> 8, RED & 0xff, GREEN >> 8, GREEN & 0xff, BLUE >> 8, BLUE & 0xff};
-	uint16_t test_frame[4] = {WHITE, GREEN, BLUE, RED};
-	uint16_t frameRed[(RGB_OLED_WIDTH * RGB_OLED_HEIGHT)];
-	uint16_t frameBlue[(RGB_OLED_WIDTH * RGB_OLED_HEIGHT)];
-	uint16_t frameEmpty[(RGB_OLED_WIDTH * RGB_OLED_HEIGHT)];
-
-
-
-	for (int i = 0; i < 12288; i++) {
-		frameRed[i] = RED;
-		frameBlue[i] = BLUE;
-		frameEmpty[i] = BLACK;
-	}
 
   Sim_Physics_Init();
 
@@ -210,58 +185,11 @@ int main(void) {
   /* USER CODE BEGIN WHILE */
   const int delayTime = (40 * SIM_PHYSICS_FPS) / 2;
   while (1) {
-    /* USER CODE END WHILE */
-    // Rectangle draw color test
-    // oled_drawRect(25, 25, RGB_OLED_WIDTH - 25, RGB_OLED_HEIGHT - 25, colors[clr_idx], colors[clr_idx]);
-    // clr_idx++;
-    // if (clr_idx > 11) clr_idx = 1;
-
-    // Testing if draw addresses auto-increment: They do!
-    /*
-      oled_cmd(CMD_SET_COLUMN_ADDRESS);
-      oled_cmd(0);
-      oled_cmd(RGB_OLED_WIDTH-1);
-      //set row point
-      oled_cmd(CMD_SET_ROW_ADDRESS);
-      oled_cmd(0);
-      oled_cmd(RGB_OLED_HEIGHT-1);
-
-
-    for (int i = 0; i < RGB_OLED_WIDTH * RGB_OLED_HEIGHT - 1; i++) {
-        oled_data(BLUE >> 8);
-        oled_data(BLUE);
-    }
-
-    while(1)
-      ;
-    */
+    
+		Sim_Physics_Step();
+		renderImage();
+		oled_drawframe(image_buff);
 		
-		/*Testing casting 16 bit array into SPI commands. Works
-		  oled_cmd(CMD_SET_COLUMN_ADDRESS);
-      oled_cmd(0);
-      oled_cmd(RGB_OLED_WIDTH-1);
-      //set row point
-      oled_cmd(CMD_SET_ROW_ADDRESS);
-      oled_cmd(0);
-      oled_cmd(RGB_OLED_HEIGHT-1);
-			
-
-	HAL_GPIO_WritePin(OLED_DCL_GPIO_Port, OLED_DCL_Pin, GPIO_PIN_SET); // Set OLED DC high, since sending data
-	HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_RESET); // Set OLED cs low
-	HAL_Delay(1);
-		HAL_SPI_Transmit_DMA(&hspi1, (uint8_t*)frameRed, 12288);
-		
-			//HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_SET); // Set OLED cs high again to disable
-			while(1)	
-				;
-			*/
-		if (ctr == 0) oled_drawframe(frameRed);
-		else if (ctr == 1) oled_drawframe(frameEmpty);
-		else oled_drawframe(frameBlue);
-		ctr++;
-		if (ctr == 3) ctr = 0;
-    /* USER CODE BEGIN 3 */
-
     if (btn_press)
     {
 
