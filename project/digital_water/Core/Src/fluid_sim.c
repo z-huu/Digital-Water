@@ -184,7 +184,7 @@ void Sim_Particle_HandleCellCollisions() {
           ScalarMult_V2(particle_array[k].velocity, (float)-0.25);
       particle_array[k].position =
           AddVectors_V2(particle_array[k].position, reversedVelocity);
-      //particle_array[k].velocity = reversedVelocity;
+      // particle_array[k].velocity = reversedVelocity;
     }
   }
 }
@@ -309,7 +309,7 @@ void Sim_Grid_Step() {
         continue;
       }
       // update velocity of each cell
-      //grid_array[i][k].velocity =
+      // grid_array[i][k].velocity =
       //    AddVectors_V2(grid_array[i][k].velocity, GravImpact);
 
       // divergence step
@@ -349,7 +349,8 @@ void Sim_Grid_Step() {
         continue;
 
       divergence =
-          SIM_OVERRELAXATION * (upVelo - downVelo + rightVelo - leftVelo + Magnitude_V2(grid_array[i][k].velocity));
+          SIM_OVERRELAXATION * (upVelo - downVelo + rightVelo - leftVelo +
+                                0 * Magnitude_V2(grid_array[i][k].velocity));
 
       // set values using divergence
       // if more downward than upward, push upward, and vice versa
@@ -370,7 +371,8 @@ void Sim_Grid_Step() {
       if (i > 0 && grid_array[i - 1][k].state != SIM_SOLID) {
         grid_array[i - 1][k].velocity.x -= divergence / netState;
       }
-      if (i < SIM_PHYS_X_SIZE && grid_array[i + 1][k].state != SIM_SOLID) {
+      if
+	  (i < SIM_PHYS_X_SIZE && grid_array[i + 1][k].state != SIM_SOLID) {
         grid_array[i + 1][k].velocity.x += divergence / netState;
       }
       if (k > 0 && grid_array[i][k - 1].state != SIM_SOLID) {
