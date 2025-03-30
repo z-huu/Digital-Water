@@ -59,7 +59,8 @@ HAL_StatusTypeDef oled_init(void) {
   write_status |= oled_cmd(CMD_SET_PRECHARGE_SPEED_C);//Set Second Pre-change Speed For ColorC
   write_status |= oled_cmd(0x64);                     //100
   write_status |= oled_cmd(CMD_SET_REMAP);            //set remap & data format
-  write_status |= oled_cmd(0x72);                     //0x72
+  write_status |= oled_cmd(0x76);                     //0x32 -- > color is now 332 RGB, 0x72 for 565RGB, 0x76 to swap endianness for color format
+	
   write_status |= oled_cmd(CMD_SET_DISPLAY_START_LINE);//Set display Start Line
   write_status |= oled_cmd(0x0);
   write_status |= oled_cmd(CMD_SET_DISPLAY_OFFSET);   //Set display offset
@@ -104,7 +105,6 @@ HAL_StatusTypeDef oled_write(uint8_t val) {
 	
  	uint8_t tx_buff[1];
 	tx_buff[0] = val;
-	//while (HAL_SPI_GetState(&hspi1) != HAL_SPI_STATE_READY);
 	HAL_StatusTypeDef write_status = HAL_SPI_Transmit(&hspi1, tx_buff, 1, 1000);
 	return write_status;
 }
@@ -223,24 +223,7 @@ void oled_drawRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t 
 	
 }
 
-void oled_drawRectDMA(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t border_col, uint16_t fill_col) {
-	{
-		
-	}
 
 
-void oled_drawframe(uint8_t* pixel_buff){
-	
-	// pixel_buff of OLED size
-	// if 0, air
-	// if 1, water
-	// if 2, obstacle
-	
-	// abhi is giving me the cell array, which is not 1:1 with the OLED pixels. each cell is drawn as four pixels
-	// so for each index of cell array (type determined by value, see above) we color four pixels on OLED
-	// as same color, then move to next cell array index. 
-
-	return;
-}
 
 

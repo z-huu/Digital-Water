@@ -445,6 +445,16 @@
               <FileType>1</FileType>
               <FilePath>../Core/Src/stm32f4xx_hal_msp.c</FilePath>
             </File>
+            <File>
+              <FileName>fluid_sim.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Core\Inc\fluid_sim.h</FilePath>
+            </File>
+            <File>
+              <FileName>fluid_sim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\fluid_sim.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

@@ -51,7 +51,7 @@
 #define CMD_SET_V_VOLTAGE                   0xBE
 
 #define RGB(R,G,B)                  (((R>>3)<<11) | ((G>>2)<<5) | (B>>3))
-
+// 65k color scheme
 #define BLACK 			RGB(  0,  0,  0) // black
 #define GREY  			RGB(192,192,192) // grey
 #define WHITE       RGB(255,255,255) // white
@@ -65,7 +65,11 @@
 #define GREEN       RGB(  0,255,  0) // green
 #define PURPLE      RGB(160, 32,240) // purple
 
-
+/* 256 color scheme
+#define RED 0b11100000
+#define GREEN 0b00011100
+#define BLUE 0b00000011
+*/
 HAL_StatusTypeDef oled_init(void);
 HAL_StatusTypeDef oled_write(uint8_t val);
 HAL_StatusTypeDef oled_off(void);
@@ -75,6 +79,8 @@ HAL_StatusTypeDef oled_cmd(uint8_t cmd);
 void oled_drawline(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
 void oled_eraseRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
 void oled_drawRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t border_col, uint16_t fill_col);
-
+void oled_drawRectDMA(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t border_col, uint16_t fill_col);
 void oled_drawframe(uint16_t* pixel_buff);
+
+
 #endif
