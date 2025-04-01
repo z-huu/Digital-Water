@@ -134,19 +134,15 @@ int main(void) {
   /* USER CODE END 2 */
   print_msg("starting while loop\n");
   /* Infinite loop */
-  GravityVector = (Vec2_t){.x = 0, .y = SIM_GRAV};
+  GravityVector = (Vec2_t){.x = 0, .y = -1 * SIM_GRAV};
 
   /* USER CODE BEGIN WHILE */
-  const int delayTime = (40 * SIM_PHYSICS_FPS) / 2;
+  const int delayTime = (60) / 2;
   while (1) {
     /* USER CODE END WHILE */
     if ((sim_time % (delayTime)) / (delayTime - 1)) {
-      //GravityVector = ScalarMult_V2(GravityVector, -1);
+      // GravityVector = ScalarMult_V2(GravityVector, -1);
     }
-    if ((sim_time % 60) / 59) {
-      // GravityVector = (Vec2_t){.x = SIM_GRAV, .y = 0};
-    }
-    HAL_Delay(SIM_DELAY_MS);
     // print_msg("physics step\n");
     Sim_Physics_Step();
     sim_time++;
