@@ -54,7 +54,18 @@ typedef struct particle {
   struct particle *next;
 } Sim_Particle_t;
 
-typedef struct {
+typedef struct particle
+{
+  Vec2_t position;
+  Vec2_t velocity;
+  int state;
+  float radius;
+  struct particle *next;
+
+} Sim_Particle_t;
+
+typedef struct
+{
   int state;
   int x;
   int y;

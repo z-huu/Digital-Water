@@ -664,7 +664,8 @@ void testPrint(void) {
 
   // Add the START preamble message to the start of the buffer for the
   // serial-monitor program.
-  for (int i = 0; i < sizeof(PREAMBLE); i++) {
+  for (int i = 0; i < sizeof(PREAMBLE); i++)
+  {
     tx_buff[i] = PREAMBLE[i];
   }
 

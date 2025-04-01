@@ -55,10 +55,12 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
+extern DMA_HandleTypeDef hdma_spi1_tx;
 extern DMA_HandleTypeDef hdma_usart3_tx;
 extern UART_HandleTypeDef huart3;
 /* USER CODE BEGIN EV */
-
+extern uint8_t new_accel_data;
+extern uint8_t btn_press;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -225,6 +227,42 @@ void USART3_IRQHandler(void)
   /* USER CODE BEGIN USART3_IRQn 1 */
 
   /* USER CODE END USART3_IRQn 1 */
+}
+
+/**
+  * @brief This function handles EXTI line[15:10] interrupts.
+  */
+void EXTI15_10_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI15_10_IRQn 0 */
+	 if (__HAL_GPIO_EXTI_GET_FLAG(ACCEL_INT1_Pin)) {
+		 new_accel_data = 1;
+	 }
+	 
+	 if (__HAL_GPIO_EXTI_GET_FLAG(USER_Btn_Pin)) {
+		 btn_press = 1;
+	 }
+
+  /* USER CODE END EXTI15_10_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(USER_Btn_Pin);
+  HAL_GPIO_EXTI_IRQHandler(ACCEL_INT1_Pin);
+  /* USER CODE BEGIN EXTI15_10_IRQn 1 */
+
+  /* USER CODE END EXTI15_10_IRQn 1 */
+}
+
+/**
+  * @brief This function handles DMA2 stream3 global interrupt.
+  */
+void DMA2_Stream3_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA2_Stream3_IRQn 0 */
+
+  /* USER CODE END DMA2_Stream3_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_spi1_tx);
+  /* USER CODE BEGIN DMA2_Stream3_IRQn 1 */
+
+  /* USER CODE END DMA2_Stream3_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

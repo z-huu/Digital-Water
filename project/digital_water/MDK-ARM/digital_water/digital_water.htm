@@ -52,14 +52,14 @@ Function Pointers
  <LI><a href="#[42]">DMA2_Stream0_IRQHandler</a> from startup_stm32f446xx.o(.text) referenced from startup_stm32f446xx.o(RESET)
  <LI><a href="#[43]">DMA2_Stream1_IRQHandler</a> from startup_stm32f446xx.o(.text) referenced from startup_stm32f446xx.o(RESET)
  <LI><a href="#[44]">DMA2_Stream2_IRQHandler</a> from startup_stm32f446xx.o(.text) referenced from startup_stm32f446xx.o(RESET)
- <LI><a href="#[45]">DMA2_Stream3_IRQHandler</a> from startup_stm32f446xx.o(.text) referenced from startup_stm32f446xx.o(RESET)
+ <LI><a href="#[45]">DMA2_Stream3_IRQHandler</a> from stm32f4xx_it.o(.text.DMA2_Stream3_IRQHandler) referenced from startup_stm32f446xx.o(RESET)
  <LI><a href="#[46]">DMA2_Stream4_IRQHandler</a> from startup_stm32f446xx.o(.text) referenced from startup_stm32f446xx.o(RESET)
  <LI><a href="#[4c]">DMA2_Stream5_IRQHandler</a> from startup_stm32f446xx.o(.text) referenced from startup_stm32f446xx.o(RESET)
  <LI><a href="#[4d]">DMA2_Stream6_IRQHandler</a> from startup_stm32f446xx.o(.text) referenced from startup_stm32f446xx.o(RESET)
  <LI><a href="#[4e]">DMA2_Stream7_IRQHandler</a> from startup_stm32f446xx.o(.text) referenced from startup_stm32f446xx.o(RESET)
  <LI><a href="#[7]">DebugMon_Handler</a> from stm32f4xx_it.o(.text.DebugMon_Handler) referenced from startup_stm32f446xx.o(RESET)
  <LI><a href="#[10]">EXTI0_IRQHandler</a> from startup_stm32f446xx.o(.text) referenced from startup_stm32f446xx.o(RESET)
- <LI><a href="#[32]">EXTI15_10_IRQHandler</a> from startup_stm32f446xx.o(.text) referenced from startup_stm32f446xx.o(RESET)
+ <LI><a href="#[32]">EXTI15_10_IRQHandler</a> from stm32f4xx_it.o(.text.EXTI15_10_IRQHandler) referenced from startup_stm32f446xx.o(RESET)
  <LI><a href="#[11]">EXTI1_IRQHandler</a> from startup_stm32f446xx.o(.text) referenced from startup_stm32f446xx.o(RESET)
  <LI><a href="#[12]">EXTI2_IRQHandler</a> from startup_stm32f446xx.o(.text) referenced from startup_stm32f446xx.o(RESET)
  <LI><a href="#[13]">EXTI3_IRQHandler</a> from startup_stm32f446xx.o(.text) referenced from startup_stm32f446xx.o(RESET)
@@ -100,6 +100,9 @@ Function Pointers
  <LI><a href="#[2e]">SPI2_IRQHandler</a> from startup_stm32f446xx.o(.text) referenced from startup_stm32f446xx.o(RESET)
  <LI><a href="#[3d]">SPI3_IRQHandler</a> from startup_stm32f446xx.o(.text) referenced from startup_stm32f446xx.o(RESET)
  <LI><a href="#[58]">SPI4_IRQHandler</a> from startup_stm32f446xx.o(.text) referenced from startup_stm32f446xx.o(RESET)
+ <LI><a href="#[64]">SPI_DMAError</a> from stm32f4xx_hal_spi.o(.text.SPI_DMAError) referenced 2 times from stm32f4xx_hal_spi.o(.text.HAL_SPI_Transmit_DMA)
+ <LI><a href="#[62]">SPI_DMAHalfTransmitCplt</a> from stm32f4xx_hal_spi.o(.text.SPI_DMAHalfTransmitCplt) referenced 2 times from stm32f4xx_hal_spi.o(.text.HAL_SPI_Transmit_DMA)
+ <LI><a href="#[63]">SPI_DMATransmitCplt</a> from stm32f4xx_hal_spi.o(.text.SPI_DMATransmitCplt) referenced 2 times from stm32f4xx_hal_spi.o(.text.HAL_SPI_Transmit_DMA)
  <LI><a href="#[6]">SVC_Handler</a> from stm32f4xx_it.o(.text.SVC_Handler) referenced from startup_stm32f446xx.o(RESET)
  <LI><a href="#[9]">SysTick_Handler</a> from stm32f4xx_it.o(.text.SysTick_Handler) referenced from startup_stm32f446xx.o(RESET)
  <LI><a href="#[60]">SystemInit</a> from system_stm32f4xx.o(.text.SystemInit) referenced from startup_stm32f446xx.o(.text)
@@ -346,9 +349,6 @@ Global Symbols
 <P><STRONG><a name="[44]"></a>DMA2_Stream2_IRQHandler</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, startup_stm32f446xx.o(.text))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f446xx.o(RESET)
 </UL>
-<P><STRONG><a name="[45]"></a>DMA2_Stream3_IRQHandler</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, startup_stm32f446xx.o(.text))
-<BR>[Address Reference Count : 1]<UL><LI> startup_stm32f446xx.o(RESET)
-</UL>
 <P><STRONG><a name="[46]"></a>DMA2_Stream4_IRQHandler</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, startup_stm32f446xx.o(.text))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f446xx.o(RESET)
 </UL>
@@ -362,9 +362,6 @@ Global Symbols
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f446xx.o(RESET)
 </UL>
 <P><STRONG><a name="[10]"></a>EXTI0_IRQHandler</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, startup_stm32f446xx.o(.text))
-<BR>[Address Reference Count : 1]<UL><LI> startup_stm32f446xx.o(RESET)
-</UL>
-<P><STRONG><a name="[32]"></a>EXTI15_10_IRQHandler</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, startup_stm32f446xx.o(.text))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f446xx.o(RESET)
 </UL>
 <P><STRONG><a name="[11]"></a>EXTI1_IRQHandler</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, startup_stm32f446xx.o(.text))
@@ -700,7 +697,8 @@ Global Symbols
 <P><STRONG><a name="[7f]"></a>HAL_DMA_IRQHandler</STRONG> (Thumb, 452 bytes, Stack size 24 bytes, stm32f4xx_hal_dma.o(.text.HAL_DMA_IRQHandler))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = HAL_DMA_IRQHandler
 </UL>
-<BR>[Called By]<UL><LI><a href="#[18]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DMA1_Stream3_IRQHandler
+<BR>[Called By]<UL><LI><a href="#[45]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DMA2_Stream3_IRQHandler
+<LI><a href="#[18]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DMA1_Stream3_IRQHandler
 </UL>
 
 <P><STRONG><a name="[82]"></a>HAL_DMA_Init</STRONG> (Thumb, 354 bytes, Stack size 24 bytes, stm32f4xx_hal_dma.o(.text.HAL_DMA_Init))

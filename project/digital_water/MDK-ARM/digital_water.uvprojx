@@ -396,16 +396,6 @@
           <GroupName>Application/User/Core</GroupName>
           <Files>
             <File>
-              <FileName>accelerometer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\Src\accelerometer.c</FilePath>
-            </File>
-            <File>
-              <FileName>accelerometer.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Core\Inc\accelerometer.h</FilePath>
-            </File>
-            <File>
               <FileName>main.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Core\Inc\main.h</FilePath>
@@ -416,19 +406,29 @@
               <FilePath>..\Core\Inc\physics.h</FilePath>
             </File>
             <File>
-              <FileName>fluid_sim.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Core\Inc\fluid_sim.h</FilePath>
-            </File>
-            <File>
-              <FileName>fluid_sim.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\Src\fluid_sim.c</FilePath>
-            </File>
-            <File>
               <FileName>physics.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Core\Src\physics.c</FilePath>
+            </File>
+            <File>
+              <FileName>oled.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Core\Inc\oled.h</FilePath>
+            </File>
+            <File>
+              <FileName>oled.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\oled.c</FilePath>
+            </File>
+            <File>
+              <FileName>accelerometer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\accelerometer.c</FilePath>
+            </File>
+            <File>
+              <FileName>accelerometer.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Core\Inc\accelerometer.h</FilePath>
             </File>
             <File>
               <FileName>main.c</FileName>
@@ -444,6 +444,16 @@
               <FileName>stm32f4xx_hal_msp.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Core/Src/stm32f4xx_hal_msp.c</FilePath>
+            </File>
+            <File>
+              <FileName>fluid_sim.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Core\Inc\fluid_sim.h</FilePath>
+            </File>
+            <File>
+              <FileName>fluid_sim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\fluid_sim.c</FilePath>
             </File>
           </Files>
         </Group>

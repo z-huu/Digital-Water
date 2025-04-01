@@ -53,18 +53,18 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
+void my_print_msg(char *msg);
 
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
 #define USER_Btn_Pin GPIO_PIN_13
 #define USER_Btn_GPIO_Port GPIOC
+#define USER_Btn_EXTI_IRQn EXTI15_10_IRQn
 #define MCO_Pin GPIO_PIN_0
 #define MCO_GPIO_Port GPIOH
-#define SPI2_CS_Pin GPIO_PIN_3
-#define SPI2_CS_GPIO_Port GPIOC
-#define SPI1_CS_Pin GPIO_PIN_4
-#define SPI1_CS_GPIO_Port GPIOC
+#define OLED_DCL_Pin GPIO_PIN_4
+#define OLED_DCL_GPIO_Port GPIOA
 #define LD1_Pin GPIO_PIN_0
 #define LD1_GPIO_Port GPIOB
 #define LD3_Pin GPIO_PIN_14
@@ -73,10 +73,17 @@ void Error_Handler(void);
 #define STLK_RX_GPIO_Port GPIOD
 #define STLK_TX_Pin GPIO_PIN_9
 #define STLK_TX_GPIO_Port GPIOD
+#define ACCEL_CS_Pin GPIO_PIN_14
+#define ACCEL_CS_GPIO_Port GPIOD
+#define ACCEL_INT1_Pin GPIO_PIN_15
+#define ACCEL_INT1_GPIO_Port GPIOD
+#define ACCEL_INT1_EXTI_IRQn EXTI15_10_IRQn
 #define USB_PowerSwitchOn_Pin GPIO_PIN_6
 #define USB_PowerSwitchOn_GPIO_Port GPIOG
 #define USB_OverCurrent_Pin GPIO_PIN_7
 #define USB_OverCurrent_GPIO_Port GPIOG
+#define OLED_RST_Pin GPIO_PIN_7
+#define OLED_RST_GPIO_Port GPIOC
 #define USB_SOF_Pin GPIO_PIN_8
 #define USB_SOF_GPIO_Port GPIOA
 #define USB_VBUS_Pin GPIO_PIN_9
@@ -91,6 +98,12 @@ void Error_Handler(void);
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14
 #define TCK_GPIO_Port GPIOA
+#define OLED_VCCEN_Pin GPIO_PIN_3
+#define OLED_VCCEN_GPIO_Port GPIOB
+#define OLED_CS_Pin GPIO_PIN_4
+#define OLED_CS_GPIO_Port GPIOB
+#define OLED_PMODEN_Pin GPIO_PIN_5
+#define OLED_PMODEN_GPIO_Port GPIOB
 #define LD2_Pin GPIO_PIN_7
 #define LD2_GPIO_Port GPIOB
 

@@ -20,6 +20,8 @@ Section Cross References
     startup_stm32f446xx.o(RESET) refers to stm32f4xx_it.o(.text.SysTick_Handler) for SysTick_Handler
     startup_stm32f446xx.o(RESET) refers to stm32f4xx_it.o(.text.DMA1_Stream3_IRQHandler) for DMA1_Stream3_IRQHandler
     startup_stm32f446xx.o(RESET) refers to stm32f4xx_it.o(.text.USART3_IRQHandler) for USART3_IRQHandler
+    startup_stm32f446xx.o(RESET) refers to stm32f4xx_it.o(.text.EXTI15_10_IRQHandler) for EXTI15_10_IRQHandler
+    startup_stm32f446xx.o(RESET) refers to stm32f4xx_it.o(.text.DMA2_Stream3_IRQHandler) for DMA2_Stream3_IRQHandler
     startup_stm32f446xx.o(.text) refers (Special) to heapauxi.o(.text) for __use_two_region_memory
     startup_stm32f446xx.o(.text) refers to system_stm32f4xx.o(.text.SystemInit) for SystemInit
     startup_stm32f446xx.o(.text) refers to __main.o(!!!main) for __main
@@ -133,6 +135,140 @@ Section Cross References
     physics.o(.ARM.exidx.text.ScalarMult_V2) refers to physics.o(.text.ScalarMult_V2) for [Anonymous Symbol]
     physics.o(.ARM.exidx.text.Magnitude_V3) refers to physics.o(.text.Magnitude_V3) for [Anonymous Symbol]
     physics.o(.ARM.exidx.text.Normalize_V3) refers to physics.o(.text.Normalize_V3) for [Anonymous Symbol]
+    oled.o(.text.oled_init) refers to main.o(.text.my_print_msg) for my_print_msg
+    oled.o(.text.oled_init) refers to stm32f4xx_hal_gpio.o(.text.HAL_GPIO_WritePin) for HAL_GPIO_WritePin
+    oled.o(.text.oled_init) refers to stm32f4xx_hal.o(.text.HAL_Delay) for HAL_Delay
+    oled.o(.text.oled_init) refers to main.o(.bss.hspi1) for hspi1
+    oled.o(.text.oled_init) refers to stm32f4xx_hal_spi.o(.text.HAL_SPI_Transmit) for HAL_SPI_Transmit
+    oled.o(.ARM.exidx.text.oled_init) refers to oled.o(.text.oled_init) for [Anonymous Symbol]
+    oled.o(.text.oled_write) refers to main.o(.bss.hspi1) for hspi1
+    oled.o(.text.oled_write) refers to stm32f4xx_hal_spi.o(.text.HAL_SPI_Transmit) for HAL_SPI_Transmit
+    oled.o(.ARM.exidx.text.oled_write) refers to oled.o(.text.oled_write) for [Anonymous Symbol]
+    oled.o(.text.oled_cmd) refers to stm32f4xx_hal_gpio.o(.text.HAL_GPIO_WritePin) for HAL_GPIO_WritePin
+    oled.o(.text.oled_cmd) refers to stm32f4xx_hal.o(.text.HAL_Delay) for HAL_Delay
+    oled.o(.text.oled_cmd) refers to main.o(.bss.hspi1) for hspi1
+    oled.o(.text.oled_cmd) refers to stm32f4xx_hal_spi.o(.text.HAL_SPI_Transmit) for HAL_SPI_Transmit
+    oled.o(.ARM.exidx.text.oled_cmd) refers to oled.o(.text.oled_cmd) for [Anonymous Symbol]
+    oled.o(.text.oled_data) refers to stm32f4xx_hal_gpio.o(.text.HAL_GPIO_WritePin) for HAL_GPIO_WritePin
+    oled.o(.text.oled_data) refers to main.o(.bss.hspi1) for hspi1
+    oled.o(.text.oled_data) refers to stm32f4xx_hal_spi.o(.text.HAL_SPI_Transmit) for HAL_SPI_Transmit
+    oled.o(.ARM.exidx.text.oled_data) refers to oled.o(.text.oled_data) for [Anonymous Symbol]
+    oled.o(.text.oled_off) refers to main.o(.bss.hspi1) for hspi1
+    oled.o(.text.oled_off) refers to stm32f4xx_hal_spi.o(.text.HAL_SPI_Transmit) for HAL_SPI_Transmit
+    oled.o(.text.oled_off) refers to main.o(.text.my_print_msg) for my_print_msg
+    oled.o(.text.oled_off) refers to stm32f4xx_hal_gpio.o(.text.HAL_GPIO_WritePin) for HAL_GPIO_WritePin
+    oled.o(.text.oled_off) refers to stm32f4xx_hal.o(.text.HAL_Delay) for HAL_Delay
+    oled.o(.ARM.exidx.text.oled_off) refers to oled.o(.text.oled_off) for [Anonymous Symbol]
+    oled.o(.text.oled_drawpixel) refers to stm32f4xx_hal_gpio.o(.text.HAL_GPIO_WritePin) for HAL_GPIO_WritePin
+    oled.o(.text.oled_drawpixel) refers to stm32f4xx_hal.o(.text.HAL_Delay) for HAL_Delay
+    oled.o(.text.oled_drawpixel) refers to main.o(.bss.hspi1) for hspi1
+    oled.o(.text.oled_drawpixel) refers to stm32f4xx_hal_spi.o(.text.HAL_SPI_Transmit) for HAL_SPI_Transmit
+    oled.o(.ARM.exidx.text.oled_drawpixel) refers to oled.o(.text.oled_drawpixel) for [Anonymous Symbol]
+    oled.o(.text.oled_drawline) refers to stm32f4xx_hal_gpio.o(.text.HAL_GPIO_WritePin) for HAL_GPIO_WritePin
+    oled.o(.text.oled_drawline) refers to stm32f4xx_hal.o(.text.HAL_Delay) for HAL_Delay
+    oled.o(.text.oled_drawline) refers to main.o(.bss.hspi1) for hspi1
+    oled.o(.text.oled_drawline) refers to stm32f4xx_hal_spi.o(.text.HAL_SPI_Transmit) for HAL_SPI_Transmit
+    oled.o(.ARM.exidx.text.oled_drawline) refers to oled.o(.text.oled_drawline) for [Anonymous Symbol]
+    oled.o(.text.oled_eraseRect) refers to stm32f4xx_hal_gpio.o(.text.HAL_GPIO_WritePin) for HAL_GPIO_WritePin
+    oled.o(.text.oled_eraseRect) refers to stm32f4xx_hal.o(.text.HAL_Delay) for HAL_Delay
+    oled.o(.text.oled_eraseRect) refers to main.o(.bss.hspi1) for hspi1
+    oled.o(.text.oled_eraseRect) refers to stm32f4xx_hal_spi.o(.text.HAL_SPI_Transmit) for HAL_SPI_Transmit
+    oled.o(.ARM.exidx.text.oled_eraseRect) refers to oled.o(.text.oled_eraseRect) for [Anonymous Symbol]
+    oled.o(.text.oled_drawRect) refers to stm32f4xx_hal_gpio.o(.text.HAL_GPIO_WritePin) for HAL_GPIO_WritePin
+    oled.o(.text.oled_drawRect) refers to stm32f4xx_hal.o(.text.HAL_Delay) for HAL_Delay
+    oled.o(.text.oled_drawRect) refers to main.o(.bss.hspi1) for hspi1
+    oled.o(.text.oled_drawRect) refers to stm32f4xx_hal_spi.o(.text.HAL_SPI_Transmit) for HAL_SPI_Transmit
+    oled.o(.ARM.exidx.text.oled_drawRect) refers to oled.o(.text.oled_drawRect) for [Anonymous Symbol]
+    accelerometer.o(.text) refers (Special) to _printf_percent.o(.ARM.Collect$$_printf_percent$$00000000) for _printf_percent
+    accelerometer.o(.text) refers (Special) to _printf_x.o(.ARM.Collect$$_printf_percent$$0000000C) for _printf_x
+    accelerometer.o(.text) refers (Special) to _printf_d.o(.ARM.Collect$$_printf_percent$$00000009) for _printf_d
+    accelerometer.o(.text) refers (Special) to _printf_dec.o(.text) for _printf_int_dec
+    accelerometer.o(.text) refers (Special) to _printf_hex_int.o(.text) for _printf_longlong_hex
+    accelerometer.o(.text.accel_init) refers (Special) to _printf_percent.o(.ARM.Collect$$_printf_percent$$00000000) for _printf_percent
+    accelerometer.o(.text.accel_init) refers (Special) to _printf_x.o(.ARM.Collect$$_printf_percent$$0000000C) for _printf_x
+    accelerometer.o(.text.accel_init) refers (Special) to _printf_d.o(.ARM.Collect$$_printf_percent$$00000009) for _printf_d
+    accelerometer.o(.text.accel_init) refers (Special) to _printf_dec.o(.text) for _printf_int_dec
+    accelerometer.o(.text.accel_init) refers (Special) to _printf_hex_int.o(.text) for _printf_longlong_hex
+    accelerometer.o(.text.accel_init) refers to main.o(.text.my_print_msg) for my_print_msg
+    accelerometer.o(.text.accel_init) refers to accelerometer.o(.text.accel_read) for accel_read
+    accelerometer.o(.text.accel_init) refers to noretval__2sprintf.o(.text) for __2sprintf
+    accelerometer.o(.text.accel_init) refers to accelerometer.o(.text.accel_write) for accel_write
+    accelerometer.o(.text.accel_init) refers to accelerometer.o(.rodata.str1.1) for .L.str.3
+    accelerometer.o(.text.accel_init) refers to stm32f4xx_hal_gpio.o(.text.HAL_GPIO_WritePin) for HAL_GPIO_WritePin
+    accelerometer.o(.text.accel_init) refers to stm32f4xx_hal.o(.text.HAL_Delay) for HAL_Delay
+    accelerometer.o(.text.accel_init) refers to main.o(.bss.hspi1) for hspi1
+    accelerometer.o(.text.accel_init) refers to stm32f4xx_hal_spi.o(.text.HAL_SPI_Transmit) for HAL_SPI_Transmit
+    accelerometer.o(.ARM.exidx.text.accel_init) refers (Special) to _printf_percent.o(.ARM.Collect$$_printf_percent$$00000000) for _printf_percent
+    accelerometer.o(.ARM.exidx.text.accel_init) refers (Special) to _printf_x.o(.ARM.Collect$$_printf_percent$$0000000C) for _printf_x
+    accelerometer.o(.ARM.exidx.text.accel_init) refers (Special) to _printf_d.o(.ARM.Collect$$_printf_percent$$00000009) for _printf_d
+    accelerometer.o(.ARM.exidx.text.accel_init) refers (Special) to _printf_dec.o(.text) for _printf_int_dec
+    accelerometer.o(.ARM.exidx.text.accel_init) refers (Special) to _printf_hex_int.o(.text) for _printf_longlong_hex
+    accelerometer.o(.ARM.exidx.text.accel_init) refers to accelerometer.o(.text.accel_init) for [Anonymous Symbol]
+    accelerometer.o(.text.accel_read) refers (Special) to _printf_percent.o(.ARM.Collect$$_printf_percent$$00000000) for _printf_percent
+    accelerometer.o(.text.accel_read) refers (Special) to _printf_x.o(.ARM.Collect$$_printf_percent$$0000000C) for _printf_x
+    accelerometer.o(.text.accel_read) refers (Special) to _printf_d.o(.ARM.Collect$$_printf_percent$$00000009) for _printf_d
+    accelerometer.o(.text.accel_read) refers (Special) to _printf_dec.o(.text) for _printf_int_dec
+    accelerometer.o(.text.accel_read) refers (Special) to _printf_hex_int.o(.text) for _printf_longlong_hex
+    accelerometer.o(.text.accel_read) refers to stm32f4xx_hal_gpio.o(.text.HAL_GPIO_WritePin) for HAL_GPIO_WritePin
+    accelerometer.o(.text.accel_read) refers to main.o(.text.my_print_msg) for my_print_msg
+    accelerometer.o(.text.accel_read) refers to stm32f4xx_hal.o(.text.HAL_Delay) for HAL_Delay
+    accelerometer.o(.text.accel_read) refers to main.o(.bss.hspi1) for hspi1
+    accelerometer.o(.text.accel_read) refers to stm32f4xx_hal_spi.o(.text.HAL_SPI_TransmitReceive) for HAL_SPI_TransmitReceive
+    accelerometer.o(.text.accel_read) refers to accelerometer.o(.rodata.str1.1) for .L.str.7
+    accelerometer.o(.text.accel_read) refers to noretval__2sprintf.o(.text) for __2sprintf
+    accelerometer.o(.ARM.exidx.text.accel_read) refers (Special) to _printf_percent.o(.ARM.Collect$$_printf_percent$$00000000) for _printf_percent
+    accelerometer.o(.ARM.exidx.text.accel_read) refers (Special) to _printf_x.o(.ARM.Collect$$_printf_percent$$0000000C) for _printf_x
+    accelerometer.o(.ARM.exidx.text.accel_read) refers (Special) to _printf_d.o(.ARM.Collect$$_printf_percent$$00000009) for _printf_d
+    accelerometer.o(.ARM.exidx.text.accel_read) refers (Special) to _printf_dec.o(.text) for _printf_int_dec
+    accelerometer.o(.ARM.exidx.text.accel_read) refers (Special) to _printf_hex_int.o(.text) for _printf_longlong_hex
+    accelerometer.o(.ARM.exidx.text.accel_read) refers to accelerometer.o(.text.accel_read) for [Anonymous Symbol]
+    accelerometer.o(.text.accel_write) refers (Special) to _printf_percent.o(.ARM.Collect$$_printf_percent$$00000000) for _printf_percent
+    accelerometer.o(.text.accel_write) refers (Special) to _printf_x.o(.ARM.Collect$$_printf_percent$$0000000C) for _printf_x
+    accelerometer.o(.text.accel_write) refers (Special) to _printf_d.o(.ARM.Collect$$_printf_percent$$00000009) for _printf_d
+    accelerometer.o(.text.accel_write) refers (Special) to _printf_dec.o(.text) for _printf_int_dec
+    accelerometer.o(.text.accel_write) refers (Special) to _printf_hex_int.o(.text) for _printf_longlong_hex
+    accelerometer.o(.text.accel_write) refers to noretval__2sprintf.o(.text) for __2sprintf
+    accelerometer.o(.text.accel_write) refers to main.o(.text.my_print_msg) for my_print_msg
+    accelerometer.o(.text.accel_write) refers to stm32f4xx_hal_gpio.o(.text.HAL_GPIO_WritePin) for HAL_GPIO_WritePin
+    accelerometer.o(.text.accel_write) refers to stm32f4xx_hal.o(.text.HAL_Delay) for HAL_Delay
+    accelerometer.o(.text.accel_write) refers to main.o(.bss.hspi1) for hspi1
+    accelerometer.o(.text.accel_write) refers to stm32f4xx_hal_spi.o(.text.HAL_SPI_TransmitReceive) for HAL_SPI_TransmitReceive
+    accelerometer.o(.text.accel_write) refers to accelerometer.o(.rodata.str1.1) for .L.str.7
+    accelerometer.o(.ARM.exidx.text.accel_write) refers (Special) to _printf_percent.o(.ARM.Collect$$_printf_percent$$00000000) for _printf_percent
+    accelerometer.o(.ARM.exidx.text.accel_write) refers (Special) to _printf_x.o(.ARM.Collect$$_printf_percent$$0000000C) for _printf_x
+    accelerometer.o(.ARM.exidx.text.accel_write) refers (Special) to _printf_d.o(.ARM.Collect$$_printf_percent$$00000009) for _printf_d
+    accelerometer.o(.ARM.exidx.text.accel_write) refers (Special) to _printf_dec.o(.text) for _printf_int_dec
+    accelerometer.o(.ARM.exidx.text.accel_write) refers (Special) to _printf_hex_int.o(.text) for _printf_longlong_hex
+    accelerometer.o(.ARM.exidx.text.accel_write) refers to accelerometer.o(.text.accel_write) for [Anonymous Symbol]
+    accelerometer.o(.text.accel_poll) refers (Special) to _printf_percent.o(.ARM.Collect$$_printf_percent$$00000000) for _printf_percent
+    accelerometer.o(.text.accel_poll) refers (Special) to _printf_x.o(.ARM.Collect$$_printf_percent$$0000000C) for _printf_x
+    accelerometer.o(.text.accel_poll) refers (Special) to _printf_d.o(.ARM.Collect$$_printf_percent$$00000009) for _printf_d
+    accelerometer.o(.text.accel_poll) refers (Special) to _printf_dec.o(.text) for _printf_int_dec
+    accelerometer.o(.text.accel_poll) refers (Special) to _printf_hex_int.o(.text) for _printf_longlong_hex
+    accelerometer.o(.text.accel_poll) refers to stm32f4xx_hal_gpio.o(.text.HAL_GPIO_WritePin) for HAL_GPIO_WritePin
+    accelerometer.o(.text.accel_poll) refers to stm32f4xx_hal.o(.text.HAL_Delay) for HAL_Delay
+    accelerometer.o(.text.accel_poll) refers to main.o(.bss.hspi1) for hspi1
+    accelerometer.o(.text.accel_poll) refers to stm32f4xx_hal_spi.o(.text.HAL_SPI_TransmitReceive) for HAL_SPI_TransmitReceive
+    accelerometer.o(.text.accel_poll) refers to noretval__2sprintf.o(.text) for __2sprintf
+    accelerometer.o(.text.accel_poll) refers to main.o(.text.my_print_msg) for my_print_msg
+    accelerometer.o(.ARM.exidx.text.accel_poll) refers (Special) to _printf_percent.o(.ARM.Collect$$_printf_percent$$00000000) for _printf_percent
+    accelerometer.o(.ARM.exidx.text.accel_poll) refers (Special) to _printf_x.o(.ARM.Collect$$_printf_percent$$0000000C) for _printf_x
+    accelerometer.o(.ARM.exidx.text.accel_poll) refers (Special) to _printf_d.o(.ARM.Collect$$_printf_percent$$00000009) for _printf_d
+    accelerometer.o(.ARM.exidx.text.accel_poll) refers (Special) to _printf_dec.o(.text) for _printf_int_dec
+    accelerometer.o(.ARM.exidx.text.accel_poll) refers (Special) to _printf_hex_int.o(.text) for _printf_longlong_hex
+    accelerometer.o(.ARM.exidx.text.accel_poll) refers to accelerometer.o(.text.accel_poll) for [Anonymous Symbol]
+    accelerometer.o(.rodata.str1.1) refers (Special) to _printf_percent.o(.ARM.Collect$$_printf_percent$$00000000) for _printf_percent
+    accelerometer.o(.rodata.str1.1) refers (Special) to _printf_x.o(.ARM.Collect$$_printf_percent$$0000000C) for _printf_x
+    accelerometer.o(.rodata.str1.1) refers (Special) to _printf_d.o(.ARM.Collect$$_printf_percent$$00000009) for _printf_d
+    accelerometer.o(.rodata.str1.1) refers (Special) to _printf_dec.o(.text) for _printf_int_dec
+    accelerometer.o(.rodata.str1.1) refers (Special) to _printf_hex_int.o(.text) for _printf_longlong_hex
+    main.o(.text.oled_drawframe) refers to main.o(.bss.hspi1) for hspi1
+    main.o(.text.oled_drawframe) refers to stm32f4xx_hal_spi.o(.text.HAL_SPI_GetState) for HAL_SPI_GetState
+    main.o(.text.oled_drawframe) refers to oled.o(.text.oled_cmd) for oled_cmd
+    main.o(.text.oled_drawframe) refers to stm32f4xx_hal_gpio.o(.text.HAL_GPIO_WritePin) for HAL_GPIO_WritePin
+    main.o(.text.oled_drawframe) refers to stm32f4xx_hal.o(.text.HAL_Delay) for HAL_Delay
+    main.o(.text.oled_drawframe) refers to stm32f4xx_hal_spi.o(.text.HAL_SPI_Transmit_DMA) for HAL_SPI_Transmit_DMA
+    main.o(.ARM.exidx.text.oled_drawframe) refers to main.o(.text.oled_drawframe) for [Anonymous Symbol]
     main.o(.text.main) refers to stm32f4xx_hal.o(.text.HAL_Init) for HAL_Init
     main.o(.text.main) refers to main.o(.text.SystemClock_Config) for SystemClock_Config
     main.o(.text.main) refers to stm32f4xx_hal_gpio.o(.text.HAL_GPIO_WritePin) for HAL_GPIO_WritePin
@@ -141,11 +277,10 @@ Section Cross References
     main.o(.text.main) refers to stm32f4xx_hal_cortex.o(.text.HAL_NVIC_EnableIRQ) for HAL_NVIC_EnableIRQ
     main.o(.text.main) refers to main.o(.bss.hspi1) for hspi1
     main.o(.text.main) refers to stm32f4xx_hal_spi.o(.text.HAL_SPI_Init) for HAL_SPI_Init
-    main.o(.text.main) refers to main.o(.bss.hspi2) for hspi2
-    main.o(.text.main) refers to main.o(.bss..L_MergedGlobals) for .L_MergedGlobals
+    main.o(.text.main) refers to main.o(.bss.htim6) for htim6
     main.o(.text.main) refers to stm32f4xx_hal_tim.o(.text.HAL_TIM_Base_Init) for HAL_TIM_Base_Init
     main.o(.text.main) refers to stm32f4xx_hal_tim_ex.o(.text.HAL_TIMEx_MasterConfigSynchronization) for HAL_TIMEx_MasterConfigSynchronization
-    main.o(.text.main) refers to main.o(.bss.huart3) for huart3
+    main.o(.text.main) refers to main.o(.bss..L_MergedGlobals) for .L_MergedGlobals
     main.o(.text.main) refers to stm32f4xx_hal_uart.o(.text.HAL_UART_Init) for HAL_UART_Init
     main.o(.text.main) refers to main.o(.bss.hpcd_USB_OTG_FS) for hpcd_USB_OTG_FS
     main.o(.text.main) refers to stm32f4xx_hal_pcd.o(.text.HAL_PCD_Init) for HAL_PCD_Init
@@ -160,6 +295,10 @@ Section Cross References
     main.o(.text.SystemClock_Config) refers to stm32f4xx_hal_rcc.o(.text.HAL_RCC_ClockConfig) for HAL_RCC_ClockConfig
     main.o(.ARM.exidx.text.SystemClock_Config) refers to main.o(.text.SystemClock_Config) for [Anonymous Symbol]
     main.o(.ARM.exidx.text.Error_Handler) refers to main.o(.text.Error_Handler) for [Anonymous Symbol]
+    main.o(.text.my_print_msg) refers to strlen.o(.text) for strlen
+    main.o(.text.my_print_msg) refers to main.o(.bss..L_MergedGlobals) for .L_MergedGlobals
+    main.o(.text.my_print_msg) refers to stm32f4xx_hal_uart.o(.text.HAL_UART_Transmit) for HAL_UART_Transmit
+    main.o(.ARM.exidx.text.my_print_msg) refers to main.o(.text.my_print_msg) for [Anonymous Symbol]
     stm32f4xx_it.o(.ARM.exidx.text.NMI_Handler) refers to stm32f4xx_it.o(.text.NMI_Handler) for [Anonymous Symbol]
     stm32f4xx_it.o(.ARM.exidx.text.HardFault_Handler) refers to stm32f4xx_it.o(.text.HardFault_Handler) for [Anonymous Symbol]
     stm32f4xx_it.o(.ARM.exidx.text.MemManage_Handler) refers to stm32f4xx_it.o(.text.MemManage_Handler) for [Anonymous Symbol]
@@ -173,13 +312,24 @@ Section Cross References
     stm32f4xx_it.o(.text.DMA1_Stream3_IRQHandler) refers to main.o(.bss.hdma_usart3_tx) for hdma_usart3_tx
     stm32f4xx_it.o(.text.DMA1_Stream3_IRQHandler) refers to stm32f4xx_hal_dma.o(.text.HAL_DMA_IRQHandler) for HAL_DMA_IRQHandler
     stm32f4xx_it.o(.ARM.exidx.text.DMA1_Stream3_IRQHandler) refers to stm32f4xx_it.o(.text.DMA1_Stream3_IRQHandler) for [Anonymous Symbol]
-    stm32f4xx_it.o(.text.USART3_IRQHandler) refers to main.o(.bss.huart3) for huart3
+    stm32f4xx_it.o(.text.USART3_IRQHandler) refers to main.o(.bss..L_MergedGlobals) for huart3
     stm32f4xx_it.o(.text.USART3_IRQHandler) refers to stm32f4xx_hal_uart.o(.text.HAL_UART_IRQHandler) for HAL_UART_IRQHandler
     stm32f4xx_it.o(.ARM.exidx.text.USART3_IRQHandler) refers to stm32f4xx_it.o(.text.USART3_IRQHandler) for [Anonymous Symbol]
+    stm32f4xx_it.o(.text.EXTI15_10_IRQHandler) refers to main.o(.bss.new_accel_data) for new_accel_data
+    stm32f4xx_it.o(.text.EXTI15_10_IRQHandler) refers to main.o(.bss..L_MergedGlobals) for btn_press
+    stm32f4xx_it.o(.text.EXTI15_10_IRQHandler) refers to stm32f4xx_hal_gpio.o(.text.HAL_GPIO_EXTI_IRQHandler) for HAL_GPIO_EXTI_IRQHandler
+    stm32f4xx_it.o(.ARM.exidx.text.EXTI15_10_IRQHandler) refers to stm32f4xx_it.o(.text.EXTI15_10_IRQHandler) for [Anonymous Symbol]
+    stm32f4xx_it.o(.text.DMA2_Stream3_IRQHandler) refers to main.o(.bss.hdma_spi1_tx) for hdma_spi1_tx
+    stm32f4xx_it.o(.text.DMA2_Stream3_IRQHandler) refers to stm32f4xx_hal_dma.o(.text.HAL_DMA_IRQHandler) for HAL_DMA_IRQHandler
+    stm32f4xx_it.o(.ARM.exidx.text.DMA2_Stream3_IRQHandler) refers to stm32f4xx_it.o(.text.DMA2_Stream3_IRQHandler) for [Anonymous Symbol]
     stm32f4xx_hal_msp.o(.ARM.exidx.text.HAL_MspInit) refers to stm32f4xx_hal_msp.o(.text.HAL_MspInit) for [Anonymous Symbol]
     stm32f4xx_hal_msp.o(.text.HAL_SPI_MspInit) refers to stm32f4xx_hal_gpio.o(.text.HAL_GPIO_Init) for HAL_GPIO_Init
+    stm32f4xx_hal_msp.o(.text.HAL_SPI_MspInit) refers to main.o(.bss.hdma_spi1_tx) for hdma_spi1_tx
+    stm32f4xx_hal_msp.o(.text.HAL_SPI_MspInit) refers to stm32f4xx_hal_dma.o(.text.HAL_DMA_Init) for HAL_DMA_Init
+    stm32f4xx_hal_msp.o(.text.HAL_SPI_MspInit) refers to main.o(.text.Error_Handler) for Error_Handler
     stm32f4xx_hal_msp.o(.ARM.exidx.text.HAL_SPI_MspInit) refers to stm32f4xx_hal_msp.o(.text.HAL_SPI_MspInit) for [Anonymous Symbol]
     stm32f4xx_hal_msp.o(.text.HAL_SPI_MspDeInit) refers to stm32f4xx_hal_gpio.o(.text.HAL_GPIO_DeInit) for HAL_GPIO_DeInit
+    stm32f4xx_hal_msp.o(.text.HAL_SPI_MspDeInit) refers to stm32f4xx_hal_dma.o(.text.HAL_DMA_DeInit) for HAL_DMA_DeInit
     stm32f4xx_hal_msp.o(.ARM.exidx.text.HAL_SPI_MspDeInit) refers to stm32f4xx_hal_msp.o(.text.HAL_SPI_MspDeInit) for [Anonymous Symbol]
     stm32f4xx_hal_msp.o(.ARM.exidx.text.HAL_TIM_Base_MspInit) refers to stm32f4xx_hal_msp.o(.text.HAL_TIM_Base_MspInit) for [Anonymous Symbol]
     stm32f4xx_hal_msp.o(.ARM.exidx.text.HAL_TIM_Base_MspDeInit) refers to stm32f4xx_hal_msp.o(.text.HAL_TIM_Base_MspDeInit) for [Anonymous Symbol]
@@ -201,6 +351,20 @@ Section Cross References
     stm32f4xx_hal_msp.o(.ARM.exidx.text.HAL_PCD_MspInit) refers to stm32f4xx_hal_msp.o(.text.HAL_PCD_MspInit) for [Anonymous Symbol]
     stm32f4xx_hal_msp.o(.text.HAL_PCD_MspDeInit) refers to stm32f4xx_hal_gpio.o(.text.HAL_GPIO_DeInit) for HAL_GPIO_DeInit
     stm32f4xx_hal_msp.o(.ARM.exidx.text.HAL_PCD_MspDeInit) refers to stm32f4xx_hal_msp.o(.text.HAL_PCD_MspDeInit) for [Anonymous Symbol]
+    fluid_sim.o(.text.Sim_Grid_Init) refers to main.o(.bss.grid_array) for grid_array
+    fluid_sim.o(.ARM.exidx.text.Sim_Grid_Init) refers to fluid_sim.o(.text.Sim_Grid_Init) for [Anonymous Symbol]
+    fluid_sim.o(.ARM.exidx.text.Sim_Grid_Update) refers to fluid_sim.o(.text.Sim_Grid_Update) for [Anonymous Symbol]
+    fluid_sim.o(.text.testPrint) refers to fluid_sim.o(.bss.tx_buff) for tx_buff
+    fluid_sim.o(.text.testPrint) refers to fluid_sim.o(.bss..L_MergedGlobals) for .L_MergedGlobals
+    fluid_sim.o(.text.testPrint) refers to aeabi_memset4.o(.text) for __aeabi_memset4
+    fluid_sim.o(.text.testPrint) refers to main.o(.bss..L_MergedGlobals) for huart3
+    fluid_sim.o(.text.testPrint) refers to stm32f4xx_hal_uart.o(.text.HAL_UART_GetState) for HAL_UART_GetState
+    fluid_sim.o(.text.testPrint) refers to stm32f4xx_hal_uart.o(.text.HAL_UART_Transmit_DMA) for HAL_UART_Transmit_DMA
+    fluid_sim.o(.ARM.exidx.text.testPrint) refers to fluid_sim.o(.text.testPrint) for [Anonymous Symbol]
+    fluid_sim.o(.text.print_msg) refers to strlen.o(.text) for strlen
+    fluid_sim.o(.text.print_msg) refers to main.o(.bss..L_MergedGlobals) for huart3
+    fluid_sim.o(.text.print_msg) refers to stm32f4xx_hal_uart.o(.text.HAL_UART_Transmit) for HAL_UART_Transmit
+    fluid_sim.o(.ARM.exidx.text.print_msg) refers to fluid_sim.o(.text.print_msg) for [Anonymous Symbol]
     stm32f4xx_hal_spi.o(.text.HAL_SPI_Init) refers to stm32f4xx_hal_msp.o(.text.HAL_SPI_MspInit) for HAL_SPI_MspInit
     stm32f4xx_hal_spi.o(.ARM.exidx.text.HAL_SPI_Init) refers to stm32f4xx_hal_spi.o(.text.HAL_SPI_Init) for [Anonymous Symbol]
     stm32f4xx_hal_spi.o(.ARM.exidx.text.HAL_SPI_MspInit) refers to stm32f4xx_hal_spi.o(.text.HAL_SPI_MspInit) for [Anonymous Symbol]
@@ -1338,12 +1502,40 @@ Removing Unused input sections from the image.
     Removing physics.o(.ARM.exidx.text.Magnitude_V3), (8 bytes).
     Removing physics.o(.text.Normalize_V3), (80 bytes).
     Removing physics.o(.ARM.exidx.text.Normalize_V3), (8 bytes).
+    Removing oled.o(.text), (0 bytes).
+    Removing oled.o(.ARM.exidx.text.oled_init), (8 bytes).
+    Removing oled.o(.text.oled_write), (34 bytes).
+    Removing oled.o(.ARM.exidx.text.oled_write), (8 bytes).
+    Removing oled.o(.ARM.exidx.text.oled_cmd), (8 bytes).
+    Removing oled.o(.text.oled_data), (80 bytes).
+    Removing oled.o(.ARM.exidx.text.oled_data), (8 bytes).
+    Removing oled.o(.text.oled_off), (96 bytes).
+    Removing oled.o(.ARM.exidx.text.oled_off), (8 bytes).
+    Removing oled.o(.ARM.exidx.text.oled_drawpixel), (8 bytes).
+    Removing oled.o(.ARM.exidx.text.oled_drawline), (8 bytes).
+    Removing oled.o(.ARM.exidx.text.oled_eraseRect), (8 bytes).
+    Removing oled.o(.text.oled_drawRect), (822 bytes).
+    Removing oled.o(.ARM.exidx.text.oled_drawRect), (8 bytes).
+    Removing accelerometer.o(.text), (0 bytes).
+    Removing accelerometer.o(.text.accel_init), (340 bytes).
+    Removing accelerometer.o(.ARM.exidx.text.accel_init), (8 bytes).
+    Removing accelerometer.o(.text.accel_read), (296 bytes).
+    Removing accelerometer.o(.ARM.exidx.text.accel_read), (8 bytes).
+    Removing accelerometer.o(.text.accel_write), (284 bytes).
+    Removing accelerometer.o(.ARM.exidx.text.accel_write), (8 bytes).
+    Removing accelerometer.o(.text.accel_poll), (172 bytes).
+    Removing accelerometer.o(.ARM.exidx.text.accel_poll), (8 bytes).
+    Removing accelerometer.o(.rodata.str1.1), (78 bytes).
     Removing main.o(.text), (0 bytes).
+    Removing main.o(.text.oled_drawframe), (114 bytes).
+    Removing main.o(.ARM.exidx.text.oled_drawframe), (8 bytes).
     Removing main.o(.ARM.exidx.text.main), (8 bytes).
     Removing main.o(.ARM.exidx.text.SystemClock_Config), (8 bytes).
     Removing main.o(.ARM.exidx.text.Error_Handler), (8 bytes).
-    Removing main.o(.bss.obstacle_array), (0 bytes).
-    Removing main.o(.bss.main_msg), (100 bytes).
+    Removing main.o(.ARM.exidx.text.my_print_msg), (8 bytes).
+    Removing main.o(.data.colors), (6 bytes).
+    Removing main.o(.bss.accel_data), (3 bytes).
+    Removing main.o(.bss.msg), (100 bytes).
     Removing main.o(.ARM.use_no_argv), (4 bytes).
     Removing stm32f4xx_it.o(.text), (0 bytes).
     Removing stm32f4xx_it.o(.ARM.exidx.text.NMI_Handler), (8 bytes).
@@ -1357,10 +1549,12 @@ Removing Unused input sections from the image.
     Removing stm32f4xx_it.o(.ARM.exidx.text.SysTick_Handler), (8 bytes).
     Removing stm32f4xx_it.o(.ARM.exidx.text.DMA1_Stream3_IRQHandler), (8 bytes).
     Removing stm32f4xx_it.o(.ARM.exidx.text.USART3_IRQHandler), (8 bytes).
+    Removing stm32f4xx_it.o(.ARM.exidx.text.EXTI15_10_IRQHandler), (8 bytes).
+    Removing stm32f4xx_it.o(.ARM.exidx.text.DMA2_Stream3_IRQHandler), (8 bytes).
     Removing stm32f4xx_hal_msp.o(.text), (0 bytes).
     Removing stm32f4xx_hal_msp.o(.ARM.exidx.text.HAL_MspInit), (8 bytes).
     Removing stm32f4xx_hal_msp.o(.ARM.exidx.text.HAL_SPI_MspInit), (8 bytes).
-    Removing stm32f4xx_hal_msp.o(.text.HAL_SPI_MspDeInit), (106 bytes).
+    Removing stm32f4xx_hal_msp.o(.text.HAL_SPI_MspDeInit), (56 bytes).
     Removing stm32f4xx_hal_msp.o(.ARM.exidx.text.HAL_SPI_MspDeInit), (8 bytes).
     Removing stm32f4xx_hal_msp.o(.ARM.exidx.text.HAL_TIM_Base_MspInit), (8 bytes).
     Removing stm32f4xx_hal_msp.o(.text.HAL_TIM_Base_MspDeInit), (34 bytes).
@@ -1371,6 +1565,18 @@ Removing Unused input sections from the image.
     Removing stm32f4xx_hal_msp.o(.ARM.exidx.text.HAL_PCD_MspInit), (8 bytes).
     Removing stm32f4xx_hal_msp.o(.text.HAL_PCD_MspDeInit), (40 bytes).
     Removing stm32f4xx_hal_msp.o(.ARM.exidx.text.HAL_PCD_MspDeInit), (8 bytes).
+    Removing fluid_sim.o(.text), (0 bytes).
+    Removing fluid_sim.o(.text.Sim_Grid_Init), (402 bytes).
+    Removing fluid_sim.o(.ARM.exidx.text.Sim_Grid_Init), (8 bytes).
+    Removing fluid_sim.o(.text.Sim_Grid_Update), (2 bytes).
+    Removing fluid_sim.o(.ARM.exidx.text.Sim_Grid_Update), (8 bytes).
+    Removing fluid_sim.o(.text.testPrint), (138 bytes).
+    Removing fluid_sim.o(.ARM.exidx.text.testPrint), (8 bytes).
+    Removing fluid_sim.o(.text.print_msg), (30 bytes).
+    Removing fluid_sim.o(.ARM.exidx.text.print_msg), (8 bytes).
+    Removing fluid_sim.o(.rodata.str1.4), (12 bytes).
+    Removing fluid_sim.o(.bss.tx_buff), (6166 bytes).
+    Removing fluid_sim.o(.bss..L_MergedGlobals), (8 bytes).
     Removing stm32f4xx_hal_spi.o(.text), (0 bytes).
     Removing stm32f4xx_hal_spi.o(.ARM.exidx.text.HAL_SPI_Init), (8 bytes).
     Removing stm32f4xx_hal_spi.o(.text.HAL_SPI_MspInit), (2 bytes).
@@ -1379,7 +1585,6 @@ Removing Unused input sections from the image.
     Removing stm32f4xx_hal_spi.o(.ARM.exidx.text.HAL_SPI_DeInit), (8 bytes).
     Removing stm32f4xx_hal_spi.o(.text.HAL_SPI_MspDeInit), (2 bytes).
     Removing stm32f4xx_hal_spi.o(.ARM.exidx.text.HAL_SPI_MspDeInit), (8 bytes).
-    Removing stm32f4xx_hal_spi.o(.text.HAL_SPI_Transmit), (634 bytes).
     Removing stm32f4xx_hal_spi.o(.ARM.exidx.text.HAL_SPI_Transmit), (8 bytes).
     Removing stm32f4xx_hal_spi.o(.text.HAL_SPI_Receive), (512 bytes).
     Removing stm32f4xx_hal_spi.o(.ARM.exidx.text.HAL_SPI_Receive), (8 bytes).
@@ -1407,13 +1612,9 @@ Removing Unused input sections from the image.
     Removing stm32f4xx_hal_spi.o(.ARM.exidx.text.SPI_2linesRxISR_8BIT), (8 bytes).
     Removing stm32f4xx_hal_spi.o(.text.SPI_2linesTxISR_8BIT), (50 bytes).
     Removing stm32f4xx_hal_spi.o(.ARM.exidx.text.SPI_2linesTxISR_8BIT), (8 bytes).
-    Removing stm32f4xx_hal_spi.o(.text.HAL_SPI_Transmit_DMA), (222 bytes).
     Removing stm32f4xx_hal_spi.o(.ARM.exidx.text.HAL_SPI_Transmit_DMA), (8 bytes).
-    Removing stm32f4xx_hal_spi.o(.text.SPI_DMAHalfTransmitCplt), (6 bytes).
     Removing stm32f4xx_hal_spi.o(.ARM.exidx.text.SPI_DMAHalfTransmitCplt), (8 bytes).
-    Removing stm32f4xx_hal_spi.o(.text.SPI_DMATransmitCplt), (274 bytes).
     Removing stm32f4xx_hal_spi.o(.ARM.exidx.text.SPI_DMATransmitCplt), (8 bytes).
-    Removing stm32f4xx_hal_spi.o(.text.SPI_DMAError), (30 bytes).
     Removing stm32f4xx_hal_spi.o(.ARM.exidx.text.SPI_DMAError), (8 bytes).
     Removing stm32f4xx_hal_spi.o(.text.HAL_SPI_Receive_DMA), (250 bytes).
     Removing stm32f4xx_hal_spi.o(.ARM.exidx.text.HAL_SPI_Receive_DMA), (8 bytes).
@@ -1451,21 +1652,17 @@ Removing Unused input sections from the image.
     Removing stm32f4xx_hal_spi.o(.ARM.exidx.text.HAL_SPI_IRQHandler), (8 bytes).
     Removing stm32f4xx_hal_spi.o(.text.SPI_DMAAbortOnError), (12 bytes).
     Removing stm32f4xx_hal_spi.o(.ARM.exidx.text.SPI_DMAAbortOnError), (8 bytes).
-    Removing stm32f4xx_hal_spi.o(.text.HAL_SPI_ErrorCallback), (2 bytes).
     Removing stm32f4xx_hal_spi.o(.ARM.exidx.text.HAL_SPI_ErrorCallback), (8 bytes).
-    Removing stm32f4xx_hal_spi.o(.text.HAL_SPI_TxCpltCallback), (2 bytes).
     Removing stm32f4xx_hal_spi.o(.ARM.exidx.text.HAL_SPI_TxCpltCallback), (8 bytes).
     Removing stm32f4xx_hal_spi.o(.text.HAL_SPI_RxCpltCallback), (2 bytes).
     Removing stm32f4xx_hal_spi.o(.ARM.exidx.text.HAL_SPI_RxCpltCallback), (8 bytes).
     Removing stm32f4xx_hal_spi.o(.text.HAL_SPI_TxRxCpltCallback), (2 bytes).
     Removing stm32f4xx_hal_spi.o(.ARM.exidx.text.HAL_SPI_TxRxCpltCallback), (8 bytes).
-    Removing stm32f4xx_hal_spi.o(.text.HAL_SPI_TxHalfCpltCallback), (2 bytes).
     Removing stm32f4xx_hal_spi.o(.ARM.exidx.text.HAL_SPI_TxHalfCpltCallback), (8 bytes).
     Removing stm32f4xx_hal_spi.o(.text.HAL_SPI_RxHalfCpltCallback), (2 bytes).
     Removing stm32f4xx_hal_spi.o(.ARM.exidx.text.HAL_SPI_RxHalfCpltCallback), (8 bytes).
     Removing stm32f4xx_hal_spi.o(.text.HAL_SPI_TxRxHalfCpltCallback), (2 bytes).
     Removing stm32f4xx_hal_spi.o(.ARM.exidx.text.HAL_SPI_TxRxHalfCpltCallback), (8 bytes).
-    Removing stm32f4xx_hal_spi.o(.text.HAL_SPI_GetState), (6 bytes).
     Removing stm32f4xx_hal_spi.o(.ARM.exidx.text.HAL_SPI_GetState), (8 bytes).
     Removing stm32f4xx_hal_spi.o(.text.HAL_SPI_GetError), (4 bytes).
     Removing stm32f4xx_hal_spi.o(.ARM.exidx.text.HAL_SPI_GetError), (8 bytes).
@@ -1475,7 +1672,6 @@ Removing Unused input sections from the image.
     Removing stm32f4xx_hal_spi.o(.ARM.exidx.text.SPI_CloseRx_ISR), (8 bytes).
     Removing stm32f4xx_hal_spi.o(.text.SPI_CloseTx_ISR), (360 bytes).
     Removing stm32f4xx_hal_spi.o(.ARM.exidx.text.SPI_CloseTx_ISR), (8 bytes).
-    Removing stm32f4xx_hal_spi.o(.text.SPI_WaitFlagStateUntilTimeout), (288 bytes).
     Removing stm32f4xx_hal_spi.o(.ARM.exidx.text.SPI_WaitFlagStateUntilTimeout), (8 bytes).
     Removing stm32f4xx_hal_rcc.o(.text), (0 bytes).
     Removing stm32f4xx_hal_rcc.o(.text.HAL_RCC_DeInit), (4 bytes).
@@ -1592,9 +1788,7 @@ Removing Unused input sections from the image.
     Removing stm32f4xx_hal_gpio.o(.ARM.exidx.text.HAL_GPIO_TogglePin), (8 bytes).
     Removing stm32f4xx_hal_gpio.o(.text.HAL_GPIO_LockPin), (44 bytes).
     Removing stm32f4xx_hal_gpio.o(.ARM.exidx.text.HAL_GPIO_LockPin), (8 bytes).
-    Removing stm32f4xx_hal_gpio.o(.text.HAL_GPIO_EXTI_IRQHandler), (22 bytes).
     Removing stm32f4xx_hal_gpio.o(.ARM.exidx.text.HAL_GPIO_EXTI_IRQHandler), (8 bytes).
-    Removing stm32f4xx_hal_gpio.o(.text.HAL_GPIO_EXTI_Callback), (2 bytes).
     Removing stm32f4xx_hal_gpio.o(.ARM.exidx.text.HAL_GPIO_EXTI_Callback), (8 bytes).
     Removing stm32f4xx_hal_dma_ex.o(.text), (0 bytes).
     Removing stm32f4xx_hal_dma_ex.o(.text.HAL_DMAEx_MultiBufferStart), (114 bytes).
@@ -2113,9 +2307,13 @@ Removing Unused input sections from the image.
     Removing stm32f4xx_hal_uart.o(.ARM.exidx.text.HAL_UART_Receive_IT), (8 bytes).
     Removing stm32f4xx_hal_uart.o(.text.UART_Start_Receive_IT), (50 bytes).
     Removing stm32f4xx_hal_uart.o(.ARM.exidx.text.UART_Start_Receive_IT), (8 bytes).
+    Removing stm32f4xx_hal_uart.o(.text.HAL_UART_Transmit_DMA), (188 bytes).
     Removing stm32f4xx_hal_uart.o(.ARM.exidx.text.HAL_UART_Transmit_DMA), (8 bytes).
+    Removing stm32f4xx_hal_uart.o(.text.UART_DMATransmitCplt), (176 bytes).
     Removing stm32f4xx_hal_uart.o(.ARM.exidx.text.UART_DMATransmitCplt), (8 bytes).
+    Removing stm32f4xx_hal_uart.o(.text.UART_DMATxHalfCplt), (6 bytes).
     Removing stm32f4xx_hal_uart.o(.ARM.exidx.text.UART_DMATxHalfCplt), (8 bytes).
+    Removing stm32f4xx_hal_uart.o(.text.UART_DMAError), (380 bytes).
     Removing stm32f4xx_hal_uart.o(.ARM.exidx.text.UART_DMAError), (8 bytes).
     Removing stm32f4xx_hal_uart.o(.text.HAL_UART_Receive_DMA), (362 bytes).
     Removing stm32f4xx_hal_uart.o(.ARM.exidx.text.HAL_UART_Receive_DMA), (8 bytes).
@@ -2167,6 +2365,7 @@ Removing Unused input sections from the image.
     Removing stm32f4xx_hal_uart.o(.ARM.exidx.text.HAL_UART_ErrorCallback), (8 bytes).
     Removing stm32f4xx_hal_uart.o(.ARM.exidx.text.HAL_UARTEx_RxEventCallback), (8 bytes).
     Removing stm32f4xx_hal_uart.o(.ARM.exidx.text.HAL_UART_TxCpltCallback), (8 bytes).
+    Removing stm32f4xx_hal_uart.o(.text.HAL_UART_TxHalfCpltCallback), (2 bytes).
     Removing stm32f4xx_hal_uart.o(.ARM.exidx.text.HAL_UART_TxHalfCpltCallback), (8 bytes).
     Removing stm32f4xx_hal_uart.o(.ARM.exidx.text.HAL_UART_RxCpltCallback), (8 bytes).
     Removing stm32f4xx_hal_uart.o(.text.HAL_UART_RxHalfCpltCallback), (2 bytes).
@@ -2181,6 +2380,7 @@ Removing Unused input sections from the image.
     Removing stm32f4xx_hal_uart.o(.ARM.exidx.text.HAL_HalfDuplex_EnableTransmitter), (8 bytes).
     Removing stm32f4xx_hal_uart.o(.text.HAL_HalfDuplex_EnableReceiver), (46 bytes).
     Removing stm32f4xx_hal_uart.o(.ARM.exidx.text.HAL_HalfDuplex_EnableReceiver), (8 bytes).
+    Removing stm32f4xx_hal_uart.o(.text.HAL_UART_GetState), (14 bytes).
     Removing stm32f4xx_hal_uart.o(.ARM.exidx.text.HAL_UART_GetState), (8 bytes).
     Removing stm32f4xx_hal_uart.o(.text.HAL_UART_GetError), (4 bytes).
     Removing stm32f4xx_hal_uart.o(.ARM.exidx.text.HAL_UART_GetError), (8 bytes).
@@ -2451,6 +2651,7 @@ Image Symbol Table
     dc.s                                     0x00000000   Number         0  dc.o ABSOLUTE
     fluid_sim.c                              0x00000000   Number         0  fluid_sim.o ABSOLUTE
     main.c                                   0x00000000   Number         0  main.o ABSOLUTE
+    oled.c                                   0x00000000   Number         0  oled.o ABSOLUTE
     physics.c                                0x00000000   Number         0  physics.o ABSOLUTE
     startup_stm32f446xx.s                    0x00000000   Number         0  startup_stm32f446xx.o ABSOLUTE
     stm32f4xx_hal.c                          0x00000000   Number         0  stm32f4xx_hal.o ABSOLUTE
@@ -3245,22 +3446,22 @@ Image component sizes
        902         44          0          0     126632      15316   main.o
         54          4          0          0          0       2426   physics.o
         64         26        452          0       1536        876   startup_stm32f446xx.o
-       204          0          0          8          4       7578   stm32f4xx_hal.o
-       196          0          0          0          0      10906   stm32f4xx_hal_cortex.o
-      1146          6          8          0          0      10616   stm32f4xx_hal_dma.o
-       424          0          0          0          0       5549   stm32f4xx_hal_gpio.o
-       770          0          0          0          0      14825   stm32f4xx_hal_msp.o
-       634          0          0          0          0      17542   stm32f4xx_hal_pcd.o
-        38          0          0          0          0       5402   stm32f4xx_hal_pcd_ex.o
-       432          0          0          0          0       7648   stm32f4xx_hal_rcc.o
-      2236          4          0          0          0      11234   stm32f4xx_hal_rcc_ex.o
-       176          0          0          0          0      26429   stm32f4xx_hal_spi.o
-       414          0          0          0          0      57422   stm32f4xx_hal_tim.o
-       186          0          0          0          0      21569   stm32f4xx_hal_tim_ex.o
-      3160          0          0          0          0      32226   stm32f4xx_hal_uart.o
-        44          0          0          0          0       4244   stm32f4xx_it.o
-      2648          0          0          0          0      40101   stm32f4xx_ll_usb.o
-        18          0         24          4          0       2820   system_stm32f4xx.o
+       204          0          0          8          4       7546   stm32f4xx_hal.o
+       196          0          0          0          0      10874   stm32f4xx_hal_cortex.o
+      1146          6          8          0          0      10584   stm32f4xx_hal_dma.o
+       448          0          0          0          0       5517   stm32f4xx_hal_gpio.o
+       662          0          0          0          0      14429   stm32f4xx_hal_msp.o
+       634          0          0          0          0      17510   stm32f4xx_hal_pcd.o
+        38          0          0          0          0       5370   stm32f4xx_hal_pcd_ex.o
+       432          0          0          0          0       7616   stm32f4xx_hal_rcc.o
+      2236          4          0          0          0      11202   stm32f4xx_hal_rcc_ex.o
+      1642          0          0          0          0      26397   stm32f4xx_hal_spi.o
+       414          0          0          0          0      57390   stm32f4xx_hal_tim.o
+       186          0          0          0          0      21537   stm32f4xx_hal_tim_ex.o
+      2394          0          0          0          0      32194   stm32f4xx_hal_uart.o
+       122          0          0          0          0       4677   stm32f4xx_it.o
+      2648          0          0          0          0      40069   stm32f4xx_ll_usb.o
+        18          0         24          4          0       2788   system_stm32f4xx.o
 
     ----------------------------------------------------------------------
      18364        188        516         12     128180     312753   Object Totals
