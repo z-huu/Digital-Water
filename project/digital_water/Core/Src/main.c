@@ -189,6 +189,7 @@ int main(void) {
 
   /* USER CODE END 2 */
   /* Infinite loop */
+  GravityVector = (Vec2_t){.x = 0, .y = SIM_GRAV};
 
   /* USER CODE BEGIN WHILE */
 while (1) {
@@ -212,9 +213,9 @@ while (1) {
 		// Compute pitch & roll.
 		roll = atan2(y, z) * 57.3;
 		pitch = atan2((-x), sqrt((y*y) + (z*z))) * 57.3;
-		// Compute gravity vector ( normalizing)
-		//GravityVector.x = sin(pitch) * (SIM_GRAV / (sqrt((sin(pitch) * sin(pitch)) + (sin(roll) * sin(roll) ))));
-		//GravityVector.y = sin(roll) * (SIM_GRAV / (sqrt((sin(pitch) * sin(pitch)) + (sin(roll) * sin(roll) ))));
+		// Compute gravity vector. 
+		GravityVector.x = sin(pitch);
+		GravityVector.y = sin(roll);
 		
 		Sim_Physics_Step();
 		renderImage();
