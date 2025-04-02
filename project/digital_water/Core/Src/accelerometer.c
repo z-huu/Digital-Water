@@ -46,7 +46,7 @@
 		and output data rate at 100 Hz
 
 	Power Control : Configure power mode, noise filtering, and start / stop
-		0x2D - write 0bx0[01]00[10] --> 0x12
+		0x2D - write 0bx0[10]00[10] --> 0x22
 		Configures low noise mode, turns off autosleep, and begins measurements
 
 	*/
@@ -124,7 +124,7 @@ HAL_StatusTypeDef accel_init(void)
 	tx_buff[12] = 0x10;// INT1 configuration
 	tx_buff[13] = 0;	 // INT2 configuration
 	tx_buff[14] = 0x13;	 // Filter control
-	tx_buff[15] = 0x12;	 // Power control
+	tx_buff[15] = 0x22;	 // Power control
 	
 	HAL_StatusTypeDef write_status = HAL_SPI_Transmit(&hspi3, tx_buff, 16, 1000);
 	
@@ -218,7 +218,7 @@ int8_t accel_read(int8_t reg)
 	return ret_val;
 }
 
-HAL_StatusTypeDef accel_poll(uint8_t *read_buff)
+HAL_StatusTypeDef accel_poll(int16_t *read_buff)
 {
 	char msg[100];
 	// Burst reads to read all 6 registers for X, Y, Z accelerometer data
@@ -239,9 +239,9 @@ HAL_StatusTypeDef accel_poll(uint8_t *read_buff)
 	if (status == HAL_OK)
 	{
 		// in order: x, y, then z
-		read_buff[0] = (int16_t)(rx_buff[3] << 8) | rx_buff[2]; // index 2 is the lower 8'b, then the next 
-		read_buff[1] = (int16_t)(rx_buff[5] << 8) | rx_buff[4]; // index is the upper 4'b (sign extended)
-		read_buff[2] = (int16_t)(rx_buff[7] << 8 )| rx_buff[6];
+		read_buff[0] = ((int16_t)rx_buff[3] << 8) | rx_buff[2]; // index 2 is the lower 8'b, then the next 
+		read_buff[1] = ((int16_t)rx_buff[5] << 8) | rx_buff[4]; // index is the upper 4'b (sign extended)
+		read_buff[2] = ((int16_t)rx_buff[7] << 8 )| rx_buff[6];
 	}
 	
 	sprintf(msg, "\nX: %d\nY: %d\nZ: %d\n\n", rx_buff[2], rx_buff[3], rx_buff[4]);

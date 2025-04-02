@@ -14,7 +14,7 @@
 HAL_StatusTypeDef accel_init(void);
 int8_t accel_read (int8_t reg);
 HAL_StatusTypeDef accel_write(uint8_t reg, uint8_t val);
-HAL_StatusTypeDef accel_poll(uint8_t *read_buff);
+HAL_StatusTypeDef accel_poll(int16_t *read_buff);
 
 #endif
 

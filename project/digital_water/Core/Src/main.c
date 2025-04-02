@@ -104,7 +104,7 @@ void oled_drawframe(uint16_t* pixel_buff){
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-uint8_t accel_data[3];
+int16_t accel_data[3];
 // 0 --> XDATA
 // 1 --> YDATA
 // 2 --> ZDATA
@@ -203,16 +203,20 @@ while (1) {
 			
 		// Convert into g's
 			
-		x_g = (float)x*(1.0/1024.0);
-		y_g = (float)y*(1.0/1024.0);
-		z_g = (float)z*(1.0/1024.0);
+		x_g = (float)x*(float)1.0/1024.0;
+		y_g = (float)y*(float)1.0/1024.0;
+		z_g = (float)z*(float)1.0/1024.0;
 		// Compute pitch & roll.
-		roll = atan2(y_g, z_g) * 57.3; // 57.3 to convert from radians to degrees
-		pitch = atan2((-x_g), sqrt((y_g*y_g) + (z_g*z_g))) * 57.3;
+		roll = atan(y_g / sqrt(pow(x_g, 2) + pow(z_g, 2)));
+		pitch = atan(x_g / sqrt(pow(y_g, 2) + pow(z_g, 2)));
 		// Compute gravity vector. 
-		GravityVector.x = sin(pitch) * (SIM_GRAV / (sqrt((sin(pitch) * sin(pitch)) + (sin(roll) * sin(roll) ))));
-		GravityVector.y = sin(roll) * (SIM_GRAV / (sqrt((sin(pitch) * sin(pitch)) + (sin(roll) * sin(roll) ))));
-		
+		GravityVector.x = sin(roll);
+		GravityVector.y = sin(pitch);
+
+		GravityVector = Normalize_V2(GravityVector);
+		GravityVector.x *= SIM_GRAV;
+		GravityVector.y *= SIM_GRAV;
+
 		Sim_Physics_Step();
 		renderImage();
 		oled_drawframe(image_buff);
@@ -220,7 +224,7 @@ while (1) {
     if (btn_press)
     {
 			//GravityVector = ScalarMult_V2(GravityVector, -1);
-			sprintf(main_msg, "X: %f\nY: %f\nZ: %f\nRoll: %f\nPitch: %f\nGravity X: %f\nGravity Y: %f\n", x_g, y_g, z_g, roll, pitch, GravityVector.x,GravityVector.y);
+			sprintf(main_msg, "X: %d\nY: %d\nZ: %d\nRoll: %f\nPitch: %f\nGravity X: %f\nGravity Y: %f\n", x, y, z, roll*57.3, pitch*57.3, GravityVector.x,GravityVector.y);
 			print_msg(main_msg);
       btn_press = 0;
     }
