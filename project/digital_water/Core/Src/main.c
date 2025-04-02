@@ -134,7 +134,7 @@ Vec2_t GravityVector;
 Sim_Cell_t grid_array[SIM_PHYS_X_SIZE][SIM_PHYS_Y_SIZE];
 Sim_Particle_t particle_array[SIM_PARTICLE_COUNT];
 Sim_Particle_t obstacle_array[SIM_OBSTACLE_COUNT];
-char main_msg[100];
+char main_msg[140];
 
 int main(void) {
 
@@ -212,9 +212,9 @@ while (1) {
 		// Compute pitch & roll.
 		roll = atan2(y, z) * 57.3;
 		pitch = atan2((-x), sqrt((y*y) + (z*z))) * 57.3;
-		// Compute gravity vector. 
-		GravityVector.x = sin(pitch);
-		GravityVector.y = sin(roll);
+		// Compute gravity vector ( normalizing)
+		//GravityVector.x = sin(pitch) * (SIM_GRAV / (sqrt((sin(pitch) * sin(pitch)) + (sin(roll) * sin(roll) ))));
+		//GravityVector.y = sin(roll) * (SIM_GRAV / (sqrt((sin(pitch) * sin(pitch)) + (sin(roll) * sin(roll) ))));
 		
 		Sim_Physics_Step();
 		renderImage();
@@ -222,7 +222,8 @@ while (1) {
 		
     if (btn_press)
     {
-			sprintf(main_msg, "Roll: %f\nPitch: %f\nGravity X: %f\nGravity Y: %f\n", roll, pitch, GravityVector.x,GravityVector.y);
+			//GravityVector = ScalarMult_V2(GravityVector, -1);
+			sprintf(main_msg, "X: %f\nY: %f\n Z: %f\nRoll: %f\nPitch: %f\nGravity X: %f\nGravity Y: %f\n", x, y, z, roll, pitch, GravityVector.x,GravityVector.y);
 			print_msg(main_msg);
       btn_press = 0;
     }
