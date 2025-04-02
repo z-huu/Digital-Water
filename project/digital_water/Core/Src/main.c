@@ -189,37 +189,63 @@ int main(void) {
 
   /* USER CODE END 2 */
   /* Infinite loop */
+  GravityVector = (Vec2_t){.x = 0, .y = SIM_GRAV};
 
   /* USER CODE BEGIN WHILE */
-while (1) {
-		// Alternatively, could return accelerometer data before we activate DMA?
-    // Pause DMA before interacting with accelerometer.
-		
+  const int delayTime = (40 * SIM_PHYSICS_FPS) / 2;
+  while (1) {
+    /* USER CODE END WHILE */
+    // Rectangle draw color test
+    // oled_drawRect(25, 25, RGB_OLED_WIDTH - 25, RGB_OLED_HEIGHT - 25, colors[clr_idx], colors[clr_idx]);
+    // clr_idx++;
+    // if (clr_idx > 11) clr_idx = 1;
 
-		accel_poll(accel_data);
+    // Testing if draw addresses auto-increment: They do!
+    /*
+      oled_cmd(CMD_SET_COLUMN_ADDRESS);
+      oled_cmd(0);
+      oled_cmd(RGB_OLED_WIDTH-1);
+      //set row point
+      oled_cmd(CMD_SET_ROW_ADDRESS);
+      oled_cmd(0);
+      oled_cmd(RGB_OLED_HEIGHT-1);
 
-		x = accel_data[0]<<4, y = accel_data[1]<<4, z = accel_data[2]<<4;
-		//  Accounting for two's complement
-		if (x > 127) x -= 256;
-		if (y > 127) y -= 256;
-		if (z > 127) z -= 256;
-			
-		// Account for ADXL362 scale
-			
-		x *= 0.001f;
-		y *= 0.001f;
-		z *= 0.001f;
-		// Compute pitch & roll.
-		roll = atan2(y, z) * 57.3;
-		pitch = atan2((-x), sqrt((y*y) + (z*z))) * 57.3;
-		// Compute gravity vector. 
-		GravityVector.x = sin(pitch);
-		GravityVector.y = sin(roll);
+
+    for (int i = 0; i < RGB_OLED_WIDTH * RGB_OLED_HEIGHT - 1; i++) {
+        oled_data(BLUE >> 8);
+        oled_data(BLUE);
+    }
+
+    while(1)
+      ;
+    */
 		
-		Sim_Physics_Step();
-		renderImage();
-		oled_drawframe(image_buff);
+		/*Testing casting 16 bit array into SPI commands. Works
+		  oled_cmd(CMD_SET_COLUMN_ADDRESS);
+      oled_cmd(0);
+      oled_cmd(RGB_OLED_WIDTH-1);
+      //set row point
+      oled_cmd(CMD_SET_ROW_ADDRESS);
+      oled_cmd(0);
+      oled_cmd(RGB_OLED_HEIGHT-1);
+			
+
+	HAL_GPIO_WritePin(OLED_DCL_GPIO_Port, OLED_DCL_Pin, GPIO_PIN_SET); // Set OLED DC high, since sending data
+	HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_RESET); // Set OLED cs low
+	HAL_Delay(1);
+		HAL_SPI_Transmit_DMA(&hspi1, (uint8_t*)frameRed, 12288);
 		
+			//HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_SET); // Set OLED cs high again to disable
+			while(1)	
+				;
+			*/
+		if (ctr == 0) oled_drawframe(frameRed);
+		else if (ctr == 1) oled_drawframe(frameEmpty);
+		else oled_drawframe(frameBlue);
+		ctr++;
+		if (ctr == 3) ctr = 0;
+    /* USER CODE BEGIN 3 */
+
     if (btn_press)
     {
 			sprintf(main_msg, "Roll: %f\nPitch: %f\nGravity X: %f\nGravity Y: %f\n", roll, pitch, GravityVector.x,GravityVector.y);
