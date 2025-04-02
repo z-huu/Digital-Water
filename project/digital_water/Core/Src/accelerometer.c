@@ -221,27 +221,27 @@ int8_t accel_read(int8_t reg)
 HAL_StatusTypeDef accel_poll(uint8_t *read_buff)
 {
 	char msg[100];
-	// Read from XDATA and then do burst reads to grab YDATA and ZDATA
+	// Burst reads to read all 6 registers for X, Y, Z accelerometer data
 
-	uint8_t tx_buff[5];
-	uint8_t rx_buff[5];
+	uint8_t tx_buff[8];
+	uint8_t rx_buff[8];
 
 	tx_buff[0] = 0x0B; // Instruction to read register
-	tx_buff[1] = 0x08; // Corresponds to XDATA register
-	for (int8_t i = 2; i < 5; i++)
+	tx_buff[1] = 0x0E; // Corresponds to XDATA register
+	for (int8_t i = 2; i < 8; i++)
 		tx_buff[i] = 0; // indices 2, 3, 4 are dummy bytes
 	
 	HAL_GPIO_WritePin(ACCEL_CS_GPIO_Port, ACCEL_CS_Pin, GPIO_PIN_RESET); // Set accelerometer CS low
 	HAL_Delay(10);
 	
-	HAL_StatusTypeDef status = HAL_SPI_TransmitReceive(&hspi3, tx_buff, rx_buff, 5, 1000);
+	HAL_StatusTypeDef status = HAL_SPI_TransmitReceive(&hspi3, tx_buff, rx_buff, 8, 1000);
 
 	if (status == HAL_OK)
 	{
-
-		read_buff[0] = rx_buff[2]; // Indices 0 and 1 of rx_buff are dummy bytes.
-		read_buff[1] = rx_buff[3]; // Actual data is in indices 2, 3, 4
-		read_buff[2] = rx_buff[4];
+		// in order: x, y, then z
+		read_buff[0] = (int16_t)(rx_buff[3] << 8) | rx_buff[2]; // index 2 is the lower 8'b, then the next 
+		read_buff[1] = (int16_t)(rx_buff[5] << 8) | rx_buff[4]; // index is the upper 4'b (sign extended)
+		read_buff[2] = (int16_t)(rx_buff[7] << 8 )| rx_buff[6];
 	}
 	
 	sprintf(msg, "\nX: %d\nY: %d\nZ: %d\n\n", rx_buff[2], rx_buff[3], rx_buff[4]);

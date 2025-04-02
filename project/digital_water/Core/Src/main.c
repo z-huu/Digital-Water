@@ -109,7 +109,8 @@ uint8_t accel_data[3];
 // 1 --> YDATA
 // 2 --> ZDATA
 double roll = 0.00, pitch = 0.00;
-double x = 0, y = 0, z = 0;
+int16_t x = 0, y = 0, z = 0;
+float x_g = 0.0, y_g = 0.0, z_g = 0.0;
 
 uint8_t btn_press = 0;
 uint16_t colors[3] = {RED, GREEN, BLUE};
@@ -183,7 +184,6 @@ int main(void) {
   oled_eraseRect(0, 0, RGB_OLED_WIDTH - 1, RGB_OLED_HEIGHT - 1); // Clearing screen
 
   Sim_Physics_Init();
-  GravityVector = (Vec2_t){.x = 0, .y = -1 * SIM_GRAV};
   const int delayTime = (40 * SIM_PHYSICS_FPS) / 2;
   print_msg("starting while loop\n");
 
@@ -199,23 +199,19 @@ while (1) {
 
 		accel_poll(accel_data);
 
-		x = accel_data[0]<<4, y = accel_data[1]<<4, z = accel_data[2]<<4;
-		//  Accounting for two's complement
-		if (x > 127) x -= 256;
-		if (y > 127) y -= 256;
-		if (z > 127) z -= 256;
+		x = (int16_t)accel_data[0], y = (int16_t)accel_data[1], z = (int16_t)accel_data[2];
 			
-		// Account for ADXL362 scale
+		// Convert into g's
 			
-		x *= 0.001f;
-		y *= 0.001f;
-		z *= 0.001f;
+		x_g = (float)x*(1.0/1024.0);
+		y_g = (float)y*(1.0/1024.0);
+		z_g = (float)z*(1.0/1024.0);
 		// Compute pitch & roll.
-		roll = atan2(y, z) * 57.3;
-		pitch = atan2((-x), sqrt((y*y) + (z*z))) * 57.3;
+		roll = atan2(y_g, z_g) * 57.3; // 57.3 to convert from radians to degrees
+		pitch = atan2((-x_g), sqrt((y_g*y_g) + (z_g*z_g))) * 57.3;
 		// Compute gravity vector. 
-		GravityVector.x = sin(pitch);
-		GravityVector.y = sin(roll);
+		GravityVector.x = sin(pitch) * (SIM_GRAV / (sqrt((sin(pitch) * sin(pitch)) + (sin(roll) * sin(roll) ))));
+		GravityVector.y = sin(roll) * (SIM_GRAV / (sqrt((sin(pitch) * sin(pitch)) + (sin(roll) * sin(roll) ))));
 		
 		Sim_Physics_Step();
 		renderImage();
@@ -224,7 +220,7 @@ while (1) {
     if (btn_press)
     {
 			//GravityVector = ScalarMult_V2(GravityVector, -1);
-			sprintf(main_msg, "X: %f\nY: %f\n Z: %f\nRoll: %f\nPitch: %f\nGravity X: %f\nGravity Y: %f\n", x, y, z, roll, pitch, GravityVector.x,GravityVector.y);
+			sprintf(main_msg, "X: %f\nY: %f\nZ: %f\nRoll: %f\nPitch: %f\nGravity X: %f\nGravity Y: %f\n", x_g, y_g, z_g, roll, pitch, GravityVector.x,GravityVector.y);
 			print_msg(main_msg);
       btn_press = 0;
     }
