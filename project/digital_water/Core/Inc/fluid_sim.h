@@ -28,20 +28,20 @@
 #define SIM_WATER 2
 #define SIM_OBSTACLE 3
 
-#define SIM_PHYSICS_FPS 10
-#define SIM_RENDER_FPS 10
+#define SIM_PHYSICS_FPS 5
+#define SIM_RENDER_FPS 5
 #define SIM_DELAY_MS ((uint32_t)1000 / SIM_PHYSICS_FPS)
 
 #define SIM_ITERATIONS 1
 #define SIM_PARTICLE_COUNT 2048
 
-#define SIM_PARTICLE_RADIUS ((float)1.0)
+#define SIM_PARTICLE_RADIUS ((float)0.75)
 
 #define SIM_OBSTACLE_COUNT 0
 #define SIM_DELTATIME ((float)(1) / (float)(SIM_PHYSICS_FPS * SIM_ITERATIONS))
 #define SIM_PARTICLE_SEPARATE_ITERATIONS 1
 
-#define SIM_OVERRELAXATION ((float)1.9) // should be between 1 to 2
+#define SIM_OVERRELAXATION ((float)1.7) // should be between 1 to 2
 // float to int macro found from StackOverflow:
 // https://stackoverflow.com/questions/24723180/c-convert-floating-point-to-int
 #define FLOAT_TO_INT(x) ((x) >= 0 ? (int)((x) + 0.5) : (int)((x) - 0.5))
