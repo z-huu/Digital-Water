@@ -51,7 +51,7 @@
 
 	*/
 
-extern SPI_HandleTypeDef hspi1;
+extern SPI_HandleTypeDef hspi3;
 extern UART_HandleTypeDef huart3;
 
 // Everything you need to write this library is in these documents
@@ -126,7 +126,7 @@ HAL_StatusTypeDef accel_init(void)
 	tx_buff[14] = 0x13;	 // Filter control
 	tx_buff[15] = 0x12;	 // Power control
 	
-	HAL_StatusTypeDef write_status = HAL_SPI_Transmit(&hspi1, tx_buff, 16, 1000);
+	HAL_StatusTypeDef write_status = HAL_SPI_Transmit(&hspi3, tx_buff, 16, 1000);
 	
 	HAL_GPIO_WritePin(ACCEL_CS_GPIO_Port, ACCEL_CS_Pin, GPIO_PIN_SET); // Set accelerometer CS high
 	HAL_Delay(10);
@@ -158,7 +158,7 @@ HAL_StatusTypeDef accel_write(uint8_t reg, uint8_t val){
 	rx_buff[2] = val;
 	
 	HAL_StatusTypeDef write_status;
-	write_status = HAL_SPI_TransmitReceive(&hspi1, tx_buff, rx_buff, 3, 1000);
+	write_status = HAL_SPI_TransmitReceive(&hspi3, tx_buff, rx_buff, 3, 1000);
 	
 	if (write_status != HAL_OK) print_msg("Write no good\n");
 	
@@ -179,7 +179,6 @@ HAL_StatusTypeDef accel_write(uint8_t reg, uint8_t val){
 
 int8_t accel_read(int8_t reg)
 {
-	HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_SET); // Set OLED CS high
 	print_msg("Reading\n");
 
 	char msg[100];
@@ -195,7 +194,7 @@ int8_t accel_read(int8_t reg)
 	HAL_GPIO_WritePin(ACCEL_CS_GPIO_Port, ACCEL_CS_Pin, GPIO_PIN_RESET); // Set accelerometer CS low
 	HAL_Delay(10);
 
-	HAL_StatusTypeDef status = HAL_SPI_TransmitReceive(&hspi1, tx_buff, rx_buff, 3, 1000);
+	HAL_StatusTypeDef status = HAL_SPI_TransmitReceive(&hspi3, tx_buff, rx_buff, 3, 1000);
 
 	HAL_GPIO_WritePin(ACCEL_CS_GPIO_Port, ACCEL_CS_Pin, GPIO_PIN_SET);
 	HAL_Delay(10);
@@ -235,7 +234,7 @@ HAL_StatusTypeDef accel_poll(uint8_t *read_buff)
 	HAL_GPIO_WritePin(ACCEL_CS_GPIO_Port, ACCEL_CS_Pin, GPIO_PIN_RESET); // Set accelerometer CS low
 	HAL_Delay(10);
 	
-	HAL_StatusTypeDef status = HAL_SPI_TransmitReceive(&hspi1, tx_buff, rx_buff, 5, 1000);
+	HAL_StatusTypeDef status = HAL_SPI_TransmitReceive(&hspi3, tx_buff, rx_buff, 5, 1000);
 
 	if (status == HAL_OK)
 	{
@@ -273,6 +272,6 @@ HAL_StatusTypeDef accel_poll(uint8_t *read_buff)
 	tx_buff[14] = 0x13;	 // Filter control
 	tx_buff[15] = 0x12;	 // Power control
 	
-	HAL_StatusTypeDef write_status = HAL_SPI_TransmitReceive(&hspi1, tx_buff, rx_buff, 16, 1000);
+	HAL_StatusTypeDef write_status = HAL_SPI_TransmitReceive(&hspi3, tx_buff, rx_buff, 16, 1000);
 
 */

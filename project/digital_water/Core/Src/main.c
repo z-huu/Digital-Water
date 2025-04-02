@@ -195,20 +195,9 @@ while (1) {
 		// Alternatively, could return accelerometer data before we activate DMA?
     // Pause DMA before interacting with accelerometer.
 		
-		HAL_SPI_DMAPause(&hspi1);
-		HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_SET); // Set OLED cs high to disable
-		HAL_GPIO_WritePin(ACCEL_CS_GPIO_Port, ACCEL_CS_Pin, GPIO_PIN_RESET); // Set accelerometer cs low
-		HAL_Delay(10);
-		accel_poll(accel_data);
-		HAL_Delay(10);
-		// Set accelerometer cs high (already handled, i think)
-		// Set OLED cs low.
-		
-		HAL_GPIO_WritePin(ACCEL_CS_GPIO_Port, ACCEL_CS_Pin, GPIO_PIN_SET); // Set accelerometer cs high
-		HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_RESET); // Set OLED cs low
 
-		// Resume DMA while we compute next frame.
-		HAL_SPI_DMAResume(&hspi1);
+		accel_poll(accel_data);
+
 		x = accel_data[0]<<4, y = accel_data[1]<<4, z = accel_data[2]<<4;
 		//  Accounting for two's complement
 		if (x > 127) x -= 256;
