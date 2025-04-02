@@ -246,7 +246,7 @@ HAL_StatusTypeDef accel_poll(uint8_t *read_buff)
 	}
 	
 	sprintf(msg, "\nX: %d\nY: %d\nZ: %d\n\n", rx_buff[2], rx_buff[3], rx_buff[4]);
-	print_msg(msg);
+	//print_msg(msg);
 	
 	HAL_GPIO_WritePin(GPIOD, ACCEL_CS_Pin, GPIO_PIN_SET);
 	HAL_Delay(10);

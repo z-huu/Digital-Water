@@ -95,6 +95,8 @@ void oled_drawframe(uint16_t* pixel_buff){
 	return;
 }
 
+
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -104,10 +106,9 @@ uint8_t accel_data[3];
 // 1 --> YDATA
 // 2 --> ZDATA
 double roll = 0.00, pitch = 0.00;
-uint8_t x = 0, y = 0, z = 0;
+double x = 0, y = 0, z = 0;
 
-char amsg[100];
-uint8_t new_accel_data = 0, btn_press = 0;
+uint8_t btn_press = 0;
 uint16_t colors[3] = {RED, GREEN, BLUE};
 
 Sim_Cell_t grid_array[SIM_PHYS_X_SIZE][SIM_PHYS_Y_SIZE];
@@ -130,7 +131,7 @@ Vec2_t GravityVector;
 Sim_Cell_t grid_array[SIM_PHYS_X_SIZE][SIM_PHYS_Y_SIZE];
 Sim_Particle_t particle_array[SIM_PARTICLE_COUNT];
 Sim_Particle_t obstacle_array[SIM_OBSTACLE_COUNT];
-char main_amsg[100];
+char main_msg[100];
 
 int main(void) {
 
@@ -171,7 +172,7 @@ int main(void) {
   HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_SET);
   HAL_Delay(10);
 
-  // accel_init();
+  accel_init();
   HAL_Delay(10);
   oled_init();
   HAL_Delay(10);
@@ -186,7 +187,59 @@ int main(void) {
 
   /* USER CODE BEGIN WHILE */
   const int delayTime = (40 * SIM_PHYSICS_FPS) / 2;
-  while (1) {
+while (1) {
+		// Alternatively, could return accelerometer data before we activate DMA?
+    // Pause DMA before interacting with accelerometer.
+		
+		HAL_SPI_DMAPause(&hspi1);
+		HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_SET); // Set OLED cs high to disable
+		HAL_GPIO_WritePin(ACCEL_CS_GPIO_Port, ACCEL_CS_Pin, GPIO_PIN_RESET); // Set accelerometer cs low
+		HAL_Delay(10);
+		accel_poll(accel_data);
+		HAL_Delay(10);
+		// Set accelerometer cs high (already handled, i think)
+		// Set OLED cs low.
+		
+		HAL_GPIO_WritePin(ACCEL_CS_GPIO_Port, ACCEL_CS_Pin, GPIO_PIN_SET); // Set accelerometer cs high
+		HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_RESET); // Set OLED cs low
+
+		// Resume DMA while we compute next frame.
+		HAL_SPI_DMAResume(&hspi1);
+		x = accel_data[0]<<4, y = accel_data[1]<<4, z = accel_data[2]<<4;
+		//  Accounting for two's complement
+		if (x > 127) x -= 256;
+		if (y > 127) y -= 256;
+		if (z > 127) z -= 256;
+			
+		// Account for ADXL362 scale
+			
+		x *= 0.001f;
+		y *= 0.001f;
+		z *= 0.001f;
+		// Compute pitch & roll.
+		roll = atan2(y, z) * 57.3;
+		pitch = atan2((-x), sqrt((y*y) + (z*z))) * 57.3;
+		// Compute gravity vector. 
+		GravityVector.x = sin(pitch);
+		GravityVector.y = sin(roll);
+		
+		Sim_Physics_Step();
+		renderImage();
+		oled_drawframe(image_buff);
+		
+    if (btn_press)
+    {
+			sprintf(main_msg, "Roll: %f\nPitch: %f\nGravity X: %f\nGravity Y: %f\n", roll, pitch, GravityVector.x,GravityVector.y);
+			print_msg(main_msg);
+      btn_press = 0;
+    }
+  } // end superloop
+  /* USER CODE END 3 */
+}
+
+/* Integrated while
+
+while (1) {
 		// Alternatively, could return accelerometer data before we activate DMA?
     // Pause DMA before interacting with accelerometer.
 		
@@ -220,8 +273,46 @@ int main(void) {
       btn_press = 0;
     }
   } // end superloop
-  /* USER CODE END 3 */
-}
+
+*/
+
+/* Individual accelerometer test
+
+ while (1) {
+		
+		HAL_Delay(1);
+    if (btn_press)
+    {
+			print_msg("Btn\n");
+			accel_poll(accel_data);
+			x = accel_data[0], y = accel_data[1], z = accel_data[2];
+			//  Accounting for two's complement
+			if (x > 127) x -= 256;
+			if (y > 127) y -= 256;
+			if (z > 127) z -= 256;
+			
+			// Account for ADXL362 scale
+			
+			x *= 0.0625f;
+			y *= 0.0625f;
+			z *= 0.0625f;
+
+			roll = atan2(y, z) * 57.3;
+			pitch = atan2((-x), sqrt((y*y) + (z*z))) * 57.3;
+			
+			sprintf(main_msg, "Roll: %f\nPitch: %f\n", roll, pitch);
+			print_msg(main_msg);
+			GravityVector.x = sin(pitch);
+			GravityVector.y = sin(roll);
+			
+			sprintf(main_msg, "Gravity X: %f\nGravity Y: %f\n",GravityVector.x, GravityVector.y);
+			print_msg(main_msg);
+
+      btn_press = 0;
+    }
+  } // end superloop
+
+*/
 
 /**
  * @brief System Clock Configuration

@@ -235,9 +235,7 @@ void USART3_IRQHandler(void)
 void EXTI15_10_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI15_10_IRQn 0 */
-	 if (__HAL_GPIO_EXTI_GET_FLAG(ACCEL_INT1_Pin)) {
-		 new_accel_data = 1;
-	 }
+
 	 
 	 if (__HAL_GPIO_EXTI_GET_FLAG(USER_Btn_Pin)) {
 		 btn_press = 1;

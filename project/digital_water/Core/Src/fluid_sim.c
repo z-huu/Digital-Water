@@ -130,156 +130,6 @@ void Sim_Particle_Step() {
   }
 }
 
-void Sim_Particle_HandleObstacleCollisions(Sim_Particle_t obstacle) {
-  // simply check if in radius
-  for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
-
-    float dx = particle_array[k].position.x - obstacle.position.x;
-    float dy = particle_array[k].position.y - obstacle.position.y;
-    float dxy_squared = dx * dx + dy * dy;
-
-    float min_distance = obstacle.radius + particle_array[k].radius;
-    float min_dist_squared = min_distance * min_distance;
-    if (dxy_squared < min_dist_squared) {
-      // collision, simply inherit velocity
-      particle_array[k].velocity.x = obstacle.velocity.x;
-      particle_array[k].velocity.y = obstacle.velocity.y;
-    }
-  }
-}
-
-void Sim_Particle_HandleCellCollisions() {
-  // for each particle...
-  for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
-    // check boundary conditions
-    Sim_Cell_t *currentCell = GetCellFromPosition(particle_array[k].position);
-    if (particle_array[k].position.x < 0) {
-      particle_array[k].position.x = 0;
-      if (particle_array[k].velocity.x < 0) {
-        particle_array[k].velocity.x = 0;
-      }
-    } else if (particle_array[k].position.x > SIM_PHYS_X_SIZE - 1) {
-      particle_array[k].position.x = SIM_PHYS_X_SIZE - 1;
-      if (particle_array[k].velocity.x > 0) {
-        particle_array[k].velocity.x = 0;
-      }
-    }
-    if (particle_array[k].position.y < 0) {
-      // sprintf(msg, "%d: collision at bottom!\n", k);
-      // print_msg(msg);
-      particle_array[k].position.y = 0;
-      if (particle_array[k].velocity.y < 0) {
-        particle_array[k].velocity.y = 0;
-      }
-    } else if (particle_array[k].position.y > SIM_PHYS_Y_SIZE - 1) {
-      particle_array[k].position.y = SIM_PHYS_Y_SIZE - 1;
-      if (particle_array[k].velocity.y > 0) {
-        particle_array[k].velocity.y = 0;
-      }
-    }
-
-    // check current cell it resides in, if its solid, push it out backwards
-    // simply just undo the velocity movement done
-    if (currentCell != NULL && currentCell->state == SIM_SOLID) {
-      Vec2_t reversedVelocity =
-          ScalarMult_V2(particle_array[k].velocity, (float)-0.25);
-      particle_array[k].position =
-          AddVectors_V2(particle_array[k].position, reversedVelocity);
-      // particle_array[k].velocity = reversedVelocity;
-    }
-  }
-}
-
-void Sim_Particle_PushParticlesApart() {
-  // reset particle_count for all cells
-  // print_msg("reset particle counts\n");
-  for (int separate_iter = 0; separate_iter < SIM_PARTICLE_SEPARATE_ITERATIONS;
-       separate_iter++) {
-
-    // reset grid particle count and linked list
-    for (int k = 0; k < SIM_PHYS_X_SIZE; k++) {
-      for (int j = 0; j < SIM_PHYS_Y_SIZE; j++) {
-        grid_array[k][j].particle_count = 0;
-        grid_array[k][j].head = NULL;
-        grid_array[k][j].tail = NULL;
-      }
-    }
-
-    // count particles in cells
-    int count = 0;
-    print_msg("counting particles in cell\n");
-    for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
-      particle_array[k].next = NULL;
-
-      Sim_Cell_t *locatedCell = GetCellFromPosition(particle_array[k].position);
-      if (locatedCell != NULL) {
-        locatedCell->particle_count++;
-        AddParticleToCellList(locatedCell, &particle_array[k]);
-        count++;
-      }
-    }
-
-    // push particles apart
-    // sprintf(msg, "found particles in grid = %d\n", count);
-    // print_msg(msg);
-    // print_msg("actually separate particles\n");
-
-    float min_dist = SIM_PARTICLE_RADIUS * 2;
-    float min_dist_squared = min_dist * min_dist;
-
-    // iterate through each cell, if there is particles there, separate them
-
-    int split_count = 0;
-    for (int x = 0; x < SIM_PHYS_X_SIZE; x++) {
-      for (int y = 0; y < SIM_PHYS_Y_SIZE; y++) {
-        if (grid_array[x][y].particle_count > 1) {
-          // more than one particle, separate ALL particles in cell
-          Sim_Particle_t *focusParticle = grid_array[x][y].head;
-          Sim_Particle_t *otherParticle = NULL;
-
-          while (focusParticle->next != NULL && focusParticle != NULL) {
-            if (focusParticle) {
-              otherParticle = focusParticle->next;
-            } else {
-              focusParticle = NULL;
-              continue;
-            }
-            if (otherParticle == NULL) {
-              focusParticle = NULL;
-              continue;
-            }
-            // print_msg("something found\n");
-            //  if here, both particles actually exist!
-            Vec2_t negativePos = ScalarMult_V2(focusParticle->position, -1);
-            Vec2_t deltaPos =
-                AddVectors_V2(otherParticle->position, negativePos);
-            float dist_between = Magnitude_V2(deltaPos);
-            float dist_between_squared = dist_between * dist_between;
-
-            if (dist_between_squared > min_dist_squared ||
-                dist_between_squared == 0.0) {
-              // skip
-            } else {
-              // actually separate particles, using min distance
-              float separateFactor =
-                  0.5 * (min_dist - dist_between) / dist_between;
-              deltaPos = ScalarMult_V2(deltaPos, separateFactor);
-              Vec2_t negative_deltaPos = ScalarMult_V2(deltaPos, -1);
-              otherParticle->position =
-                  AddVectors_V2(otherParticle->position, deltaPos);
-              focusParticle->position =
-                  AddVectors_V2(focusParticle->position, negative_deltaPos);
-            }
-            focusParticle = focusParticle->next;
-            split_count++;
-          }
-        }
-      }
-    }
-    Sim_Particle_HandleCellCollisions();
-  }
-}
-
 // grid functions
 void Sim_Grid_Init() {
   for (int i = 0; i < SIM_PHYS_X_SIZE; i++) {
@@ -387,6 +237,160 @@ void Sim_Grid_Step() {
   }
 }
 
+
+
+
+void Sim_Particle_HandleObstacleCollisions(Sim_Particle_t obstacle) {
+  // simply check if in radius
+  for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
+
+    float dx = particle_array[k].position.x - obstacle.position.x;
+    float dy = particle_array[k].position.y - obstacle.position.y;
+    float dxy_squared = dx * dx + dy * dy;
+
+    float min_distance = obstacle.radius + particle_array[k].radius;
+    float min_dist_squared = min_distance * min_distance;
+    if (dxy_squared < min_dist_squared) {
+      // collision, simply inherit velocity
+      particle_array[k].velocity.x = obstacle.velocity.x;
+      particle_array[k].velocity.y = obstacle.velocity.y;
+    }
+  }
+}
+
+void Sim_Particle_HandleCellCollisions() {
+  // for each particle...
+  for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
+    // check boundary conditions
+    Sim_Cell_t *currentCell = GetCellFromPosition(particle_array[k].position);
+    if (particle_array[k].position.x < 0) {
+      particle_array[k].position.x = 0;
+      if (particle_array[k].velocity.x < 0) {
+        particle_array[k].velocity.x = 0;
+      }
+    } else if (particle_array[k].position.x > SIM_PHYS_X_SIZE - 1) {
+      particle_array[k].position.x = SIM_PHYS_X_SIZE - 1;
+      if (particle_array[k].velocity.x > 0) {
+        particle_array[k].velocity.x = 0;
+      }
+    }
+    if (particle_array[k].position.y < 0) {
+      // sprintf(msg, "%d: collision at bottom!\n", k);
+      // print_msg(msg);
+      particle_array[k].position.y = 0;
+      if (particle_array[k].velocity.y < 0) {
+        particle_array[k].velocity.y = 0;
+      }
+    } else if (particle_array[k].position.y > SIM_PHYS_Y_SIZE - 1) {
+      particle_array[k].position.y = SIM_PHYS_Y_SIZE - 1;
+      if (particle_array[k].velocity.y > 0) {
+        particle_array[k].velocity.y = 0;
+      }
+    }
+
+    // check current cell it resides in, if its solid, push it out backwards
+    // simply just undo the velocity movement done
+    if (currentCell != NULL && currentCell->state == SIM_SOLID) {
+      Vec2_t reversedVelocity =
+          ScalarMult_V2(particle_array[k].velocity, (float)-0.25);
+      particle_array[k].position =
+          AddVectors_V2(particle_array[k].position, reversedVelocity);
+      // particle_array[k].velocity = reversedVelocity;
+    }
+  }
+}
+
+
+void Sim_Particle_PushParticlesApart() {
+  // reset particle_count for all cells
+  // print_msg("reset particle counts\n");
+  for (int separate_iter = 0; separate_iter < SIM_PARTICLE_SEPARATE_ITERATIONS;
+       separate_iter++) {
+
+    // reset grid particle count and linked list
+    for (int k = 0; k < SIM_PHYS_X_SIZE; k++) {
+      for (int j = 0; j < SIM_PHYS_Y_SIZE; j++) {
+        grid_array[k][j].particle_count = 0;
+        grid_array[k][j].head = NULL;
+        grid_array[k][j].tail = NULL;
+      }
+    }
+
+    // count particles in cells
+    int count = 0;
+    //print_msg("counting particles in cell\n");
+    for (int k = 0; k < SIM_PARTICLE_COUNT; k++) {
+      particle_array[k].next = NULL;
+
+      Sim_Cell_t *locatedCell = GetCellFromPosition(particle_array[k].position);
+      if (locatedCell != NULL) {
+        locatedCell->particle_count++;
+        AddParticleToCellList(locatedCell, &particle_array[k]);
+        count++;
+      }
+    }
+
+    // push particles apart
+    // sprintf(msg, "found particles in grid = %d\n", count);
+    // print_msg(msg);
+    // print_msg("actually separate particles\n");
+
+    float min_dist = SIM_PARTICLE_RADIUS * 2;
+    float min_dist_squared = min_dist * min_dist;
+
+    // iterate through each cell, if there is particles there, separate them
+
+    int split_count = 0;
+    for (int x = 0; x < SIM_PHYS_X_SIZE; x++) {
+      for (int y = 0; y < SIM_PHYS_Y_SIZE; y++) {
+        if (grid_array[x][y].particle_count > 1) {
+          // more than one particle, separate ALL particles in cell
+          Sim_Particle_t *focusParticle = grid_array[x][y].head;
+          Sim_Particle_t *otherParticle = NULL;
+
+          while (focusParticle->next != NULL && focusParticle != NULL) {
+            if (focusParticle) {
+              otherParticle = focusParticle->next;
+            } else {
+              focusParticle = NULL;
+              continue;
+            }
+            if (otherParticle == NULL) {
+              focusParticle = NULL;
+              continue;
+            }
+            // print_msg("something found\n");
+            //  if here, both particles actually exist!
+            Vec2_t negativePos = ScalarMult_V2(focusParticle->position, -1);
+            Vec2_t deltaPos =
+                AddVectors_V2(otherParticle->position, negativePos);
+            float dist_between = Magnitude_V2(deltaPos);
+            float dist_between_squared = dist_between * dist_between;
+
+            if (dist_between_squared > min_dist_squared ||
+                dist_between_squared == 0.0) {
+              // skip
+            } else {
+              // actually separate particles, using min distance
+              float separateFactor =
+                  0.5 * (min_dist - dist_between) / dist_between;
+              deltaPos = ScalarMult_V2(deltaPos, separateFactor);
+              Vec2_t negative_deltaPos = ScalarMult_V2(deltaPos, -1);
+              otherParticle->position =
+                  AddVectors_V2(otherParticle->position, deltaPos);
+              focusParticle->position =
+                  AddVectors_V2(focusParticle->position, negative_deltaPos);
+            }
+            focusParticle = focusParticle->next;
+            split_count++;
+          }
+        }
+      }
+    }
+    Sim_Particle_HandleCellCollisions();
+  }
+}
+
 // *** To be completed!
 void Sim_TransferVelocities(int toGrid) {
   if (toGrid) {
@@ -468,9 +472,9 @@ void Sim_TransferVelocities(int toGrid) {
 }
 
 void Sim_Physics_Step() {
-  print_msg("physics step\n");
+  //print_msg("physics step\n");
   for (int k = 0; k < SIM_ITERATIONS; k++) {
-    print_msg("particle step\n");
+    //print_msg("particle step\n");
     Sim_Particle_Step(); // handle particle movement + gravity
 
     // print_msg("pushed particles apart\n");
@@ -480,7 +484,7 @@ void Sim_Physics_Step() {
     Sim_TransferVelocities(1); // transfer particle -> grid velocities
 
     // update particle density?
-    print_msg("grid solver\n");
+    //print_msg("grid solver\n");
     Sim_Grid_Step(); // solve incompressibility
 
     // print_msg("grid -> particle velocity transfer\n");
