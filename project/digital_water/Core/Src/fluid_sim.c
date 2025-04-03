@@ -10,6 +10,7 @@ Minute Physics"
 */
 
 char msg[100];
+extern Vec2_t GravityVector;
 /*
 Much of the simulation ideas are heavily based on the TenMinutePhysics code
 Key difference is this is adapted from JavaScript into C code, with minor
@@ -539,7 +540,7 @@ void Sim_Physics_Init() {
 extern uint16_t image_buff[SIM_RENDER_X_SIZE * SIM_RENDER_Y_SIZE];
 extern uint8_t tx_buff[sizeof(PREAMBLE) +
                        SIM_RENDER_X_SIZE * SIM_RENDER_Y_SIZE + sizeof(SUFFIX) +
-                       2];
+                      2];
 extern size_t tx_buff_len;
 extern UART_HandleTypeDef huart3;
 

@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f4xx_it.h"
+#include <stdio.h>
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -270,9 +271,14 @@ void EXTI15_10_IRQHandler(void)
 /**
   * @brief This function handles TIM6 global interrupt and DAC1, DAC2 underrun error interrupts.
   */
+extern int overflow;
 void TIM6_DAC_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM6_DAC_IRQn 0 */
+	//char msg[100];
+	//sprintf(msg, "Overflowed \n");
+	//print_msg(msg);
+	overflow++;
 
   /* USER CODE END TIM6_DAC_IRQn 0 */
   HAL_TIM_IRQHandler(&htim6);

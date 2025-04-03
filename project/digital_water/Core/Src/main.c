@@ -86,14 +86,24 @@ uint8_t btn_press = 0;
 uint16_t colors[3] = {RED, GREEN, BLUE};
 
 Sim_Cell_t grid_array[SIM_PHYS_X_SIZE][SIM_PHYS_Y_SIZE];
-Sim_Particle_t particle_array[1500];
+Sim_Particle_t particle_array[SIM_PARTICLE_COUNT];
+uint16_t image_buff[SIM_RENDER_X_SIZE * SIM_RENDER_Y_SIZE];
+Sim_Particle_t obstacle_array[SIM_OBSTACLE_COUNT];
+Vec2_t GravityVector;
 
+uint8_t tx_buff[sizeof(PREAMBLE) + SIM_RENDER_X_SIZE * SIM_RENDER_Y_SIZE +
+									sizeof(SUFFIX)];
+size_t tx_buff_len;
+
+int sim_time = 0;
+char main_msg[140];
 /* USER CODE END 0 */
 
 /**
   * @brief  The application entry point.
   * @retval int
   */
+int overflow = 0;
 int main(void)
 {
 
@@ -135,19 +145,21 @@ int main(void)
   HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_SET);
   HAL_Delay(10);
 
+	
+
   accel_init();
   HAL_Delay(10);
   oled_init();
   HAL_Delay(10);
   oled_eraseRect(0, 0, RGB_OLED_WIDTH - 1, RGB_OLED_HEIGHT - 1); // Clearing screen
-
   Sim_Physics_Init();
   const int delayTime = (40 * SIM_PHYSICS_FPS) / 2;
-  print_msg("starting while loop\n");
 	GravityVector = (Vec2_t){.x = 0, .y = SIM_GRAV};
+
+  print_msg("starting while loop\n");
 	
 	// FPS calculation
-	HAL_TIM_Base_Init(&htim6);
+	HAL_TIM_Base_MspInit(&htim6);
 
   /* USER CODE END 2 */
 
@@ -158,6 +170,51 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+		if(overflow > 0){
+			print_msg("DAB");
+		}
+		accel_poll(accel_data);
+
+		x = (int16_t)accel_data[0], y = (int16_t)accel_data[1], z = (int16_t)accel_data[2];
+			
+		// Convert into g's
+			
+		x_g = (float)x*(float)1.0/1024.0;
+		y_g = (float)y*(float)1.0/1024.0;
+		z_g = (float)z*(float)1.0/1024.0;
+		// Compute pitch & roll.
+		roll = atan(y_g / sqrt(pow(x_g, 2) + pow(z_g, 2)));
+		pitch = atan(x_g / sqrt(pow(y_g, 2) + pow(z_g, 2)));
+		// Compute gravity vector. 
+		GravityVector.x = (-1.0)*sin(roll);
+		GravityVector.y = sin(pitch);
+
+		GravityVector = Normalize_V2(GravityVector);
+		GravityVector.x *= SIM_GRAV;
+		GravityVector.y *= SIM_GRAV;
+
+		//HAL_TIM_Base_Start_IT(&htim6);
+
+		Sim_Physics_Step();
+		renderImage();
+		/*
+		HAL_TIM_Base_Stop(&htim6);
+	uint16_t time = __HAL_TIM_GET_COUNTER(&htim6);
+	sprintf(main_msg, "Overflow value: %d\nTime: %d\n", overflow, time);
+	print_msg(main_msg);
+	
+	while(1)
+		;
+		*/
+		oled_drawframe(image_buff);
+		
+    if (btn_press)
+    {
+			//GravityVector = ScalarMult_V2(GravityVector, -1);
+			sprintf(main_msg, "X: %d\nY: %d\nZ: %d\nRoll: %f\nPitch: %f\nGravity X: %f\nGravity Y: %f\n", x, y, z, roll*57.3, pitch*57.3, GravityVector.x,GravityVector.y);
+			print_msg(main_msg);
+      btn_press = 0;
+    }
   }
   /* USER CODE END 3 */
 }

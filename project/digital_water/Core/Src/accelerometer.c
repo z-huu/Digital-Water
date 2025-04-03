@@ -54,6 +54,7 @@
 extern SPI_HandleTypeDef hspi3;
 extern UART_HandleTypeDef huart3;
 extern TIM_HandleTypeDef htim6;
+extern int overflow;
 
 // Everything you need to write this library is in these documents
 // https://www.analog.com/media/en/technical-documentation/data-sheets/adxl362.pdf
@@ -221,7 +222,6 @@ int8_t accel_read(int8_t reg)
 
 HAL_StatusTypeDef accel_poll(int16_t *read_buff)
 {
-	HAL_TIM_Base_Start(&htim6);
 
 	char msg[100];
 	// Burst reads to read all 6 registers for X, Y, Z accelerometer data
@@ -235,7 +235,7 @@ HAL_StatusTypeDef accel_poll(int16_t *read_buff)
 		tx_buff[i] = 0; // indices 2, 3, 4 are dummy bytes
 	
 	HAL_GPIO_WritePin(ACCEL_CS_GPIO_Port, ACCEL_CS_Pin, GPIO_PIN_RESET); // Set accelerometer CS low
-	HAL_Delay(10);
+	//HAL_Delay(10);
 	
 	HAL_StatusTypeDef status = HAL_SPI_TransmitReceive(&hspi3, tx_buff, rx_buff, 8, 1000);
 
@@ -251,14 +251,8 @@ HAL_StatusTypeDef accel_poll(int16_t *read_buff)
 	//print_msg(msg);
 	
 	HAL_GPIO_WritePin(GPIOD, ACCEL_CS_Pin, GPIO_PIN_SET);
-	HAL_Delay(10);
+	//HAL_Delay(10);
 
-	HAL_TIM_Base_Stop(&htim6);
-	uint16_t time = __HAL_TIM_GET_COUNTER(&htim6);
-	sprintf(msg, "Time: %d\n", time);
-	print_msg(msg);
-	while(1)
-		;
 	return status;
 }
 
