@@ -598,7 +598,7 @@ for (int k = 0; k < SIM_PHYS_X_SIZE; k++) {
     } else {
       sprintf(msg, "renderImage(), OOB: %d: (%f, %f)\n", k,
               particle_array[k].position.x, particle_array[k].position.y);
-      print_msg(msg);
+     // print_msg(msg);
       image_buff[0] = SOLID_COLOR_B;
       image_buff[1] = SOLID_COLOR_B;
     }
