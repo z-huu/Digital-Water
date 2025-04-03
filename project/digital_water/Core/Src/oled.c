@@ -11,6 +11,7 @@
 
 extern SPI_HandleTypeDef hspi1;
 extern UART_HandleTypeDef huart3;
+extern TIM_HandleTypeDef htim6;
 
 HAL_StatusTypeDef oled_init(void) {
 	
@@ -221,6 +222,34 @@ void oled_drawRect(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t 
 	oled_cmd((uint8_t)((fill_col>>5)&0x3F));//G
 	oled_cmd((uint8_t)(fill_col&0x1F));//B
 	
+}
+
+void oled_drawframe(uint16_t* pixel_buff){
+	//my_print_amsg("Draw frame\n");
+	// pixel_buff of OLED size
+	// each element contains the color to ship
+	
+	while (HAL_SPI_GetState(&hspi1) != HAL_SPI_STATE_READY){
+		//my_print_amsg("Waiting\n");
+	}
+
+	//HAL_TIM_Base_Start(&htim6);
+	oled_cmd(CMD_SET_COLUMN_ADDRESS);
+	oled_cmd(0);
+	oled_cmd(RGB_OLED_WIDTH-1);
+	//set row point
+	oled_cmd(CMD_SET_ROW_ADDRESS);
+	oled_cmd(0);
+	oled_cmd(RGB_OLED_HEIGHT-1);
+
+	HAL_GPIO_WritePin(OLED_DCL_GPIO_Port, OLED_DCL_Pin, GPIO_PIN_SET); // Set OLED DC high, since sending data
+	HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_RESET); // Set OLED cs low
+	HAL_Delay(1);
+	HAL_SPI_Transmit_DMA(&hspi1, (uint8_t*)pixel_buff, 12288);
+	//my_print_amsg("Done draw frame\n");
+	// Accelerometer cannot be interfaced with while DMA is transmitting (because OLED cs must be low)
+	// to work around this, we can pause the DMA and switch the CS values and grab the accelerometer value. 
+	return;
 }
 
 

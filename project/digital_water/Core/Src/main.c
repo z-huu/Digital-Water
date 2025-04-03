@@ -71,35 +71,6 @@ static void MX_USB_OTG_FS_PCD_Init(void);
 static void MX_SPI3_Init(void);
 /* USER CODE BEGIN PFP */
 
-void oled_drawframe(uint16_t* pixel_buff){
-	//my_print_amsg("Draw frame\n");
-	// pixel_buff of OLED size
-	// each element contains the color to ship
-	
-	while (HAL_SPI_GetState(&hspi1) != HAL_SPI_STATE_READY){
-		//my_print_amsg("Waiting\n");
-	}
-
-	oled_cmd(CMD_SET_COLUMN_ADDRESS);
-	oled_cmd(0);
-	oled_cmd(RGB_OLED_WIDTH-1);
-	//set row point
-	oled_cmd(CMD_SET_ROW_ADDRESS);
-	oled_cmd(0);
-	oled_cmd(RGB_OLED_HEIGHT-1);
-
-	HAL_GPIO_WritePin(OLED_DCL_GPIO_Port, OLED_DCL_Pin, GPIO_PIN_SET); // Set OLED DC high, since sending data
-	HAL_GPIO_WritePin(OLED_CS_GPIO_Port, OLED_CS_Pin, GPIO_PIN_RESET); // Set OLED cs low
-	HAL_Delay(1);
-	HAL_SPI_Transmit_DMA(&hspi1, (uint8_t*)pixel_buff, 12288);
-	//my_print_amsg("Done draw frame\n");
-	// Accelerometer cannot be interfaced with while DMA is transmitting (because OLED cs must be low)
-	// to work around this, we can pause the DMA and switch the CS values and grab the accelerometer value. 
-	return;
-}
-
-
-
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -116,7 +87,7 @@ uint8_t btn_press = 0;
 uint16_t colors[3] = {RED, GREEN, BLUE};
 
 Sim_Cell_t grid_array[SIM_PHYS_X_SIZE][SIM_PHYS_Y_SIZE];
-Sim_Particle_t particle_array[2048];
+Sim_Particle_t particle_array[1500];
 
 /* USER CODE END 0 */
 
@@ -186,10 +157,13 @@ int main(void) {
   Sim_Physics_Init();
   const int delayTime = (40 * SIM_PHYSICS_FPS) / 2;
   print_msg("starting while loop\n");
+	GravityVector = (Vec2_t){.x = 0, .y = SIM_GRAV};
+	
+	// FPS calculation
+	//HAL_TIM_Base_Init(&htim6);
 
   /* USER CODE END 2 */
   /* Infinite loop */
-  GravityVector = (Vec2_t){.x = 0, .y = SIM_GRAV};
 
   /* USER CODE BEGIN WHILE */
 while (1) {
@@ -372,7 +346,7 @@ static void MX_TIM6_Init(void)
 
   /* USER CODE END TIM6_Init 1 */
   htim6.Instance = TIM6;
-  htim6.Init.Prescaler = 0;
+  htim6.Init.Prescaler = 200;
   htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim6.Init.Period = 65535;
   htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;

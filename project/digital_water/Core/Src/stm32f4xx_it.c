@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f4xx_it.h"
+#include <stdio.h>
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -62,6 +63,8 @@ extern UART_HandleTypeDef huart3;
 /* USER CODE BEGIN EV */
 extern uint8_t new_accel_data;
 extern uint8_t btn_press;
+extern TIM_HandleTypeDef htim6;
+
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -269,7 +272,17 @@ void EXTI15_10_IRQHandler(void)
   */
 void DMA2_Stream3_IRQHandler(void)
 {
+	char msg[100];
   /* USER CODE BEGIN DMA2_Stream3_IRQn 0 */
+
+		//  One frame via DMA calculatio
+		/*HAL_TIM_Base_Stop(&htim6);
+		uint16_t time = __HAL_TIM_GET_COUNTER(&htim6);
+		sprintf(msg, "Time: %d\n", time);
+		print_msg(msg);
+		while(1)
+			;
+		*/
 
   /* USER CODE END DMA2_Stream3_IRQn 0 */
   HAL_DMA_IRQHandler(&hdma_spi1_tx);
