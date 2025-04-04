@@ -13,9 +13,8 @@ char msg[100];
 extern Vec2_t GravityVector;
 /*
 Much of the simulation ideas are heavily based on the TenMinutePhysics code
-Key difference is this is adapted from JavaScript into C code, with minor
-modifications
-
+Key difference is this is adapted from JavaScript into C code, with some modifications
+(Used Collocated Grid, rather than Staggerred Grid)
 https://github.com/matthias-research/pages/blob/master/tenMinutePhysics/18-flip.html
 
 */
